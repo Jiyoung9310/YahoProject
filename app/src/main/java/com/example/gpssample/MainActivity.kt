@@ -3,9 +3,11 @@ package com.example.gpssample
 import android.Manifest
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
@@ -24,9 +26,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
 
     private lateinit var fab : FloatingActionButton
+    private lateinit var textView: TextView
 
     companion object {
-        private const val LOCATION_REQUEST_INTERVAL = 1000
+        private const val LOCATION_REQUEST_INTERVAL = 10000
+        private const val LOCATION_REQUEST_FAST_INTERVAL = 5000
         private const val PERMISSION_REQUEST_CODE = 100
         private val PERMISSIONS = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -38,9 +42,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var locationEnabled = false
     private var trackingEnabled = false
 
+    private val locationList = mutableListOf<Location>()
+
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
             val lastLocation = locationResult?.lastLocation ?: return
+            locationResult.locations.let {
+                locationList.addAll(it)
+            }
+            textView.text = locationList.getLocationResultText()
 
             val coord = LatLng(lastLocation)
             val locationOverlay = naverMap.locationOverlay
@@ -70,6 +80,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         fab = findViewById(R.id.fab)
         fab.setImageResource(R.drawable.ic_my_location_black_24dp)
+        textView = findViewById(R.id.tvLog)
         mapFragment.getMapAsync(this)
     }
 
@@ -106,14 +117,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
                 @SuppressLint("MissingPermission")
                 override fun onConnected(bundle: Bundle?) {
-                    val locationRequest = LocationRequest().apply {
+                    val locationRequest = LocationRequest.create().apply {
                         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
                         interval = LOCATION_REQUEST_INTERVAL.toLong()
-                        fastestInterval = LOCATION_REQUEST_INTERVAL.toLong()
+                        fastestInterval = LOCATION_REQUEST_FAST_INTERVAL.toLong()
                     }
 
                     LocationServices.getFusedLocationProviderClient(this@MainActivity)
                         .requestLocationUpdates(locationRequest, locationCallback, null)
+
                     locationEnabled = true
                     waiting = true
                 }

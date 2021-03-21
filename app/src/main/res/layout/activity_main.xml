@@ -25,4 +25,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         />
 
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+        <TextView
+            android:id="@+id/tvLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#3E000000"
+            android:textColor="@color/white"
+            android:scrollbarStyle="insideInset"
+            />
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
