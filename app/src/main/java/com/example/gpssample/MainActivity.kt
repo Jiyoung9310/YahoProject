@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import androidx.core.content.res.ResourcesCompat
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationCallback
@@ -20,6 +21,8 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
+import com.naver.maps.map.overlay.OverlayImage
+import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -43,12 +46,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var trackingEnabled = false
 
     private val locationList = mutableListOf<Location>()
+    private val path = mutableListOf<LatLng>()
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
             val lastLocation = locationResult?.lastLocation ?: return
-            locationResult.locations.let {
-                locationList.addAll(it)
+            locationResult.locations.let { list ->
+                locationList.addAll(list)
+                path.addAll(list.map { LatLng(it) })
             }
             textView.text = locationList.getLocationResultText()
 
@@ -74,7 +79,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as MapFragment?
-            ?: MapFragment.newInstance().also {
+            ?: MapFragment.newInstance(
+                NaverMapOptions()
+                    .backgroundResource(NaverMap.DEFAULT_BACKGROUND_DRWABLE_DARK)
+                    .mapType(NaverMap.MapType.Terrain)
+                    .enabledLayerGroups(NaverMap.LAYER_GROUP_MOUNTAIN)
+                    .minZoom(4.0)
+            ).also {
                 supportFragmentManager.beginTransaction().add(R.id.mapFragment, it).commit()
             }
 
@@ -141,6 +152,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
+
+        val width = resources.getDimensionPixelSize(R.dimen.path_overlay_width)
+        val outlineWidth = resources.getDimensionPixelSize(R.dimen.path_overlay_outline_width)
+
+        if (path.size > 2) {
+            PathOverlay().also {
+                it.coords = path
+                it.width = width
+                it.outlineWidth = 0
+                it.color = Color.BLUE
+                it.patternImage = OverlayImage.fromResource(R.drawable.ic_path_arrow)
+                it.patternInterval =
+                    resources.getDimensionPixelSize(R.dimen.overlay_pattern_interval)
+                it.map = naverMap
+            }
+        }
 
         fab?.setOnClickListener {
             if (trackingEnabled) {
