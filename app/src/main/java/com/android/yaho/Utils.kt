@@ -1,8 +1,6 @@
-package com.example.gpssample
+package com.android.yaho
 
-import android.content.Context
 import android.location.Location
-import android.preference.PreferenceManager
 
 private const val KEY_LOCATION_UPDATES_RESULT = "location-update-result"
 

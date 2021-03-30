@@ -1,4 +1,4 @@
-package com.example.gpssample
+package com.android.yaho
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

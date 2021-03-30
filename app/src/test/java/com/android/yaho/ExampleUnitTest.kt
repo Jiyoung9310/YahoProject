@@ -1,4 +1,4 @@
-package com.example.gpssample
+package com.android.yaho
 
 import org.junit.Test
 

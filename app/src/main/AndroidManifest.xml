@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.gpssample">
+    package="com.android.yaho">
 
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -18,7 +18,7 @@
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="@string/naver_maps_client_id" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.android.yaho.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
