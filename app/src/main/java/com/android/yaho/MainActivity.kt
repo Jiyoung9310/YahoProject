@@ -7,11 +7,13 @@ import android.graphics.Color
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import androidx.core.view.isVisible
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.android.base.BindingActivity
 import com.android.yaho.databinding.ActivityMainBinding
@@ -21,13 +23,19 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 
 class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::inflate), OnMapReadyCallback {
+    private val TAG = this::class.java.simpleName
+
     private lateinit var naverMap: NaverMap
+
+    private val firebaseAuth = Firebase.auth
 
     companion object {
         private const val LOCATION_REQUEST_INTERVAL = 10000
@@ -90,13 +98,29 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
         binding.fab.setImageResource(R.drawable.ic_my_location_black_24dp)
         mapFragment.getMapAsync(this)
 
-        binding.btnLogin.setOnClickListener { startActivity(Intent(this@MainActivity, LoginActivity::class.java)) }
+        binding.btnLogin.setOnClickListener {
+            if(firebaseAuth.currentUser == null) {
+                startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+            } else {
+                Firebase.auth.signOut()
+                binding.btnLogin.text = "LOGIN"
+            }
+        }
     }
 
     override fun onStart() {
         super.onStart()
         if (trackingEnabled) {
             enableLocation()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        firebaseAuth.currentUser?.let { user ->
+            binding.btnLogin.text = "LOGOUT"
+            Log.d(TAG, "firebaseAuth UID  : ${user.uid}")
         }
     }
 
