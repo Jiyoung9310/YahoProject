@@ -13,6 +13,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.concurrent.TimeUnit
 
@@ -20,6 +21,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
     private val TAG = this::class.simpleName
 
     private val firebaseAuth = Firebase.auth
+    private val db = Firebase.firestore
     private lateinit var verificationId : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +34,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
             finish()
         } ?: run {
             binding.progressCircular.isVisible = false
-            binding.etPhoneNumber.setText("+1 650-555-3434")
+            binding.etPhoneNumber.setText("+1 650-555-3535")
         }
 
         initView()
@@ -114,6 +116,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
 
                     val userUid = task.result?.user?.uid
                     Toast.makeText(this@LoginActivity, "Success : $userUid", Toast.LENGTH_SHORT).show()
+                    userUid?.let { updateDatabase(userUid) }
                     finish()
                 } else {
                     // Sign in failed, display a message and update the UI
@@ -128,4 +131,29 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
             }
     }
 
+    private fun updateDatabase(uid:String) {
+        db.collection("users")
+            .document(uid)
+            .set(UserClimbingData())
+            .addOnSuccessListener { documentReference ->
+                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference}")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error adding document", e)
+            }
+    }
 }
+
+data class UserClimbingData(
+    val allHeight: Float = 0f,
+    val allDistance: Float = 0f,
+    val allTime: Int = 0,
+    val records: List<ClimbingRecordData> = emptyList()
+)
+
+data class ClimbingRecordData(
+    val mountainId: Int = 0,
+    val height: Float = 0f,
+    val distance: Float = 0f,
+    val runningTime: Int = 0,
+)
