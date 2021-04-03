@@ -2,6 +2,7 @@ package com.android.yaho
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.android.base.BindingActivity
+import com.android.yaho.databinding.ActivityMainBinding
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -23,11 +26,8 @@ import com.naver.maps.map.*
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::inflate), OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
-
-    private lateinit var fab : FloatingActionButton
-    private lateinit var textView: TextView
 
     companion object {
         private const val LOCATION_REQUEST_INTERVAL = 10000
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 locationList.addAll(list)
                 path.addAll(list.map { LatLng(it) })
             }
-            textView.text = locationList.getLocationResultText()
+            binding.tvLog.text = locationList.getLocationResultText()
 
             val coord = LatLng(lastLocation)
             val locationOverlay = naverMap.locationOverlay
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             naverMap.moveCamera(CameraUpdate.scrollTo(coord))
             if (waiting) {
                 waiting = false
-                fab.setImageResource(R.drawable.ic_location_disabled_black_24dp)
+                binding.fab.setImageResource(R.drawable.ic_location_disabled_black_24dp)
                 locationOverlay.isVisible = true
             }
         }
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
             it.setDisplayShowHomeEnabled(true)
@@ -87,10 +87,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 supportFragmentManager.beginTransaction().add(R.id.mapFragment, it).commit()
             }
 
-        fab = findViewById(R.id.fab)
-        fab.setImageResource(R.drawable.ic_my_location_black_24dp)
-        textView = findViewById(R.id.tvLog)
+        binding.fab.setImageResource(R.drawable.ic_my_location_black_24dp)
         mapFragment.getMapAsync(this)
+
+        binding.btnLogin.setOnClickListener { startActivity(Intent(this@MainActivity, LoginActivity::class.java)) }
     }
 
     override fun onStart() {
@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             if (grantResults.all { it == PermissionChecker.PERMISSION_GRANTED }) {
                 enableLocation()
             } else {
-                fab.setImageResource(R.drawable.ic_my_location_black_24dp)
+                binding.fab.setImageResource(R.drawable.ic_my_location_black_24dp)
             }
             return
         }
@@ -167,12 +167,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        fab?.setOnClickListener {
+        binding.fab.setOnClickListener {
             if (trackingEnabled) {
                 disableLocation()
-                fab?.setImageResource(R.drawable.ic_my_location_black_24dp)
+                binding.fab.setImageResource(R.drawable.ic_my_location_black_24dp)
             } else {
-                fab?.setImageDrawable(CircularProgressDrawable(this).apply {
+                binding.fab.setImageDrawable(CircularProgressDrawable(this).apply {
                     setStyle(CircularProgressDrawable.LARGE)
                     setColorSchemeColors(Color.WHITE)
                     start()
