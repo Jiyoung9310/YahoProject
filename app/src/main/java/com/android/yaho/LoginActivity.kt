@@ -1,10 +1,8 @@
 package com.android.yaho
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.android.base.BindingActivity
 import com.android.yaho.databinding.ActivityLoginBinding
@@ -44,7 +42,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
 
         binding.btnVerification.setOnClickListener {
             when(binding.btnVerification.text) {
-                "인증번호 받기" -> verifyPhoneNumber(binding.etPhoneNumber.toString())
+                "인증번호 받기" -> verifyPhoneNumber(binding.etPhoneNumber.text.toString())
                 "인증번호 입력" -> {
                     val code = binding.etCode.text.toString()
                     val credential = PhoneAuthProvider.getCredential(verificationId, code)
@@ -55,7 +53,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
     }
 
     private fun verifyPhoneNumber(phoneNumber: String) {
-
+        Log.d(TAG, "try verifyPhoneNumber:$phoneNumber")
         val options = PhoneAuthOptions.newBuilder(firebaseAuth)
             .setPhoneNumber(phoneNumber)       // Phone number to verify
             .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
@@ -100,6 +98,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
 //                    resendToken = token
 //                    Toast.makeText(this@LoginActivity, "onCodeSent", Toast.LENGTH_SHORT).show()
                     binding.btnVerification.text = "인증번호 입력"
+                    binding.etCode.setText("654321")
                 }
             })          // OnVerificationStateChangedCallbacks
             .build()
@@ -113,8 +112,9 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
 
-                    val user = task.result?.user
-                    Toast.makeText(this@LoginActivity, "Success : $user", Toast.LENGTH_SHORT).show()
+                    val userUid = task.result?.user?.uid
+                    Toast.makeText(this@LoginActivity, "Success : $userUid", Toast.LENGTH_SHORT).show()
+                    finish()
                 } else {
                     // Sign in failed, display a message and update the UI
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
