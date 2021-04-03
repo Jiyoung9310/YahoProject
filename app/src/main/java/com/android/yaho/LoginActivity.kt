@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.android.base.BindingActivity
 import com.android.yaho.databinding.ActivityLoginBinding
 import com.google.firebase.FirebaseException
@@ -26,10 +27,37 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        binding.progressCircular.isVisible = true
+        firebaseAuth.currentUser?.let { user ->
+            binding.progressCircular.isVisible = false
+            Log.d(TAG, "firebaseAuth UID  : ${user.uid}")
+            finish()
+        } ?: run {
+            binding.progressCircular.isVisible = false
+            binding.etPhoneNumber.setText("+1 650-555-3434")
+        }
+
         initView()
+    }
+
+    private fun initView() {
+
+        binding.btnVerification.setOnClickListener {
+            when(binding.btnVerification.text) {
+                "인증번호 받기" -> verifyPhoneNumber(binding.etPhoneNumber.toString())
+                "인증번호 입력" -> {
+                    val code = binding.etCode.text.toString()
+                    val credential = PhoneAuthProvider.getCredential(verificationId, code)
+                    signInWithPhoneAuthCredential(credential)
+                }
+            }
+        }
+    }
+
+    private fun verifyPhoneNumber(phoneNumber: String) {
 
         val options = PhoneAuthOptions.newBuilder(firebaseAuth)
-            .setPhoneNumber("+1 650-555-3434")       // Phone number to verify
+            .setPhoneNumber(phoneNumber)       // Phone number to verify
             .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
             .setActivity(this)                 // Activity (for callback binding)
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -71,20 +99,11 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
 //                    storedVerificationId = verificationId
 //                    resendToken = token
 //                    Toast.makeText(this@LoginActivity, "onCodeSent", Toast.LENGTH_SHORT).show()
-
+                    binding.btnVerification.text = "인증번호 입력"
                 }
             })          // OnVerificationStateChangedCallbacks
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
-    }
-
-    private fun initView() {
-
-        binding.btnVerification.setOnClickListener {
-            val code = binding.etCode.text.toString()
-            val credential = PhoneAuthProvider.getCredential(verificationId, code)
-            signInWithPhoneAuthCredential(credential)
-        }
     }
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
