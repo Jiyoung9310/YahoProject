@@ -116,7 +116,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
 
                     val userUid = task.result?.user?.uid
                     Toast.makeText(this@LoginActivity, "Success : $userUid", Toast.LENGTH_SHORT).show()
-                    userUid?.let { updateDatabase(userUid) }
+                    userUid?.let { getUserDataFromFirestore(userUid) }
                     finish()
                 } else {
                     // Sign in failed, display a message and update the UI
@@ -131,7 +131,20 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
             }
     }
 
-    private fun updateDatabase(uid:String) {
+    private fun getUserDataFromFirestore(uid:String) {
+        db.collection("users")
+            .document(uid)
+            .get()
+            .addOnSuccessListener { result ->
+                Log.d(TAG, "result.data => ${result.data}")
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+                updateNewUserToFirestore(uid)
+            }
+    }
+
+    private fun updateNewUserToFirestore(uid:String) {
         db.collection("users")
             .document(uid)
             .set(UserClimbingData())
