@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.core.view.isVisible
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.android.base.BindingActivity
+import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityMainBinding
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationCallback

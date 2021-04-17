@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.core.view.isVisible
-import com.android.base.BindingActivity
+import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityLoginBinding
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException

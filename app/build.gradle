@@ -48,6 +48,18 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
+
+    // Koin for Kotlin Multiplatform
+    implementation "io.insert-koin:koin-core:$koin_version"
+// Koin Test for Kotlin Multiplatform
+    testImplementation "io.insert-koin:koin-test:$koin_version"
+    // Koin main features for Android (Scope,ViewModel ...)
+    implementation "io.insert-koin:koin-android:$koin_version"
+// Koin Android - experimental builder extensions
+    implementation "io.insert-koin:koin-android-ext:$koin_version"
+// Koin for Jetpack WorkManager
+    implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
+
     
     implementation 'com.naver.maps:map-sdk:3.11.0'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
