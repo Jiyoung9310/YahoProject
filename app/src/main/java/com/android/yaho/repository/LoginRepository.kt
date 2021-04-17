@@ -1,7 +1,7 @@
 package com.android.yaho.repository
 
 import android.util.Log
-import com.android.yaho.UserClimbingData
+import com.android.yaho.data.UserClimbingData
 import com.android.yaho.local.YahoPreference
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
