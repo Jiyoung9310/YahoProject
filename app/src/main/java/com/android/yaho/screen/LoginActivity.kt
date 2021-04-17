@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityLoginBinding
+import com.android.yaho.screen.MainActivity
 import com.android.yaho.viewmodel.LoginViewModel
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException

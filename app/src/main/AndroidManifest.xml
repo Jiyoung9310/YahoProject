@@ -19,7 +19,7 @@
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="@string/naver_maps_client_id" />
 
-        <activity android:name="com.android.yaho.MainActivity"
+        <activity android:name="com.android.yaho.screen.MainActivity"
             android:screenOrientation="portrait">
         </activity>
 
