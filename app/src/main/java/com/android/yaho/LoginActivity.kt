@@ -1,60 +1,66 @@
 package com.android.yaho
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.core.view.isVisible
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityLoginBinding
+import com.android.yaho.viewmodel.LoginViewModel
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.*
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.concurrent.TimeUnit
 
 class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding::inflate){
     private val TAG = this::class.simpleName
 
-    private val firebaseAuth = Firebase.auth
-    private val db = Firebase.firestore
-    private lateinit var verificationId : String
+
+    private val viewModel by viewModel<LoginViewModel>()
+    private val firebaseAuth by inject<FirebaseAuth>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding.progressCircular.isVisible = true
-        firebaseAuth.currentUser?.let { user ->
-            binding.progressCircular.isVisible = false
-            Log.d(TAG, "firebaseAuth UID  : ${user.uid}")
-            finish()
-        } ?: run {
-            binding.progressCircular.isVisible = false
-            binding.etPhoneNumber.setText("+1 650-555-3535")
-        }
-
         initView()
+        initObserve()
     }
 
     private fun initView() {
-
-        binding.btnVerification.setOnClickListener {
-            when(binding.btnVerification.text) {
-                "인증번호 받기" -> verifyPhoneNumber(binding.etPhoneNumber.text.toString())
-                "인증번호 입력" -> {
-                    val code = binding.etCode.text.toString()
-                    val credential = PhoneAuthProvider.getCredential(verificationId, code)
-                    signInWithPhoneAuthCredential(credential)
-                }
-            }
+        binding.etPhoneNumber.setText("+1 650-555-3535")
+        binding.btnGetCode.setOnClickListener {
+            startVerifyCode(binding.etPhoneNumber.text.toString())
+        }
+        binding.btnCheckCode.setOnClickListener {
+            viewModel.onClickCheckCode(binding.etCode.text.toString())
         }
     }
 
-    private fun verifyPhoneNumber(phoneNumber: String) {
+    private fun initObserve() {
+        viewModel.goToHome.observe(this) {
+            // go to home screen
+            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+            finish()
+        }
+
+        viewModel.enableVerifyEdit.observe(this) {
+            binding.etCode.isEnabled = it
+            binding.btnCheckCode.isEnabled = it
+            binding.etCode.setText("654321")
+        }
+
+        viewModel.checkVerifyCode.observe(this) { (verificationId, code) ->
+            val credential = PhoneAuthProvider.getCredential(verificationId, code)
+            signInWithPhoneAuthCredential(credential)
+        }
+
+        viewModel.error.observe(this) {
+            Toast.makeText(this, "Oops!! Error : ${it.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+    private fun startVerifyCode(phoneNumber: String) {
         Log.d(TAG, "try verifyPhoneNumber:$phoneNumber")
         val options = PhoneAuthOptions.newBuilder(firebaseAuth)
             .setPhoneNumber(phoneNumber)       // Phone number to verify
@@ -90,19 +96,10 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
                     verificationId: String,
                     token: PhoneAuthProvider.ForceResendingToken
                 ) {
-                    // The SMS verification code has been sent to the provided phone number, we
-                    // now need to ask the user to enter the code and then construct a credential
-                    // by combining the code with a verification ID.
                     Log.d(TAG, "onCodeSent:$verificationId")
-                    this@LoginActivity.verificationId = verificationId
-                    // Save verification ID and resending token so we can use them later
-//                    storedVerificationId = verificationId
-//                    resendToken = token
-//                    Toast.makeText(this@LoginActivity, "onCodeSent", Toast.LENGTH_SHORT).show()
-                    binding.btnVerification.text = "인증번호 입력"
-                    binding.etCode.setText("654321")
+                    viewModel.getVerifyNumber(verificationId)
                 }
-            })          // OnVerificationStateChangedCallbacks
+            })
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
@@ -114,10 +111,8 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
 
-                    val userUid = task.result?.user?.uid
-                    Toast.makeText(this@LoginActivity, "Success : $userUid", Toast.LENGTH_SHORT).show()
-                    userUid?.let { getUserDataFromFirestore(userUid) }
-                    finish()
+                    Toast.makeText(this@LoginActivity, "Success : ${task.result?.user?.uid}", Toast.LENGTH_SHORT).show()
+                    viewModel.saveUserId(task.result?.user?.uid)
                 } else {
                     // Sign in failed, display a message and update the UI
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -128,31 +123,6 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
                     // Update UI
                     Toast.makeText(this@LoginActivity, "Error", Toast.LENGTH_SHORT).show()
                 }
-            }
-    }
-
-    private fun getUserDataFromFirestore(uid:String) {
-        db.collection("users")
-            .document(uid)
-            .get()
-            .addOnSuccessListener { result ->
-                Log.d(TAG, "result.data => ${result.data}")
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-                updateNewUserToFirestore(uid)
-            }
-    }
-
-    private fun updateNewUserToFirestore(uid:String) {
-        db.collection("users")
-            .document(uid)
-            .set(UserClimbingData())
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference}")
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
             }
     }
 }
