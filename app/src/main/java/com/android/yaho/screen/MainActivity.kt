@@ -2,12 +2,15 @@ package com.android.yaho.screen
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
@@ -17,6 +20,7 @@ import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityMainBinding
 import com.android.yaho.getLocationResultText
+import com.android.yaho.viewmodel.MainViewModel
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -28,10 +32,12 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::inflate), OnMapReadyCallback {
     private val TAG = this::class.java.simpleName
 
+    private val viewModel by viewModel<MainViewModel>()
     private lateinit var naverMap: NaverMap
 
     private val firebaseAuth = Firebase.auth
@@ -83,6 +89,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
             it.setDisplayShowHomeEnabled(true)
         }
 
+        initObserve()
+
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as MapFragment?
             ?: MapFragment.newInstance(
                 NaverMapOptions()
@@ -104,6 +112,30 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
                 Firebase.auth.signOut()
                 binding.btnLogin.text = "LOGIN"
             }
+        }
+
+        binding.btnFind.setOnClickListener {
+            locationList.getOrNull(0)?.let { viewModel.getNearByMountain(it) }
+        }
+    }
+
+    private fun initObserve() {
+        viewModel.nearByList.observe(this) {
+            AlertDialog.Builder(this)
+                .setTitle("선택")
+                .setItems(it.map { it.name }.toTypedArray()) { dialogInterface, i ->
+                    Toast.makeText(this@MainActivity, "near by : " + it[i], Toast.LENGTH_LONG)
+                        .show()
+                }
+                .setNeutralButton("닫기", null)
+                .setPositiveButton("확인", null)
+                .show()
+
+        }
+
+        viewModel.error.observe(this) {
+            Toast.makeText(this, "Oops!! error : ${it.message}", Toast.LENGTH_SHORT).show()
+            Log.d(TAG, "Oops!! error : ${it.message}")
         }
     }
 
