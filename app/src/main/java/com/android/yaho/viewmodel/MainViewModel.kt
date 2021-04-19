@@ -1,6 +1,6 @@
 package com.android.yaho.viewmodel
 
-import android.location.Location
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,8 +9,8 @@ import com.android.yaho.data.MountainData
 import com.android.yaho.repository.MountainRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 class MainViewModel(private val mountainRepo: MountainRepository) : ViewModel() {
 
@@ -24,12 +24,18 @@ class MainViewModel(private val mountainRepo: MountainRepository) : ViewModel() 
 
     }
 
-    fun getNearByMountain(location: Location) {
+    fun getNearByMountain(latitude: Double, longitude: Double) {
         viewModelScope.launch {
-            mountainRepo.getNearBy(location.latitude, location.longitude)
+            mountainRepo.getMountainList()
                 .catch { e:Throwable -> _error.value = e }
-                .collect{
-                    _nearByList.value = it
+                .collect{ list ->
+                    val data = list.filter {
+                        abs(it.latitude - latitude) < 0.1
+                    }.filter{
+                        abs(it.longitude - longitude) < 0.1
+                    }.take(4)
+                    Log.d("MainViewModel", "getNearByMountain $data")
+                    _nearByList.value = data
                 }
         }
     }

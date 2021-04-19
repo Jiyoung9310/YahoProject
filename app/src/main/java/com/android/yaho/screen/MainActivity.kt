@@ -2,7 +2,6 @@ package com.android.yaho.screen
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.location.Location
@@ -115,12 +114,13 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
         }
 
         binding.btnFind.setOnClickListener {
-            locationList.getOrNull(0)?.let { viewModel.getNearByMountain(it) }
+            locationList.getOrNull(0)?.let { viewModel.getNearByMountain(it.latitude, it.longitude) }
         }
     }
 
     private fun initObserve() {
         viewModel.nearByList.observe(this) {
+            Log.d(TAG, "nearByList : $it")
             AlertDialog.Builder(this)
                 .setTitle("선택")
                 .setItems(it.map { it.name }.toTypedArray()) { dialogInterface, i ->
