@@ -1,4 +1,4 @@
-package com.android.yaho
+package com.android.yaho.screen
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.Toast
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityLoginBinding
-import com.android.yaho.screen.MainActivity
 import com.android.yaho.viewmodel.LoginViewModel
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
@@ -42,7 +41,7 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
     private fun initObserve() {
         viewModel.goToHome.observe(this) {
             // go to home screen
-            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+            startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
             finish()
         }
 

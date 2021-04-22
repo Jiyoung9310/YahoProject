@@ -3,10 +3,8 @@ package com.android.yaho.di
 import android.content.Context
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.YahoPreferenceImpl
-import com.android.yaho.repository.LoginRepository
-import com.android.yaho.repository.LoginRepositoryImpl
-import com.android.yaho.repository.MountainRepository
-import com.android.yaho.repository.MountainRepositoryImpl
+import com.android.yaho.repository.*
+import com.android.yaho.viewmodel.HomeViewModel
 import com.android.yaho.viewmodel.LoginViewModel
 import com.android.yaho.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -32,7 +30,9 @@ val appModule = module {
 
     factory <LoginRepository> { LoginRepositoryImpl(get(), get()) }
     factory <MountainRepository> { MountainRepositoryImpl(get()) }
+    factory <UserDataRepository> { UserDataRepositoryImpl(get()) }
 
     viewModel { LoginViewModel(get()) }
     viewModel { MainViewModel(get()) }
+    viewModel { HomeViewModel(get()) }
 }
