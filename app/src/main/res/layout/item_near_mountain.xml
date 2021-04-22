@@ -61,21 +61,57 @@
         app:layout_constraintStart_toStartOf="parent"
         />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvLevel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <View
+        android:id="@+id/vLevel1"
+        android:layout_width="14dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/selector_bg_near_mountain_level"
         app:layout_constraintTop_toBottomOf="@id/tvLevelTitle"
         app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <View
+        android:id="@+id/vLevel2"
+        android:layout_width="14dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="2dp"
+        android:background="@drawable/selector_bg_near_mountain_level"
+        app:layout_constraintTop_toTopOf="@id/vLevel1"
+        app:layout_constraintBottom_toBottomOf="@id/vLevel1"
+        app:layout_constraintStart_toEndOf="@id/vLevel1"
+        />
+
+    <View
+        android:id="@+id/vLevel3"
+        android:layout_width="14dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="2dp"
+        android:background="@drawable/selector_bg_near_mountain_level"
+        app:layout_constraintTop_toTopOf="@id/vLevel1"
+        app:layout_constraintBottom_toBottomOf="@id/vLevel2"
+        app:layout_constraintStart_toEndOf="@id/vLevel2"
+        />
+
+    <View
+        android:id="@+id/vLevel4"
+        android:layout_width="14dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="2dp"
+        android:background="@drawable/selector_bg_near_mountain_level"
+        app:layout_constraintTop_toTopOf="@id/vLevel1"
+        app:layout_constraintBottom_toBottomOf="@id/vLevel3"
+        app:layout_constraintStart_toEndOf="@id/vLevel3"
         />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btnGo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:background="@drawable/selector_bg_ready_go_btn"
         android:src="@drawable/ic_go_white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="6dp"
+        app:layout_constraintTop_toBottomOf="@id/vLevel1"
         app:layout_constraintEnd_toEndOf="parent"
         />
 

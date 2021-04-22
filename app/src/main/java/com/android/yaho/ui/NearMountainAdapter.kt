@@ -34,7 +34,17 @@ class NearMountainViewHolder(parent: ViewGroup) : BindingViewHolder<ItemNearMoun
     fun bind(data: MountainData) {
         binding.tvMountainName.text = data.name
         binding.tvHeight.text = binding.root.context.getString(R.string.ready_near_height_unit, data.height)
-        binding.tvLevel.text = data.level
+
+        val levelInt = when(data.level) {
+            "최상" -> 4
+            "상" -> 3
+            "중" -> 2
+            else -> 1
+        }
+        binding.vLevel4.isEnabled = levelInt >= 4
+        binding.vLevel3.isEnabled = levelInt >= 3
+        binding.vLevel2.isEnabled = levelInt >= 2
+        binding.vLevel1.isEnabled = levelInt >= 1
     }
 
 }
