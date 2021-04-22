@@ -21,10 +21,7 @@ import com.android.yaho.databinding.ActivityMainBinding
 import com.android.yaho.getLocationResultText
 import com.android.yaho.viewmodel.MainViewModel
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.naver.maps.geometry.LatLng
@@ -49,6 +46,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
         )
+    }
+    private val fusedLocationClient: FusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(this)
     }
 
     private var waiting = false
@@ -137,6 +137,15 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
             Toast.makeText(this, "Oops!! error : ${it.message}", Toast.LENGTH_SHORT).show()
             Log.d(TAG, "Oops!! error : ${it.message}")
         }
+
+        viewModel.naverMap.observe(this) {
+            /*binding.fab.setImageDrawable(CircularProgressDrawable(this).apply {
+                setStyle(CircularProgressDrawable.LARGE)
+                setColorSchemeColors(Color.WHITE)
+                start()
+            })
+            tryEnableLocation()*/
+        }
     }
 
     override fun onStart() {
@@ -163,7 +172,11 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
             super.onOptionsItemSelected(item)
         }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.all { it == PermissionChecker.PERMISSION_GRANTED }) {
                 enableLocation()
@@ -181,14 +194,12 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
             .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
                 @SuppressLint("MissingPermission")
                 override fun onConnected(bundle: Bundle?) {
-                    val locationRequest = LocationRequest.create().apply {
+                    fusedLocationClient.requestLocationUpdates(
+                        LocationRequest.create().apply {
                         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
                         interval = LOCATION_REQUEST_INTERVAL.toLong()
                         fastestInterval = LOCATION_REQUEST_FAST_INTERVAL.toLong()
-                    }
-
-                    LocationServices.getFusedLocationProviderClient(this@MainActivity)
-                        .requestLocationUpdates(locationRequest, locationCallback, null)
+                    }, locationCallback, null)
 
                     locationEnabled = true
                     waiting = true
@@ -222,6 +233,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
             }
         }
 
+        viewModel.readyToStart(naverMap)
+
         binding.fab.setOnClickListener {
             if (trackingEnabled) {
                 disableLocation()
@@ -242,7 +255,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
         if (!locationEnabled) {
             return
         }
-        LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback)
+        fusedLocationClient.removeLocationUpdates(locationCallback)
         locationEnabled = false
     }
 

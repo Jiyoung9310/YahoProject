@@ -4,6 +4,7 @@ import android.util.Log
 import com.android.yaho.data.MountainData
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -14,6 +15,7 @@ interface MountainRepository {
 }
 
 class MountainRepositoryImpl(private val firestoreDB: FirebaseFirestore) : MountainRepository {
+    @ExperimentalCoroutinesApi
     override fun getMountainList(): Flow<List<MountainData>> = callbackFlow {
         var eventCollection: CollectionReference? = null
         try{

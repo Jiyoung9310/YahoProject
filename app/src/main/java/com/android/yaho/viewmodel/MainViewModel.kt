@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.yaho.data.MountainData
 import com.android.yaho.repository.MountainRepository
+import com.naver.maps.map.NaverMap
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -17,8 +18,15 @@ class MainViewModel(private val mountainRepo: MountainRepository) : ViewModel() 
     private val _nearByList = MutableLiveData<List<MountainData>>()
     val nearByList : LiveData<List<MountainData>> get() = _nearByList
 
+    private val _naverMap = MutableLiveData<NaverMap>()
+    val naverMap : LiveData<NaverMap> get() = _naverMap
+
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
+
+    fun readyToStart(naverMap: NaverMap) {
+        _naverMap.value = naverMap
+    }
 
     fun startTracking() {
 
