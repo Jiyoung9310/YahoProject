@@ -15,4 +15,9 @@
     <color name="home_menu_my_climbs">#CFF464</color>
     <color name="home_menu_remove_ads">#C9BEFF</color>
     <color name="home_menu_btn">#1A212529</color>
+
+    <!--ready-->
+    <color name="sub_title">#868E96</color>
+    <color name="ready_item_background">#F8F9FA</color>
+    <color name="ready_go_btn">#CED4DA</color>
 </resources>

@@ -14,4 +14,10 @@
     <string name="home_menu_btn_go_my_climbs">보러가기</string>
     <string name="home_menu_btn_remove_ads">제거하기</string>
     <string name="home_menu_btn_remove_ads_done">제거완료</string>
+
+    <!--ready-->
+    <string name="ready_near_mountain_title">지금 어떤 산을\n오르시나요?</string>
+    <string name="ready_near_mountain_height">정상까지 높이</string>
+    <string name="ready_near_height_unit">%dm</string>
+    <string name="ready_near_level">난이도</string>
 </resources>
