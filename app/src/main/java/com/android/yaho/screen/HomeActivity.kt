@@ -30,9 +30,17 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     private fun initView() {
         binding.rvMenu.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            adapter = HomeMenuAdapter {
-
-            }
+            adapter = HomeMenuAdapter(
+                startClimbingClickAction = {
+                    // 등산 기록하기 화면으로 이동
+                },
+                myClimbsClickAction = {
+                    // 등산 기록 확인하기 화면으로 이동
+                },
+                removeAdsClickAction = {
+                    // 광고 제거 결제 화면으로 이동 
+                }
+            )
             addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
                     outRect: Rect,

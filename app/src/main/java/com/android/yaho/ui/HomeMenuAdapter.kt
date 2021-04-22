@@ -12,7 +12,11 @@ import com.android.yaho.ui.HomeMenuAdapter.Companion.VIEW_TYPE_REMOVE_ADS
 import com.android.yaho.ui.HomeMenuAdapter.Companion.VIEW_TYPE_REMOVE_ADS_DONE
 import com.android.yaho.ui.HomeMenuAdapter.Companion.VIEW_TYPE_START_CLIMBING
 
-class HomeMenuAdapter(private val clickAction: () -> Unit) : RecyclerView.Adapter<HomeMenuViewHolder>() {
+class HomeMenuAdapter(
+    private val startClimbingClickAction: () -> Unit,
+    private val myClimbsClickAction: () -> Unit,
+    private val removeAdsClickAction: () -> Unit,
+) : RecyclerView.Adapter<HomeMenuViewHolder>() {
 
     companion object {
         const val VIEW_TYPE_START_CLIMBING = 0
@@ -31,7 +35,15 @@ class HomeMenuAdapter(private val clickAction: () -> Unit) : RecyclerView.Adapte
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeMenuViewHolder {
-        return HomeMenuViewHolder(parent, clickAction)
+        return HomeMenuViewHolder(parent).apply {
+            binding.root.setOnClickListener {
+                when(viewType) {
+                    VIEW_TYPE_START_CLIMBING -> startClimbingClickAction.invoke()
+                    VIEW_TYPE_MY_CLIMBS -> myClimbsClickAction.invoke()
+                    VIEW_TYPE_REMOVE_ADS -> removeAdsClickAction.invoke()
+                }
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: HomeMenuViewHolder, position: Int) {
@@ -39,11 +51,13 @@ class HomeMenuAdapter(private val clickAction: () -> Unit) : RecyclerView.Adapte
     }
 
     override fun getItemCount(): Int = menuList.size
+
+    override fun getItemViewType(position: Int): Int = menuList[position]
 }
 
 
 
-class HomeMenuViewHolder(private val parent: ViewGroup, private val clickAction: () -> Unit) : BindingViewHolder<ItemHomeMenuBinding>(parent, ItemHomeMenuBinding::inflate) {
+class HomeMenuViewHolder(parent: ViewGroup) : BindingViewHolder<ItemHomeMenuBinding>(parent, ItemHomeMenuBinding::inflate) {
 
     fun bind(type: Int) {
         when(type) {
