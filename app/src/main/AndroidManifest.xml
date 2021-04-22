@@ -35,6 +35,9 @@
 
         <activity android:name=".screen.HomeActivity"
             android:screenOrientation="portrait"/>
+
+        <activity android:name=".screen.ReadyActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

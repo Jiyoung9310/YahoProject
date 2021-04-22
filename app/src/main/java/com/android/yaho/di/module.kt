@@ -7,6 +7,7 @@ import com.android.yaho.repository.*
 import com.android.yaho.viewmodel.HomeViewModel
 import com.android.yaho.viewmodel.LoginViewModel
 import com.android.yaho.viewmodel.MainViewModel
+import com.android.yaho.viewmodel.ReadyViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,4 +36,5 @@ val appModule = module {
     viewModel { LoginViewModel(get()) }
     viewModel { MainViewModel(get()) }
     viewModel { HomeViewModel(get()) }
+    viewModel { ReadyViewModel(get()) }
 }
