@@ -1,5 +1,6 @@
 package com.android.yaho.screen
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
@@ -33,6 +34,7 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
             adapter = HomeMenuAdapter(
                 startClimbingClickAction = {
                     // 등산 기록하기 화면으로 이동
+                    startActivity(Intent(this@HomeActivity, ReadyActivity::class.java))
                 },
                 myClimbsClickAction = {
                     // 등산 기록 확인하기 화면으로 이동

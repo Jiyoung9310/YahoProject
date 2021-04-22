@@ -11,7 +11,7 @@ abstract class BindingFragment<T: ViewBinding>(
     private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> T
 ) : Fragment() {
     private var _binding: T? = null
-    protected val binding: T get() = binding!!
+    protected val binding: T get() = _binding!!
 
     protected val hasBinding: Boolean get() = _binding != null
 

@@ -25,7 +25,12 @@ class HomeMenuAdapter(
         const val VIEW_TYPE_REMOVE_ADS_DONE = 3
     }
 
-    private val _menuList : MutableList<Int> = mutableListOf(VIEW_TYPE_START_CLIMBING, VIEW_TYPE_MY_CLIMBS, VIEW_TYPE_REMOVE_ADS, VIEW_TYPE_REMOVE_ADS_DONE)
+    private val _menuList : MutableList<Int> = mutableListOf(
+        VIEW_TYPE_START_CLIMBING,
+        VIEW_TYPE_MY_CLIMBS,
+        VIEW_TYPE_REMOVE_ADS,
+        VIEW_TYPE_REMOVE_ADS_DONE
+    )
     var menuList : List<Int>
     get() = _menuList
     set(value) {
