@@ -1,38 +1,39 @@
-package com.android.yaho
+package com.android.yaho.screen
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.location.Location
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
-import androidx.core.view.isVisible
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.android.base.BindingActivity
+import com.android.yaho.LoginActivity
+import com.android.yaho.R
+import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityMainBinding
+import com.android.yaho.getLocationResultText
+import com.android.yaho.viewmodel.MainViewModel
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.gms.location.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::inflate), OnMapReadyCallback {
     private val TAG = this::class.java.simpleName
 
+    private val viewModel by viewModel<MainViewModel>()
     private lateinit var naverMap: NaverMap
 
     private val firebaseAuth = Firebase.auth
@@ -45,6 +46,9 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
         )
+    }
+    private val fusedLocationClient: FusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(this)
     }
 
     private var waiting = false
@@ -84,6 +88,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
             it.setDisplayShowHomeEnabled(true)
         }
 
+        initObserve()
+
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as MapFragment?
             ?: MapFragment.newInstance(
                 NaverMapOptions()
@@ -105,6 +111,40 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
                 Firebase.auth.signOut()
                 binding.btnLogin.text = "LOGIN"
             }
+        }
+
+        binding.btnFind.setOnClickListener {
+            locationList.getOrNull(0)?.let { viewModel.getNearByMountain(it.latitude, it.longitude) }
+        }
+    }
+
+    private fun initObserve() {
+        viewModel.nearByList.observe(this) {
+            Log.d(TAG, "nearByList : $it")
+            AlertDialog.Builder(this)
+                .setTitle("선택")
+                .setItems(it.map { it.name }.toTypedArray()) { dialogInterface, i ->
+                    Toast.makeText(this@MainActivity, "near by : " + it[i], Toast.LENGTH_LONG)
+                        .show()
+                }
+                .setNeutralButton("닫기", null)
+                .setPositiveButton("확인", null)
+                .show()
+
+        }
+
+        viewModel.error.observe(this) {
+            Toast.makeText(this, "Oops!! error : ${it.message}", Toast.LENGTH_SHORT).show()
+            Log.d(TAG, "Oops!! error : ${it.message}")
+        }
+
+        viewModel.naverMap.observe(this) {
+            /*binding.fab.setImageDrawable(CircularProgressDrawable(this).apply {
+                setStyle(CircularProgressDrawable.LARGE)
+                setColorSchemeColors(Color.WHITE)
+                start()
+            })
+            tryEnableLocation()*/
         }
     }
 
@@ -132,7 +172,11 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
             super.onOptionsItemSelected(item)
         }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.all { it == PermissionChecker.PERMISSION_GRANTED }) {
                 enableLocation()
@@ -150,14 +194,12 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
             .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
                 @SuppressLint("MissingPermission")
                 override fun onConnected(bundle: Bundle?) {
-                    val locationRequest = LocationRequest.create().apply {
+                    fusedLocationClient.requestLocationUpdates(
+                        LocationRequest.create().apply {
                         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
                         interval = LOCATION_REQUEST_INTERVAL.toLong()
                         fastestInterval = LOCATION_REQUEST_FAST_INTERVAL.toLong()
-                    }
-
-                    LocationServices.getFusedLocationProviderClient(this@MainActivity)
-                        .requestLocationUpdates(locationRequest, locationCallback, null)
+                    }, locationCallback, null)
 
                     locationEnabled = true
                     waiting = true
@@ -191,6 +233,8 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
             }
         }
 
+        viewModel.readyToStart(naverMap)
+
         binding.fab.setOnClickListener {
             if (trackingEnabled) {
                 disableLocation()
@@ -211,7 +255,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
         if (!locationEnabled) {
             return
         }
-        LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback)
+        fusedLocationClient.removeLocationUpdates(locationCallback)
         locationEnabled = false
     }
 

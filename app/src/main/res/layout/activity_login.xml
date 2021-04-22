@@ -5,16 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/progressCircular"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
-
     <EditText
         android:id="@+id/etPhoneNumber"
         android:layout_width="0dp"
@@ -22,7 +12,18 @@
         android:hint="Phone Number"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnGetCode"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnGetCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="인증번호 받기"
+        app:layout_constraintStart_toEndOf="@id/etPhoneNumber"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/etPhoneNumber"
+        app:layout_constraintBottom_toBottomOf="@id/etPhoneNumber"
         />
 
     <EditText
@@ -30,19 +31,22 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Code"
+        android:enabled="false"
         app:layout_constraintTop_toBottomOf="@id/etPhoneNumber"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnCheckCode"
         />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnVerification"
+        android:id="@+id/btnCheckCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="인증번호 받기"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="인증번호 확인"
+        android:enabled="false"
+        app:layout_constraintStart_toEndOf="@id/etCode"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etCode"
+        app:layout_constraintTop_toTopOf="@id/etCode"
+        app:layout_constraintBottom_toBottomOf="@id/etCode"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
