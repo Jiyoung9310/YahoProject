@@ -1,11 +1,19 @@
 package com.android.yaho.screen
 
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityHomeBinding
+import com.android.yaho.dp
+import com.android.yaho.ui.HomeMenuAdapter
 import com.android.yaho.viewmodel.HomeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate) {
 
@@ -20,6 +28,48 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     }
 
     private fun initView() {
+        binding.rvMenu.apply {
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            adapter = HomeMenuAdapter {
+
+            }
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    super.getItemOffsets(outRect, view, parent, state)
+                    outRect.left = 12.dp
+                    outRect.right = 12.dp
+
+                    view.layoutParams.width = (parent.width * 0.8).toInt()
+                }
+            })
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    super.getItemOffsets(outRect, view, parent, state)
+
+                    val offset = 20.dp
+                    val itemCount = state.itemCount
+                    val childPosition = parent.getChildAdapterPosition(view)
+                    if(childPosition == 0) {
+                        outRect.left = offset
+                    } else if (childPosition == itemCount - 1) {
+                        outRect.right = offset
+                    }
+                }
+            })
+
+            if (onFlingListener == null) PagerSnapHelper().attachToRecyclerView(this)
+        }
+
 
     }
 

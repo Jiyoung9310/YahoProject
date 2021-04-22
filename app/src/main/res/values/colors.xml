@@ -8,6 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="main_green">#64F4C0</color>
+
     <!--home-->
     <color name="small_title">#212529</color>
+    <color name="home_menu_my_climbs">#CFF464</color>
+    <color name="home_menu_remove_ads">#C9BEFF</color>
+    <color name="home_menu_btn">#33808080</color>
 </resources>

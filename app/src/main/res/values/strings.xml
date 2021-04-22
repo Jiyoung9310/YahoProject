@@ -8,4 +8,10 @@
     <string name="home_height_unit">%skm</string>
     <string name="home_climb_count">%d회</string>
 
+    <string name="home_menu_start_climbing">오늘의 등산</string>
+    <string name="home_menu_my_climbs">나의 등산 기록</string>
+    <string name="home_menu_remove_ads">거슬리는 광고</string>
+    <string name="home_menu_btn_go_my_climbs">보러가기</string>
+    <string name="home_menu_btn_remove_ads">제거하기</string>
+    <string name="home_menu_btn_remove_ads_done">제거완료</string>
 </resources>
