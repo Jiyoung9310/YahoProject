@@ -20,4 +20,5 @@
     <string name="ready_near_mountain_height">정상까지 높이</string>
     <string name="ready_near_height_unit">%dm</string>
     <string name="ready_near_level">난이도</string>
+    <string name="ready_to_start_title">%s 정복을\n시작합니다!</string>
 </resources>
