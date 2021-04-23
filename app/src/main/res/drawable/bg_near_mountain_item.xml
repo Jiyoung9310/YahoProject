@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <solid android:color="@color/ready_item_background"/>
+    <solid android:color="@color/selector_bg_near_mountain_item"/>
     <corners android:radius="20dp"/>
 </shape>

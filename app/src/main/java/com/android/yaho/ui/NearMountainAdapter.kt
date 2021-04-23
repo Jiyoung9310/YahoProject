@@ -19,7 +19,11 @@ class NearMountainAdapter(private val itemClickAction: () -> Unit) : RecyclerVie
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return NearMountainViewHolder(parent)
+        return NearMountainViewHolder(parent).apply {
+            binding.root.setOnClickListener {
+                itemClickAction.invoke()
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -41,10 +45,14 @@ class NearMountainViewHolder(parent: ViewGroup) : BindingViewHolder<ItemNearMoun
             "중" -> 2
             else -> 1
         }
-        binding.vLevel4.isEnabled = levelInt >= 4
-        binding.vLevel3.isEnabled = levelInt >= 3
-        binding.vLevel2.isEnabled = levelInt >= 2
-        binding.vLevel1.isEnabled = levelInt >= 1
+
+        val filledRes = R.drawable.bg_near_mountain_level_filled
+        val unfilledRes = R.drawable.bg_near_mountain_level_unfilled
+
+        binding.vLevel4.setBackgroundResource(if(levelInt >= 4) filledRes else unfilledRes)
+        binding.vLevel3.setBackgroundResource(if(levelInt >= 3) filledRes else unfilledRes)
+        binding.vLevel2.setBackgroundResource(if(levelInt >= 2) filledRes else unfilledRes)
+        binding.vLevel1.setBackgroundResource(if(levelInt >= 1) filledRes else unfilledRes)
     }
 
 }
