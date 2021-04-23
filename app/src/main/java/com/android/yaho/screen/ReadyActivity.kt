@@ -3,6 +3,7 @@ package com.android.yaho.screen
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -14,6 +15,8 @@ import com.google.android.gms.location.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding::inflate)  {
+
+    private val TAG = this::class.simpleName
 
     companion object {
         const val SCREEN_NEAR_MOUNTAIN = "SCREEN_NEAR_MOUNTAIN"
@@ -117,6 +120,11 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
 
         viewModel.clickLocation.observe(this) {
             checkPermissions()
+        }
+        
+        viewModel.error.observe(this) {
+            Toast.makeText(this@ReadyActivity, "Oops!!", Toast.LENGTH_SHORT).show()
+            Log.w(TAG, "${it.message}")
         }
     }
 }

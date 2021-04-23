@@ -9,6 +9,7 @@ import com.android.yaho.data.MountainData
 import com.android.yaho.repository.MountainRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -16,6 +17,9 @@ class ReadyViewModel(private val mountainRepo: MountainRepository) : ViewModel()
 
     private val _moveScreen = MutableLiveData<String>()
     val moveScreen : LiveData<String> get() = _moveScreen
+
+    private val _showLoading = MutableLiveData<Boolean>()
+    val showLoading : LiveData<Boolean> get() = _showLoading
 
     private val _clickLocation = MutableLiveData<Unit>()
     val clickLocation : LiveData<Unit> get() = _clickLocation
@@ -36,8 +40,12 @@ class ReadyViewModel(private val mountainRepo: MountainRepository) : ViewModel()
 
     fun getNearMountain(latitude: Double, longitude: Double) {
         viewModelScope.launch {
+            _showLoading.value = true
             mountainRepo.getMountainList()
                 .catch { e: Throwable -> _error.value = e }
+                .onCompletion {
+                    _showLoading.value = false
+                }
                 .collect{ list ->
                     val data = list.filter {
                         abs(it.latitude - latitude) < 0.1
