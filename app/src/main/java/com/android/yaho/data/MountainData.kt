@@ -9,7 +9,7 @@ data class MountainData(
     val name: String = "",
     val height: Int = 0,
     val address: String = "",
-    val latitude: Float = 0f,
-    val longitude: Float = 0f,
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
     val level: String = "",
 ) : Parcelable

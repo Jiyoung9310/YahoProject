@@ -10,6 +10,7 @@ import com.android.yaho.screen.ReadyActivity.Companion.KEY_SELECT_MOUNTAIN
 import com.android.yaho.screen.ReadyActivity.Companion.SCREEN_NEAR_MOUNTAIN
 import com.android.yaho.viewmodel.ReadyViewModel
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -17,13 +18,15 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
     OnMapReadyCallback {
 
     private val viewModel: ReadyViewModel by sharedViewModel()
-    private val mountainData : MountainData? by lazy {
-        arguments?.getParcelable(KEY_SELECT_MOUNTAIN)
-    }
+    private lateinit var mountainData : MountainData
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(mountainData == null) viewModel.moveScreen(SCREEN_NEAR_MOUNTAIN)
+        arguments?.getParcelable<MountainData>(KEY_SELECT_MOUNTAIN)?.let{
+            mountainData = it
+        } ?: run { viewModel.moveScreen(SCREEN_NEAR_MOUNTAIN) }
+
         binding.mapView.onCreate(savedInstanceState)
         binding.mapView.getMapAsync(this)
         initView()
@@ -40,12 +43,27 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
             mapType = NaverMap.MapType.Terrain
             setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, true)
             minZoom = 4.0
+            maxZoom = 13.0
+            uiSettings.apply {
+                isTiltGesturesEnabled = false
+                isRotateGesturesEnabled = false
+                isScrollGesturesEnabled = false
+                isZoomGesturesEnabled = false
+                isZoomControlEnabled = false
+                isCompassEnabled = false
+                isScaleBarEnabled = false
+            }
+            setContentPadding(50, 50, 50, 50)
         }
 
         val location = viewModel.currentLocation
         location?.let {
-            val cameraUpdate = CameraUpdate.scrollTo(LatLng(it.latitude, it.longitude))
-                .animate(CameraAnimation.Easing)
+            val cameraUpdate = CameraUpdate.fitBounds(
+                LatLngBounds(
+                    LatLng(it.latitude, it.longitude),
+                    LatLng(mountainData.latitude, mountainData.longitude),
+                )
+            )
             naverMap.moveCamera(cameraUpdate)
         }
 
