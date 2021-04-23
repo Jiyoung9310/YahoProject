@@ -7,7 +7,7 @@ import com.android.yaho.base.BindingViewHolder
 import com.android.yaho.data.MountainData
 import com.android.yaho.databinding.ItemNearMountainBinding
 
-class NearMountainAdapter(private val itemClickAction: () -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
+class NearMountainAdapter(private val itemClickAction: (MountainData) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
 
     private val _mountainList : MutableList<MountainData> = mutableListOf()
     var mountainList : List<MountainData>
@@ -19,11 +19,7 @@ class NearMountainAdapter(private val itemClickAction: () -> Unit) : RecyclerVie
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return NearMountainViewHolder(parent).apply {
-            binding.root.setOnClickListener {
-                itemClickAction.invoke()
-            }
-        }
+        return NearMountainViewHolder(parent, itemClickAction)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -33,9 +29,18 @@ class NearMountainAdapter(private val itemClickAction: () -> Unit) : RecyclerVie
     override fun getItemCount(): Int = _mountainList.size
 }
 
-class NearMountainViewHolder(parent: ViewGroup) : BindingViewHolder<ItemNearMountainBinding>(parent, ItemNearMountainBinding::inflate) {
+class NearMountainViewHolder(parent: ViewGroup, private val itemClickAction: (MountainData) -> Unit) : BindingViewHolder<ItemNearMountainBinding>(parent, ItemNearMountainBinding::inflate) {
+
+    private var mountainData : MountainData? = null
+
+    init{
+        binding.root.setOnClickListener {
+            mountainData?.let { itemClickAction.invoke(it) }
+        }
+    }
 
     fun bind(data: MountainData) {
+        mountainData = data
         binding.tvMountainName.text = data.name
         binding.tvHeight.text = binding.root.context.getString(R.string.ready_near_height_unit, data.height)
 

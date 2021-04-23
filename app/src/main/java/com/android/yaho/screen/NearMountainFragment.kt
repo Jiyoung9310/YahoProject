@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.yaho.base.BindingFragment
 import com.android.yaho.databinding.FragmentNearMountainBinding
 import com.android.yaho.dp
+import com.android.yaho.screen.ReadyActivity.Companion.KEY_SELECT_MOUNTAIN
+import com.android.yaho.screen.ReadyActivity.Companion.SCREEN_SELECT_MOUNTAIN
 import com.android.yaho.ui.NearMountainAdapter
 import com.android.yaho.viewmodel.ReadyViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -31,7 +33,7 @@ class NearMountainFragment: BindingFragment<FragmentNearMountainBinding>(Fragmen
         }
 
         nearMountainAdapter = NearMountainAdapter {
-
+            viewModel.onClickMountain(it)
         }
 
         binding.rvNearMountain.apply {
@@ -67,6 +69,14 @@ class NearMountainFragment: BindingFragment<FragmentNearMountainBinding>(Fragmen
 
         viewModel.nearByList.observe(viewLifecycleOwner) {
             nearMountainAdapter.mountainList = it
+        }
+
+        viewModel.clickMountain.observe(viewLifecycleOwner) {
+            viewModel.moveScreen(
+                SCREEN_SELECT_MOUNTAIN,
+                Bundle().apply { putParcelable(KEY_SELECT_MOUNTAIN, it) }
+            )
+
         }
     }
 

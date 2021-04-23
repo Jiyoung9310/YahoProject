@@ -19,6 +19,9 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
     private val TAG = this::class.simpleName
 
     companion object {
+        const val KEY_MY_LOCATION = "KEY_MY_LOCATION"
+        const val KEY_SELECT_MOUNTAIN = "KEY_SELECT_MOUNTAIN"
+
         const val SCREEN_NEAR_MOUNTAIN = "SCREEN_NEAR_MOUNTAIN"
         const val SCREEN_SELECT_MOUNTAIN = "SCREEN_SELECT_MOUNTAIN"
         const val SCREEN_COUNT_DOWN = "SCREEN_COUNT_DOWN"
@@ -94,7 +97,7 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
             }, object: LocationCallback() {
                 override fun onLocationResult(result: LocationResult?) {
                     val lastLocation = result?.lastLocation ?: return
-                    viewModel.getNearMountain(lastLocation.latitude, lastLocation.longitude)
+                    viewModel.getNearMountain(lastLocation)
                 }
             }, null)
     }
@@ -106,12 +109,14 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
     }
 
     private fun initObserve() {
-        viewModel.moveScreen.observe(this) {
-            val fragment = when(it) {
+        viewModel.moveScreen.observe(this) { (screen, bundle) ->
+            val fragment = when(screen) {
                 SCREEN_NEAR_MOUNTAIN -> NearMountainFragment()
-                SCREEN_SELECT_MOUNTAIN -> NearMountainFragment()
+                SCREEN_SELECT_MOUNTAIN -> ReadyToStartFragment()
                 SCREEN_COUNT_DOWN -> NearMountainFragment()
                 else -> NearMountainFragment()
+            }.apply {
+                arguments = bundle
             }
             supportFragmentManager.beginTransaction()
                 .replace(binding.readyFragment.id, fragment)
