@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityReadyBinding
 import com.android.yaho.viewmodel.ReadyViewModel
@@ -26,8 +24,8 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
         const val SCREEN_SELECT_MOUNTAIN = "SCREEN_SELECT_MOUNTAIN"
         const val SCREEN_COUNT_DOWN = "SCREEN_COUNT_DOWN"
 
-        private const val PERMISSION_REQUEST_CODE = 100
-        private val PERMISSIONS = arrayOf(
+        const val PERMISSION_REQUEST_CODE = 100
+        val PERMISSIONS = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
         )
@@ -37,6 +35,9 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(this)
     }
+    private val locationRequest : LocationRequest by lazy { LocationRequest.create().apply {
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+    } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +49,7 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
 
     override fun onStart() {
         super.onStart()
-        checkPermissions()
+        viewModel.checkPermissions()
     }
 
     override fun onRequestPermissionsResult(
@@ -57,7 +58,6 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
         grantResults: IntArray
     ) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            checkPermissions()
             return
         } else {
             Toast.makeText(this, "위치 정보가 필요합니다.", Toast.LENGTH_SHORT).show()
@@ -65,17 +65,6 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
         }
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    private fun checkPermissions() {
-        if (PERMISSIONS.all { ContextCompat.checkSelfPermission(this, it) == PermissionChecker.PERMISSION_GRANTED }) {
-            getCurrentLocation()
-        } else {
-            ActivityCompat.requestPermissions(this,
-                PERMISSIONS,
-                PERMISSION_REQUEST_CODE
-            )
-        }
     }
 
     private fun getCurrentLocation() {
@@ -91,15 +80,12 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
             finish()
             return
         }
-        fusedLocationClient.requestLocationUpdates(
-            LocationRequest.create().apply {
-                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            }, object: LocationCallback() {
-                override fun onLocationResult(result: LocationResult?) {
-                    val lastLocation = result?.lastLocation ?: return
-                    viewModel.getNearMountain(lastLocation)
-                }
-            }, null)
+        fusedLocationClient.requestLocationUpdates(locationRequest, object: LocationCallback() {
+            override fun onLocationResult(result: LocationResult?) {
+                val lastLocation = result?.lastLocation ?: return
+                viewModel.getMyLocation(lastLocation)
+            }
+        }, null)
     }
 
     private fun initView() {
@@ -123,8 +109,22 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
                 .commitAllowingStateLoss()
         }
 
-        viewModel.clickLocation.observe(this) {
-            checkPermissions()
+        viewModel.checkPermissions.observe(this) {
+            if(!it) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    PERMISSIONS,
+                    PERMISSION_REQUEST_CODE
+                )
+            }
+        }
+
+        viewModel.clickNearMountainLocation.observe(this) {
+            getCurrentLocation()
+        }
+
+        viewModel.clickMyCurrentLocation.observe(this) {
+            getCurrentLocation()
         }
         
         viewModel.error.observe(this) {
