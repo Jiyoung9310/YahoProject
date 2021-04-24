@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -19,6 +20,7 @@ private const val YAHO_PREFERENCE = "yaho_preference"
 @ExperimentalCoroutinesApi
 val appModule = module {
 
+    single<ContextDelegate> { ContextDelegateImpl(androidContext()) }
     single { FirebaseAuth.getInstance() }
     single { FirebaseFirestore.getInstance() }
     single {
@@ -36,5 +38,5 @@ val appModule = module {
     viewModel { LoginViewModel(get()) }
     viewModel { MainViewModel(get()) }
     viewModel { HomeViewModel(get()) }
-    viewModel { ReadyViewModel(get()) }
+    viewModel { ReadyViewModel(get(), get()) }
 }
