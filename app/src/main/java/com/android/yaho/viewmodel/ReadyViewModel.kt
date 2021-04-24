@@ -13,10 +13,12 @@ import com.android.yaho.data.MountainData
 import com.android.yaho.di.ContextDelegate
 import com.android.yaho.repository.MountainRepository
 import com.android.yaho.screen.ReadyActivity
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 class ReadyViewModel(
@@ -47,6 +49,9 @@ class ReadyViewModel(
 
     private val _myLocation = MutableLiveData<Location>()
     val myLocation: LiveData<Location> get() = _myLocation
+
+    private val _countDownNumber = MutableLiveData<Int>()
+    val countDownNumber: LiveData<Int> get() = _countDownNumber
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
@@ -89,6 +94,17 @@ class ReadyViewModel(
                     Log.d("MainViewModel", "getNearByMountain $data")
                     _nearByList.value = data
                 }
+        }
+    }
+
+    fun countDown() {
+        viewModelScope.launch {
+            val totalSeconds = TimeUnit.SECONDS.toSeconds(3)
+            for (second in totalSeconds downTo 1) {
+                _countDownNumber.value = second.toInt()
+                delay(1000)
+            }
+            moveScreen(ReadyActivity.SCREEN_GO_CLIMBING)
         }
     }
 

@@ -2,6 +2,7 @@ package com.android.yaho.screen
 
 import android.os.Bundle
 import android.view.View
+import com.android.yaho.R
 import com.android.yaho.base.BindingFragment
 import com.android.yaho.data.MountainData
 import com.android.yaho.databinding.FragmentCountdownBinding
@@ -12,6 +13,7 @@ class CountDownFragment : BindingFragment<FragmentCountdownBinding>(FragmentCoun
 
     private val viewModel: ReadyViewModel by sharedViewModel()
     private lateinit var mountainData : MountainData
+    private val countRes = arrayOf(R.drawable.ic_one, R.drawable.ic_two, R.drawable.ic_three)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -22,9 +24,17 @@ class CountDownFragment : BindingFragment<FragmentCountdownBinding>(FragmentCoun
         }
 
         initView()
+        initObserve()
+        viewModel.countDown()
     }
 
     private fun initView() {
         binding.tvMountainName.text = mountainData.name
+    }
+
+    private fun initObserve() {
+        viewModel.countDownNumber.observe(viewLifecycleOwner) {
+            binding.ivNumber.setImageResource(countRes[it-1])
+        }
     }
 }

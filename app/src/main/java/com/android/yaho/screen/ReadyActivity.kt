@@ -1,6 +1,7 @@
 package com.android.yaho.screen
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -24,6 +25,7 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
         const val SCREEN_NEAR_MOUNTAIN = "SCREEN_NEAR_MOUNTAIN"
         const val SCREEN_SELECT_MOUNTAIN = "SCREEN_SELECT_MOUNTAIN"
         const val SCREEN_COUNT_DOWN = "SCREEN_COUNT_DOWN"
+        const val SCREEN_GO_CLIMBING = "SCREEN_GO_CLIMBING"
 
         const val PERMISSION_REQUEST_CODE = 100
         val PERMISSIONS = arrayOf(
@@ -109,6 +111,12 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
             }.apply {
                 arguments = bundle
             }
+
+            if(screen == SCREEN_GO_CLIMBING) {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+
             supportFragmentManager.beginTransaction()
                 .replace(binding.readyFragment.id, fragment)
                 .commitAllowingStateLoss()
