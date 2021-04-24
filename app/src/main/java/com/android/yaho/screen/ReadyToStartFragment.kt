@@ -47,6 +47,13 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
         binding.btnMyLocation.setOnClickListener {
             viewModel.onClickMyCurrentLocation()
         }
+        binding.btnGo.setOnClickListener {
+            viewModel.moveScreen(ReadyActivity.SCREEN_COUNT_DOWN,
+                Bundle().apply {
+                    putParcelable(KEY_SELECT_MOUNTAIN, mountainData)
+                }
+            )
+        }
     }
 
     private fun initObserve() {

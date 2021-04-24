@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityReadyBinding
 import com.android.yaho.viewmodel.ReadyViewModel
@@ -96,10 +97,14 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
 
     private fun initObserve() {
         viewModel.moveScreen.observe(this) { (screen, bundle) ->
+            binding.toolbar.isVisible = true
             val fragment = when(screen) {
                 SCREEN_NEAR_MOUNTAIN -> NearMountainFragment()
                 SCREEN_SELECT_MOUNTAIN -> ReadyToStartFragment()
-                SCREEN_COUNT_DOWN -> NearMountainFragment()
+                SCREEN_COUNT_DOWN -> {
+                    binding.toolbar.isVisible = false
+                    CountDownFragment()
+                }
                 else -> NearMountainFragment()
             }.apply {
                 arguments = bundle

@@ -4,10 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/main_green">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvAllHeightTitle"
+        android:id="@+id/tvTodayMountain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -20,52 +21,50 @@
         />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvAllHeight"
+        android:id="@+id/tvMountainName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0km"
         android:textSize="28sp"
         android:textStyle="bold"
         android:textColor="@color/small_title"
-        app:layout_constraintTop_toBottomOf="@id/tvAllHeightTitle"
-        app:layout_constraintStart_toStartOf="@id/tvAllHeightTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvTodayMountain"
+        app:layout_constraintStart_toStartOf="@id/tvTodayMountain"
         tools:text="2023km"
         />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvClimbNumberTitle"
+        android:id="@+id/tvMyChallenge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="27dp"
         android:text="@string/home_all_climb_count"
         android:textSize="14sp"
         android:textColor="@color/small_title"
-        app:layout_constraintTop_toBottomOf="@id/tvAllHeight"
-        app:layout_constraintStart_toStartOf="@id/tvAllHeight"
+        app:layout_constraintTop_toBottomOf="@id/tvMountainName"
+        app:layout_constraintStart_toStartOf="@id/tvMountainName"
         />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvClimbNumber"
+        android:id="@+id/tvMyChallengeCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0회"
         android:textSize="28sp"
         android:textStyle="bold"
         android:textColor="@color/small_title"
-        app:layout_constraintTop_toBottomOf="@id/tvClimbNumberTitle"
-        app:layout_constraintStart_toStartOf="@id/tvClimbNumberTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvMyChallenge"
+        app:layout_constraintStart_toStartOf="@id/tvMyChallenge"
         tools:text="3회"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMenu"
-        android:layout_width="0dp"
-        android:layout_height="90dp"
-        android:orientation="horizontal"
-        android:clipToPadding="false"
-        android:clipChildren="false"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_three"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="82dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
