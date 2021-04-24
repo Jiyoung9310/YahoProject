@@ -1,5 +1,6 @@
 package com.android.yaho
 
+import android.content.res.Resources
 import android.location.Location
 
 private const val KEY_LOCATION_UPDATES_RESULT = "location-update-result"
@@ -37,3 +38,6 @@ fun List<Location>?.getLocationResultText(): String? {
     }
     return sb.toString()
 }
+
+val Int.dp: Int
+    get() = (this * Resources.getSystem().displayMetrics.density).toInt()
