@@ -25,11 +25,12 @@ class NearMountainFragment: BindingFragment<FragmentNearMountainBinding>(Fragmen
 
         initView()
         initObserve()
+        viewModel.onClickMyCurrentLocation()
     }
 
     private fun initView() {
-        binding.btnLocation.setOnClickListener {
-            viewModel.onClickLocation()
+        binding.btnNearMountainLocation.setOnClickListener {
+            viewModel.onClickMyCurrentLocation()
         }
 
         nearMountainAdapter = NearMountainAdapter {
@@ -74,9 +75,14 @@ class NearMountainFragment: BindingFragment<FragmentNearMountainBinding>(Fragmen
         viewModel.clickMountain.observe(viewLifecycleOwner) {
             viewModel.moveScreen(
                 SCREEN_SELECT_MOUNTAIN,
-                Bundle().apply { putParcelable(KEY_SELECT_MOUNTAIN, it) }
+                Bundle().apply {
+                    putParcelable(KEY_SELECT_MOUNTAIN, it)
+                }
             )
+        }
 
+        viewModel.myLocation.observe(viewLifecycleOwner) { location ->
+            viewModel.getNearMountain(location)
         }
     }
 
