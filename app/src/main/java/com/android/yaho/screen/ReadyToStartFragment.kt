@@ -15,6 +15,7 @@ import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -23,24 +24,62 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
 
     private val viewModel: ReadyViewModel by sharedViewModel()
     private lateinit var mountainData : MountainData
+    private var naverMap: NaverMap? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.getParcelable<MountainData>(KEY_SELECT_MOUNTAIN)?.let{
             mountainData = it
-        } ?: run { viewModel.moveScreen(SCREEN_NEAR_MOUNTAIN) }
+        } ?: run {
+            viewModel.moveScreen(SCREEN_NEAR_MOUNTAIN)
+        }
 
         binding.mapView.onCreate(savedInstanceState)
         binding.mapView.getMapAsync(this)
+
         initView()
+        initObserve()
     }
 
     private fun initView() {
         binding.tvNearTitle.text = getString(R.string.ready_to_start_title, mountainData.name)
+        binding.btnMyLocation.setOnClickListener {
+            viewModel.onClickMyCurrentLocation()
+        }
+    }
+
+    private fun initObserve() {
+        viewModel.myLocation.observe(viewLifecycleOwner) {
+            if(naverMap == null) return@observe
+
+            val cameraUpdate = CameraUpdate.fitBounds(
+                LatLngBounds(
+                    LatLng(it.latitude, it.longitude),
+                    LatLng(mountainData.latitude, mountainData.longitude),
+                )
+            )
+            naverMap?.moveCamera(cameraUpdate)
+
+            naverMap?.locationOverlay?.apply {
+                isVisible = true
+                position = LatLng(it.latitude, it.longitude)
+                icon = OverlayImage.fromResource(R.drawable.ic_map_location)
+                anchor = PointF(0.5f, 0f)
+                subIcon = OverlayImage.fromResource(R.drawable.ic_marker_go)
+                subAnchor = PointF(0.5f, 1f)
+            }
+
+            Marker().apply {
+                position = LatLng(mountainData.latitude, mountainData.longitude)
+                icon = OverlayImage.fromResource(R.drawable.ic_marker_goal)
+                map = naverMap
+            }
+        }
     }
 
     override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
         naverMap.apply {
             isLiteModeEnabled = true
             setBackgroundResource(NaverMap.DEFAULT_BACKGROUND_DRWABLE_DARK)
@@ -48,7 +87,7 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
             setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, true)
             minZoom = 4.0
             maxZoom = 13.0
-            setContentPadding(100, 100, 100, 100)
+            setContentPadding(150, 150, 150, 150)
             uiSettings.apply {
                 isTiltGesturesEnabled = false
                 isRotateGesturesEnabled = false
@@ -60,26 +99,7 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
             }
         }
 
-        val location = viewModel.currentLocation
-        location?.let {
-            val cameraUpdate = CameraUpdate.fitBounds(
-                LatLngBounds(
-                    LatLng(it.latitude, it.longitude),
-                    LatLng(mountainData.latitude, mountainData.longitude),
-                )
-            )
-            naverMap.moveCamera(cameraUpdate)
-
-            naverMap.locationOverlay.apply {
-                isVisible = true
-                position = LatLng(it.latitude, it.longitude)
-                icon = OverlayImage.fromResource(R.drawable.ic_map_location)
-                anchor = PointF(0.5f, 0f)
-                subIcon = OverlayImage.fromResource(R.drawable.ic_marker_go)
-                subAnchor = PointF(0.5f, 1f)
-            }
-        }
-
+        viewModel.onClickMyCurrentLocation()
     }
 
     override fun onStart() {
