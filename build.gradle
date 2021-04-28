@@ -4,6 +4,7 @@ buildscript {
         kotlin_version = "1.4.32"
         koin_version= "3.0.1"
         lifecycleVersion = '2.3.1'
+        room_version = "2.3.0"
     }
     repositories {
         google()
