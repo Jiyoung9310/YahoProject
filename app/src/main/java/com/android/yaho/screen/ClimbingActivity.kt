@@ -1,22 +1,112 @@
 package com.android.yaho.screen
 
+import android.content.*
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.content.pm.PackageManager
+import android.location.Location
+import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.os.IBinder
+import android.preference.PreferenceManager
+import android.provider.Settings
+import android.util.Log
+import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.android.yaho.BuildConfig
+import com.android.yaho.KEY_REQUESTING_LOCATION_UPDATES
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityClimbingBinding
+import com.android.yaho.getLocationText
+import com.android.yaho.local.LocationUpdatesService
+import com.android.yaho.viewmodel.ClimbingViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbingBinding::inflate),
-    OnMapReadyCallback {
+    OnMapReadyCallback, OnSharedPreferenceChangeListener {
+
+    private val TAG = this::class.java.simpleName
+
+    companion object {
+        private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
+    }
+
+    private val viewModel by viewModel<ClimbingViewModel>()
+
+    private val receiver = MyReceiver()
+    private var locationUpdatesService: LocationUpdatesService? = null
+    private var isBound = false
+
+    private val serviceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            val binder: LocationUpdatesService.LocalBinder = service as LocationUpdatesService.LocalBinder
+            locationUpdatesService = binder.getService()
+            isBound = true
+            viewModel.onSettingService(isBound)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            locationUpdatesService = null
+            isBound = false
+            viewModel.onSettingService(isBound)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         initView()
+        initObserve()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .registerOnSharedPreferenceChangeListener(this)
+
+        // Bind to the service. If the service is in foreground mode, this signals to the service
+        // that since this activity is in the foreground, the service can exit foreground mode.
+
+        bindService(
+            Intent(this, LocationUpdatesService::class.java), serviceConnection,
+            BIND_AUTO_CREATE
+        )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            receiver,
+            IntentFilter(LocationUpdatesService.ACTION_BROADCAST)
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isBound) {
+            // Unbind from the service. This signals to the service that this activity is no longer
+            // in the foreground, and the service can respond by promoting itself to a foreground
+            // service.
+            unbindService(serviceConnection)
+            isBound = false
+        }
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, s: String?) {
+        // Update the buttons state depending on whether location updates are being requested.
+        if (s == KEY_REQUESTING_LOCATION_UPDATES) {
+
+        }
     }
 
     private fun initView() {
@@ -35,7 +125,68 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         mapFragment.getMapAsync(this)
     }
 
+    private fun initObserve() {
+        viewModel.boundService.observe(this) {
+            locationUpdatesService?.requestLocationUpdates()
+        }
+    }
+
     override fun onMapReady(naverMap: NaverMap) {
 
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        Log.i(TAG, "onRequestPermissionResult")
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            when {
+                grantResults.isEmpty() -> {
+                    // If user interaction was interrupted, the permission request is cancelled and you
+                    // receive empty arrays.
+                    Log.i(TAG, "User interaction was cancelled.")
+                }
+                grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
+                    // Permission was granted.
+                    locationUpdatesService?.requestLocationUpdates()
+                }
+                else -> {
+                    // Permission denied.
+                    Snackbar.make(
+                        binding.root,
+                        R.string.permission_denied_explanation,
+                        Snackbar.LENGTH_INDEFINITE
+                    )
+                        .setAction(R.string.settings) { // Build intent that displays the App settings screen.
+                            val intent = Intent()
+                            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                            val uri = Uri.fromParts(
+                                "package",
+                                BuildConfig.APPLICATION_ID, null
+                            )
+                            intent.data = uri
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+                        }
+                        .show()
+                }
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    private class MyReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val location =
+                intent.getParcelableExtra<Location>(LocationUpdatesService.EXTRA_LOCATION)
+            if (location != null) {
+                Toast.makeText(
+                    context, location.getLocationText(),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 }

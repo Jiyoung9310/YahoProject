@@ -7,25 +7,23 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.android.yaho.BuildConfig
+import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityReadyBinding
 import com.android.yaho.viewmodel.ReadyViewModel
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.android.yaho.R
 
 class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding::inflate)  {
 
     private val TAG = this::class.simpleName
 
     companion object {
-        const val KEY_MY_LOCATION = "KEY_MY_LOCATION"
         const val KEY_SELECT_MOUNTAIN = "KEY_SELECT_MOUNTAIN"
 
         const val SCREEN_NEAR_MOUNTAIN = "SCREEN_NEAR_MOUNTAIN"
@@ -137,6 +135,13 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
     private fun initObserve() {
         viewModel.moveScreen.observe(this) { (screen, bundle) ->
             binding.toolbar.isVisible = true
+
+            if(screen == SCREEN_GO_CLIMBING) {
+                startActivity(Intent(this, ClimbingActivity::class.java))
+                finish()
+                return@observe
+            }
+
             val fragment = when(screen) {
                 SCREEN_NEAR_MOUNTAIN -> NearMountainFragment()
                 SCREEN_SELECT_MOUNTAIN -> ReadyToStartFragment()
@@ -147,11 +152,6 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
                 else -> NearMountainFragment()
             }.apply {
                 arguments = bundle
-            }
-
-            if(screen == SCREEN_GO_CLIMBING) {
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
             }
 
             supportFragmentManager.beginTransaction()
