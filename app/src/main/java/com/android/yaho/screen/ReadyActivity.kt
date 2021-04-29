@@ -137,7 +137,9 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
             binding.toolbar.isVisible = true
 
             if(screen == SCREEN_GO_CLIMBING) {
-                startActivity(Intent(this, ClimbingActivity::class.java))
+                startActivity(Intent(this, ClimbingActivity::class.java).apply {
+                    bundle?.let { putExtras(bundle) }
+                })
                 finish()
                 return@observe
             }

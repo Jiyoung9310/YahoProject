@@ -11,11 +11,14 @@ import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.yaho.*
 import com.android.yaho.R
+import com.android.yaho.data.cache.LiveClimbingCache
 import com.android.yaho.screen.ClimbingActivity
 import com.google.android.gms.location.*
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
 
-class LocationUpdatesService : Service() {
+class LocationUpdatesService : Service(), KoinComponent {
     private val TAG = LocationUpdatesService::class.java.simpleName
 
     companion object {
@@ -40,7 +43,6 @@ class LocationUpdatesService : Service() {
     private lateinit var notificationManager: NotificationManager
     private var changingConfiguration = false
     private lateinit var serviceHandler: Handler
-    private var locationRequest: LocationRequest? = null
 
 
     override fun onCreate() {
@@ -54,7 +56,6 @@ class LocationUpdatesService : Service() {
         }
         notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-        createLocationRequest()
         getLastLocation()
 
         val handler = HandlerThread(TAG)
@@ -70,14 +71,6 @@ class LocationUpdatesService : Service() {
                 NotificationManager.IMPORTANCE_DEFAULT
             )
         )
-    }
-
-    private fun createLocationRequest() {
-        locationRequest = LocationRequest.create().apply {
-            interval = UPDATE_INTERVAL_IN_MILLISECONDS
-            fastestInterval = FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
     }
 
     private fun getLastLocation() {
@@ -133,6 +126,7 @@ class LocationUpdatesService : Service() {
     private fun onNewLocation(location: Location) {
         Log.i(TAG, "New location: $location")
         myLocation = location
+        get<LiveClimbingCache>().put(location, myLocation?.distanceTo(location))
 
         // Notify anyone listening for broadcasts about the new location.
         LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(
@@ -230,6 +224,7 @@ class LocationUpdatesService : Service() {
 
     override fun onDestroy() {
         serviceHandler.removeCallbacksAndMessages(null)
+        get<LiveClimbingCache>().done()
     }
 
     fun requestLocationUpdates() {

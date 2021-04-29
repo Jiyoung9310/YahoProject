@@ -20,27 +20,25 @@ const val KEY_REQUESTING_LOCATION_UPDATES = "requesting_location_updates"
         .apply()
 }*/
 
-fun List<Location>?.getLocationResultText(): String? {
-    if (this == null || this.isEmpty()) {
-        return "no location"
-    }
+fun Location.getLocationResultText(): String {
     val sb = StringBuilder()
-    for (location in this) {
         sb.append("(")
+        sb.append("시간 : ")
+        sb.append(time)
+        sb.append(", ")
         sb.append("위도 : ")
-        sb.append(location.latitude)
+        sb.append(latitude)
         sb.append(", ")
         sb.append("경도 : ")
-        sb.append(location.longitude)
+        sb.append(longitude)
         sb.append(", ")
         sb.append("고도 : ")
-        sb.append(location.altitude)
+        sb.append(altitude)
         sb.append(", ")
         sb.append("속도 : ")
-        sb.append(location.speed)
+        sb.append(speed)
         sb.append(")")
         sb.append("\n")
-    }
     return sb.toString()
 }
 

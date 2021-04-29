@@ -6,6 +6,7 @@ import com.android.yaho.R
 import com.android.yaho.base.BindingFragment
 import com.android.yaho.data.MountainData
 import com.android.yaho.databinding.FragmentCountdownBinding
+import com.android.yaho.screen.ClimbingActivity.Companion.KEY_MOUNTAIN_ID
 import com.android.yaho.viewmodel.ReadyViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -25,7 +26,7 @@ class CountDownFragment : BindingFragment<FragmentCountdownBinding>(FragmentCoun
 
         initView()
         initObserve()
-        viewModel.countDown()
+        viewModel.countDown(mountainData.id)
     }
 
     private fun initView() {

@@ -12,10 +12,9 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.android.yaho.BuildConfig
-import com.android.yaho.KEY_REQUESTING_LOCATION_UPDATES
-import com.android.yaho.R
+import com.android.yaho.*
 import com.android.yaho.base.BindingActivity
+import com.android.yaho.data.cache.LiveClimbingCache
 import com.android.yaho.databinding.ActivityClimbingBinding
 import com.android.yaho.getLocationText
 import com.android.yaho.local.LocationUpdatesService
@@ -25,6 +24,7 @@ import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbingBinding::inflate),
@@ -34,6 +34,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     companion object {
         private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
+        const val KEY_MOUNTAIN_ID = "KEY_MOUNTAIN_ID"
     }
 
     private val viewModel by viewModel<ClimbingViewModel>()
@@ -41,6 +42,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
     private val receiver = MyReceiver()
     private var locationUpdatesService: LocationUpdatesService? = null
     private var isBound = false
+    private val mountainId : Int by lazy { intent.extras?.getInt(KEY_MOUNTAIN_ID,0) ?: 0 }
 
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -59,7 +61,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        get<LiveClimbingCache>().initialize(mountainId)
         initView()
         initObserve()
     }
@@ -127,7 +129,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     private fun initObserve() {
         viewModel.boundService.observe(this) {
-            locationUpdatesService?.requestLocationUpdates()
+            if(it) locationUpdatesService?.requestLocationUpdates()
         }
     }
 
@@ -177,13 +179,13 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    private class MyReceiver : BroadcastReceiver() {
+    inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val location =
                 intent.getParcelableExtra<Location>(LocationUpdatesService.EXTRA_LOCATION)
             if (location != null) {
                 Toast.makeText(
-                    context, location.getLocationText(),
+                    context, location.getLocationResultText(),
                     Toast.LENGTH_SHORT
                 ).show()
             }

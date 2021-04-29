@@ -86,7 +86,7 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     private fun initObserve() {
         viewModel.userData.observe(this) {
             binding.tvAllHeight.text = getString(R.string.home_height_unit, it.allHeight.toString())
-            binding.tvClimbNumber.text = getString(R.string.home_climb_count, it.records.size)
+            binding.tvClimbNumber.text = getString(R.string.home_climb_count, it.totalCount)
         }
     }
 }

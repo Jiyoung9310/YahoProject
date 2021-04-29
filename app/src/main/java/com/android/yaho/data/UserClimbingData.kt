@@ -5,12 +5,21 @@ data class UserClimbingData(
     val allHeight: Float = 0f,
     val allDistance: Float = 0f,
     val allTime: Int = 0,
-    val records: List<ClimbingRecordData> = emptyList()
+    val totalCount: Int = 0,
 )
 
 data class ClimbingRecordData(
-    val mountainId: Int = 0,
-    val height: Float = 0f,
-    val distance: Float = 0f,
-    val runningTime: Int = 0,
+    var mountainId: Int = 0,
+    var highest: Double = 0.0,
+    var totalDistance: Float = 0f,
+    var runningTime: Long = 0,
+)
+
+data class LiveClimbingData (
+    val liveTime : Long,
+    val latitude : Double,
+    val longitude : Double,
+    val altitude : Double,
+    val speed : Float,
+    val moveDistance: Float,
 )

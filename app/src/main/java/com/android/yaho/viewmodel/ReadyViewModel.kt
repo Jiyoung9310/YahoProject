@@ -10,8 +10,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.yaho.data.MountainData
+import com.android.yaho.data.cache.MountainListCache
 import com.android.yaho.di.ContextDelegate
 import com.android.yaho.repository.MountainRepository
+import com.android.yaho.screen.ClimbingActivity
 import com.android.yaho.screen.ReadyActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
@@ -23,7 +25,7 @@ import kotlin.math.abs
 
 class ReadyViewModel(
     private val contextDelegate: ContextDelegate,
-    private val mountainRepo: MountainRepository
+    private val mountainCache: MountainListCache
 ) : ViewModel() {
 
     private val _moveScreen = MutableLiveData<Pair<String, Bundle?>>()
@@ -78,33 +80,26 @@ class ReadyViewModel(
     }
 
     fun getNearMountain(location: Location) {
-        viewModelScope.launch {
-            _showLoading.value = true
-            mountainRepo.getMountainList()
-                .catch { e: Throwable -> _error.value = e }
-                .onCompletion {
-                    _showLoading.value = false
-                }
-                .collect { list ->
-                    val data = list.filter {
-                        abs(it.latitude - location.latitude) < 0.1
-                    }.filter {
-                        abs(it.longitude - location.longitude) < 0.1
-                    }.take(4)
-                    Log.d("MainViewModel", "getNearByMountain $data")
-                    _nearByList.value = data
-                }
-        }
+        val data = mountainCache.data.map { it.value }
+            .filter {
+                abs(it.latitude - location.latitude) < 0.1
+            }.filter {
+                abs(it.longitude - location.longitude) < 0.1
+            }.take(4)
+        Log.d("MainViewModel", "getNearByMountain $data")
+        _nearByList.value = data
     }
 
-    fun countDown() {
+    fun countDown(mountainId: Int) {
         viewModelScope.launch {
             val totalSeconds = TimeUnit.SECONDS.toSeconds(3)
             for (second in totalSeconds downTo 1) {
                 _countDownNumber.value = second.toInt()
                 delay(1000)
             }
-            moveScreen(ReadyActivity.SCREEN_GO_CLIMBING)
+            moveScreen(
+                ReadyActivity.SCREEN_GO_CLIMBING,
+                Bundle().apply { putInt(ClimbingActivity.KEY_MOUNTAIN_ID, mountainId) })
         }
     }
 
