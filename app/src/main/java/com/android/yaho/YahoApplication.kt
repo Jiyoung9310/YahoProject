@@ -3,6 +3,7 @@ package com.android.yaho
 import android.app.Application
 import com.android.yaho.data.cache.MountainListCache
 import com.android.yaho.di.appModule
+import com.facebook.stetho.Stetho
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -23,5 +24,6 @@ class YahoApplication: Application(), KoinComponent {
             modules(appModule)
         }
         get<MountainListCache>().initialize()
+        if(BuildConfig.DEBUG) Stetho.initializeWithDefaults(this)
     }
 }
