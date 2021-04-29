@@ -1,6 +1,7 @@
 package com.android.yaho.di
 
 import android.content.Context
+import com.android.yaho.data.cache.MountainListCache
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.YahoPreferenceImpl
 import com.android.yaho.repository.*
@@ -25,8 +26,8 @@ val appModule = module {
             YAHO_PREFERENCE,
         Context.MODE_PRIVATE)
     }
-
     single<YahoPreference> { YahoPreferenceImpl(get()) }
+    single { MountainListCache() }
 
     factory <LoginRepository> { LoginRepositoryImpl(get(), get()) }
     factory <MountainRepository> { MountainRepositoryImpl(get()) }
