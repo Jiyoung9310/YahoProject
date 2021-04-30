@@ -12,6 +12,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isInvisible
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.yaho.*
 import com.android.yaho.BuildConfig
@@ -145,8 +146,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // slide
-                binding.bottomComponent.alpha = slideOffset
-
+                binding.bottomComponent.isInvisible = slideOffset < 0.3
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
