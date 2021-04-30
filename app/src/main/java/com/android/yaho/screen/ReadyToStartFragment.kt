@@ -78,7 +78,7 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
 
             Marker().apply {
                 position = LatLng(mountainData.latitude, mountainData.longitude)
-                icon = OverlayImage.fromResource(R.drawable.ic_marker_goal)
+                icon = OverlayImage.fromResource(R.drawable.ic_marker_goal_flag)
                 map = naverMap
             }
         }
