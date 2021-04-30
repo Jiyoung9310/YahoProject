@@ -10,6 +10,7 @@ import android.os.IBinder
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.yaho.*
@@ -22,6 +23,7 @@ import com.android.yaho.databinding.ActivityClimbingBinding
 import com.android.yaho.local.LocationUpdatesService
 import com.android.yaho.viewmodel.ClimbingViewModel
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
@@ -48,6 +50,8 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
     private var locationUpdatesService: LocationUpdatesService? = null
     private var isBound = false
     private lateinit var mountainData : MountainData
+
+    private val behavior by lazy { BottomSheetBehavior.from(binding.clBottom) }
 
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -136,6 +140,19 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             }
 
         mapFragment.getMapAsync(this)
+
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // slide
+                binding.bottomComponent.alpha = slideOffset
+
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // state changed
+            }
+        })
     }
 
     private fun initObserve() {
