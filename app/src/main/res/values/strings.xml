@@ -28,4 +28,8 @@
     <string name="remove_location_updates">Remove location updates</string>
     <string name="location_updated">Location Updated: %1$s</string>
 
+    <!--climbing-->
+    <string name="live_climbing_distance_title">거리</string>
+    <string name="live_climbing_height_title">고도</string>
+    <string name="live_climbing_btn_done">등산 종료</string>
 </resources>

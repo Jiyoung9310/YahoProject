@@ -21,4 +21,7 @@
     <color name="ready_item_background">#F8F9FA</color>
     <color name="ready_go_btn">#CED4DA</color>
     <color name="near_mountain_item_text_selected">#B3212529</color>
+
+    <!--climbing-->
+    <color name="climbing_btn_done">#212529</color>
 </resources>
