@@ -94,10 +94,6 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
             minZoom = 4.0
             maxZoom = 13.0
             uiSettings.apply {
-                isTiltGesturesEnabled = false
-                isRotateGesturesEnabled = false
-                isScrollGesturesEnabled = false
-                isZoomGesturesEnabled = false
                 isZoomControlEnabled = false
                 isCompassEnabled = false
                 isScaleBarEnabled = false

@@ -18,6 +18,8 @@ class LiveClimbingCache {
 
     fun getRecord() = _recordData
 
+    fun getLastClimbingData() = _data.last()
+
     fun put(location: Location, distance: Float?) {
         _data.add(
             LiveClimbingData(

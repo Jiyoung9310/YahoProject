@@ -3,7 +3,6 @@ package com.android.yaho.screen
 import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
-import android.graphics.PointF
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -13,14 +12,13 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.android.yaho.*
 import com.android.yaho.BuildConfig
-import com.android.yaho.KEY_REQUESTING_LOCATION_UPDATES
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.data.MountainData
 import com.android.yaho.data.cache.LiveClimbingCache
 import com.android.yaho.databinding.ActivityClimbingBinding
-import com.android.yaho.getLocationResultText
 import com.android.yaho.local.LocationUpdatesService
 import com.android.yaho.viewmodel.ClimbingViewModel
 import com.google.android.gms.location.LocationServices
@@ -148,10 +146,50 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         viewModel.climbingData.observe(this) {
 
         }
+
+        viewModel.updateMap.observe(this) {
+            updateMapMarker(it.latitude, it.longitude)
+        }
+    }
+
+    private fun updateMapMarker(latitude: Double, longitude: Double) {
+        val cameraUpdate = CameraUpdate.fitBounds(
+            LatLngBounds(
+                LatLng(latitude, longitude),
+                LatLng(mountainData.latitude, mountainData.longitude),
+            )
+            , 150)
+        naverMap?.moveCamera(cameraUpdate)
+
+        naverMap?.locationOverlay?.apply {
+            isVisible = true
+            position = LatLng(latitude, longitude)
+            icon = OverlayImage.fromResource(R.drawable.ic_map_location)
+        }
     }
 
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
+        naverMap.apply {
+            isLiteModeEnabled = true
+            setBackgroundResource(NaverMap.DEFAULT_BACKGROUND_DRWABLE_DARK)
+            mapType = NaverMap.MapType.Terrain
+            setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, true)
+            minZoom = 4.0
+            maxZoom = 13.0
+            uiSettings.apply {
+                isZoomControlEnabled = false
+                isCompassEnabled = false
+                isScaleBarEnabled = false
+            }
+            setContentPadding(0, 0, 0, 300.dp)
+        }
+
+        Marker().apply {
+            position = LatLng(mountainData.latitude, mountainData.longitude)
+            icon = OverlayImage.fromResource(R.drawable.ic_marker_goal_flag)
+            map = naverMap
+        }
 
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         try {
@@ -160,28 +198,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
                     if (task.isSuccessful && task.result != null) {
                         val lastLocation = task.result
                         naverMap.apply {
-                            val cameraUpdate = CameraUpdate.fitBounds(
-                                LatLngBounds(
-                                    LatLng(lastLocation.latitude, lastLocation.longitude),
-                                    LatLng(mountainData.latitude, mountainData.longitude),
-                                )
-                                , 150)
-                            naverMap.moveCamera(cameraUpdate)
-
-                            naverMap.locationOverlay.apply {
-                                isVisible = true
-                                position = LatLng(lastLocation.latitude, lastLocation.longitude)
-                                icon = OverlayImage.fromResource(R.drawable.ic_map_location)
-                                anchor = PointF(0.5f, 0f)
-                                subIcon = OverlayImage.fromResource(R.drawable.ic_marker_go)
-                                subAnchor = PointF(0.5f, 1f)
-                            }
-
-                            Marker().apply {
-                                position = LatLng(mountainData.latitude, mountainData.longitude)
-                                icon = OverlayImage.fromResource(R.drawable.ic_marker_goal)
-                                map = naverMap
-                            }
+                            updateMapMarker(lastLocation.latitude, lastLocation.longitude)
                         }
                     } else {
                         Log.w(TAG, "Failed to get location.")
