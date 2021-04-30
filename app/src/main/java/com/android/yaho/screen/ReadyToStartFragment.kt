@@ -64,8 +64,7 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
                 LatLngBounds(
                     LatLng(it.latitude, it.longitude),
                     LatLng(mountainData.latitude, mountainData.longitude),
-                )
-            )
+                ), 150)
             naverMap?.moveCamera(cameraUpdate)
 
             naverMap?.locationOverlay?.apply {
@@ -94,7 +93,6 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
             setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, true)
             minZoom = 4.0
             maxZoom = 13.0
-            setContentPadding(150, 150, 150, 150)
             uiSettings.apply {
                 isTiltGesturesEnabled = false
                 isRotateGesturesEnabled = false
