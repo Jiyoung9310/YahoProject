@@ -3,6 +3,7 @@ package com.android.yaho.screen
 import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
+import android.graphics.PointF
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -12,18 +13,23 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.android.yaho.*
+import com.android.yaho.BuildConfig
+import com.android.yaho.KEY_REQUESTING_LOCATION_UPDATES
+import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
+import com.android.yaho.data.MountainData
 import com.android.yaho.data.cache.LiveClimbingCache
 import com.android.yaho.databinding.ActivityClimbingBinding
-import com.android.yaho.getLocationText
+import com.android.yaho.getLocationResultText
 import com.android.yaho.local.LocationUpdatesService
 import com.android.yaho.viewmodel.ClimbingViewModel
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.naver.maps.map.MapFragment
-import com.naver.maps.map.NaverMap
-import com.naver.maps.map.NaverMapOptions
-import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
+import com.naver.maps.map.*
+import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.OverlayImage
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -34,15 +40,16 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     companion object {
         private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
-        const val KEY_MOUNTAIN_ID = "KEY_MOUNTAIN_ID"
+        const val KEY_MOUNTAIN_DATA = "KEY_MOUNTAIN_DATA"
     }
 
     private val viewModel by viewModel<ClimbingViewModel>()
+    private var naverMap : NaverMap? = null
 
     private val receiver = MyReceiver()
     private var locationUpdatesService: LocationUpdatesService? = null
     private var isBound = false
-    private val mountainId : Int by lazy { intent.extras?.getInt(KEY_MOUNTAIN_ID,0) ?: 0 }
+    private lateinit var mountainData : MountainData
 
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -61,7 +68,13 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        get<LiveClimbingCache>().initialize(mountainId)
+        intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA)?.let{
+            mountainData = it
+        } ?: run {
+            finish()
+        }
+
+        get<LiveClimbingCache>().initialize(mountainData.id)
         initView()
         initObserve()
     }
@@ -131,10 +144,52 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         viewModel.boundService.observe(this) {
             if(it) locationUpdatesService?.requestLocationUpdates()
         }
+
+        viewModel.climbingData.observe(this) {
+
+        }
     }
 
     override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
 
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        try {
+            fusedLocationClient.lastLocation
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful && task.result != null) {
+                        val lastLocation = task.result
+                        naverMap.apply {
+                            val cameraUpdate = CameraUpdate.fitBounds(
+                                LatLngBounds(
+                                    LatLng(lastLocation.latitude, lastLocation.longitude),
+                                    LatLng(mountainData.latitude, mountainData.longitude),
+                                )
+                                , 150)
+                            naverMap.moveCamera(cameraUpdate)
+
+                            naverMap.locationOverlay.apply {
+                                isVisible = true
+                                position = LatLng(lastLocation.latitude, lastLocation.longitude)
+                                icon = OverlayImage.fromResource(R.drawable.ic_map_location)
+                                anchor = PointF(0.5f, 0f)
+                                subIcon = OverlayImage.fromResource(R.drawable.ic_marker_go)
+                                subAnchor = PointF(0.5f, 1f)
+                            }
+
+                            Marker().apply {
+                                position = LatLng(mountainData.latitude, mountainData.longitude)
+                                icon = OverlayImage.fromResource(R.drawable.ic_marker_goal)
+                                map = naverMap
+                            }
+                        }
+                    } else {
+                        Log.w(TAG, "Failed to get location.")
+                    }
+                }
+        } catch (unlikely: SecurityException) {
+            Log.e(TAG, "Lost location permission.$unlikely")
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -184,6 +239,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             val location =
                 intent.getParcelableExtra<Location>(LocationUpdatesService.EXTRA_LOCATION)
             if (location != null) {
+                viewModel.updateCurrentLocation()
                 Toast.makeText(
                     context, location.getLocationResultText(),
                     Toast.LENGTH_SHORT

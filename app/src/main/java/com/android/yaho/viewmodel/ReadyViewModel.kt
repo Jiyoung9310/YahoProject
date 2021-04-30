@@ -90,7 +90,7 @@ class ReadyViewModel(
         _nearByList.value = data
     }
 
-    fun countDown(mountainId: Int) {
+    fun countDown(mountain: MountainData) {
         viewModelScope.launch {
             val totalSeconds = TimeUnit.SECONDS.toSeconds(3)
             for (second in totalSeconds downTo 1) {
@@ -99,7 +99,7 @@ class ReadyViewModel(
             }
             moveScreen(
                 ReadyActivity.SCREEN_GO_CLIMBING,
-                Bundle().apply { putInt(ClimbingActivity.KEY_MOUNTAIN_ID, mountainId) })
+                Bundle().apply { putParcelable(ClimbingActivity.KEY_MOUNTAIN_DATA, mountain) })
         }
     }
 
