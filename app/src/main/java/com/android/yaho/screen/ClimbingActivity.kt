@@ -161,11 +161,19 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         }
 
         viewModel.climbingData.observe(this) {
-
+            binding.tvDistance.text = getString(R.string.kilo_meter_unit, it.allDistance.toString())
+            binding.tvHeight.text = getString(R.string.meter_unit, it.height.toString())
         }
 
         viewModel.updateMap.observe(this) {
             updateMapMarker(it.latitude, it.longitude)
+        }
+
+        viewModel.runningTime.observe(this) {
+            val hour = it.secondsToHour()
+            val min = it.secondsToMinute()
+            val sec = it.secondsToSec()
+            binding.tvRunningTime.text = String.format("%d시간 %02d분 %02d초", hour, min, sec)
         }
     }
 

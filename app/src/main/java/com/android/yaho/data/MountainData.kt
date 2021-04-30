@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class MountainData(
     val id: Int = 0,
     val name: String = "",
-    val height: Int = 0,
+    val height: Float = 0f,
     val address: String = "",
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,

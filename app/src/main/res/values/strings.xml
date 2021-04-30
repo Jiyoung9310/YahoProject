@@ -2,11 +2,14 @@
     <string name="app_name">Yaho</string>
     <string name="naver_maps_client_id">7abca5361m</string>
 
+    <!--unit-->
+    <string name="kilo_meter_unit">%skm</string>
+    <string name="meter_unit">%sm</string>
+    <string name="count_unit">%d회</string>
+
     <!--home-->
     <string name="home_all_height_title">내가 오른 높이</string>
     <string name="home_all_climb_count">나의 등산</string>
-    <string name="home_height_unit">%skm</string>
-    <string name="home_climb_count">%d회</string>
 
     <string name="home_menu_start_climbing">오늘의 등산</string>
     <string name="home_menu_my_climbs">나의 등산 기록</string>
@@ -18,7 +21,6 @@
     <!--ready-->
     <string name="ready_near_mountain_title">지금 어떤 산을\n오르시나요?</string>
     <string name="ready_near_mountain_height">정상까지 높이</string>
-    <string name="ready_near_height_unit">%dm</string>
     <string name="ready_near_level">난이도</string>
     <string name="ready_to_start_title">%s 정복을\n시작합니다!</string>
 

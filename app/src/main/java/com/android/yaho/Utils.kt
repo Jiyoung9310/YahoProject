@@ -71,3 +71,7 @@ fun Context?.setRequestingLocationUpdates(requestingLocationUpdates: Boolean) {
 
 val Int.dp: Int
     get() = (this * Resources.getSystem().displayMetrics.density).toInt()
+
+fun Int.secondsToHour() = this / 3600
+fun Int.secondsToMinute() = (this % 3600) / 60
+fun Int.secondsToSec() = (this % 3600) % 60
