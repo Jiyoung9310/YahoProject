@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.yaho.data.ClimbingRecordData
 import com.android.yaho.data.LiveClimbingData
-import com.android.yaho.data.cache.LiveClimbingCache
+import com.android.yaho.local.cache.LiveClimbingCache
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect

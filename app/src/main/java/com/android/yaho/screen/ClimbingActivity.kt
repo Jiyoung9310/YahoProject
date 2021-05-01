@@ -20,7 +20,7 @@ import com.android.yaho.BuildConfig
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.data.MountainData
-import com.android.yaho.data.cache.LiveClimbingCache
+import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.databinding.ActivityClimbingBinding
 import com.android.yaho.local.LocationUpdatesService
 import com.android.yaho.viewmodel.ClimbingViewModel
@@ -48,6 +48,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     private val viewModel by viewModel<ClimbingViewModel>()
     private var naverMap : NaverMap? = null
+    private lateinit var pathOverlay: PathOverlay
 
     private val receiver = MyReceiver()
     private var locationUpdatesService: LocationUpdatesService? = null
@@ -193,6 +194,11 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             position = LatLng(latitude, longitude)
             icon = OverlayImage.fromResource(R.drawable.ic_map_location)
         }
+
+        with(get<LiveClimbingCache>().latlngPaths) {
+            if(this.size < 2) return@with
+            pathOverlay.coords = this
+        }
     }
 
     override fun onMapReady(naverMap: NaverMap) {
@@ -218,8 +224,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             map = naverMap
         }
 
-        PathOverlay().also {
-            it.coords = get<LiveClimbingCache>().latlngPaths
+        pathOverlay.also {
             it.width = resources.getDimensionPixelSize(R.dimen.path_overlay_width)
             it.outlineWidth = 0
             it.color = Color.BLACK

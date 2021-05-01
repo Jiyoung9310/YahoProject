@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.yaho.data.MountainData
-import com.android.yaho.data.cache.MountainListCache
+import com.android.yaho.local.cache.MountainListCache
 import com.android.yaho.di.ContextDelegate
 import com.android.yaho.repository.MountainRepository
 import com.android.yaho.screen.ClimbingActivity

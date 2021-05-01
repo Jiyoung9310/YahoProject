@@ -1,7 +1,7 @@
 package com.android.yaho
 
 import android.app.Application
-import com.android.yaho.data.cache.MountainListCache
+import com.android.yaho.local.cache.MountainListCache
 import com.android.yaho.di.appModule
 import com.facebook.stetho.Stetho
 import kotlinx.coroutines.InternalCoroutinesApi

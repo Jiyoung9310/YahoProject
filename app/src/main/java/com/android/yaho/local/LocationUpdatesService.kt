@@ -11,7 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.yaho.*
 import com.android.yaho.R
-import com.android.yaho.data.cache.LiveClimbingCache
+import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.screen.ClimbingActivity
 import com.google.android.gms.location.*
 import org.koin.core.component.KoinComponent

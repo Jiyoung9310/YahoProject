@@ -1,8 +1,8 @@
 package com.android.yaho.di
 
 import android.content.Context
-import com.android.yaho.data.cache.LiveClimbingCache
-import com.android.yaho.data.cache.MountainListCache
+import com.android.yaho.local.cache.LiveClimbingCache
+import com.android.yaho.local.cache.MountainListCache
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.YahoPreferenceImpl
 import com.android.yaho.repository.*

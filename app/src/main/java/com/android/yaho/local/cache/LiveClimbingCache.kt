@@ -1,4 +1,4 @@
-package com.android.yaho.data.cache
+package com.android.yaho.local.cache
 
 import android.location.Location
 import android.util.Log
