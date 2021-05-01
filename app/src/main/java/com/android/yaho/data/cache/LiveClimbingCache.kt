@@ -4,11 +4,15 @@ import android.location.Location
 import android.util.Log
 import com.android.yaho.data.ClimbingRecordData
 import com.android.yaho.data.LiveClimbingData
+import com.naver.maps.geometry.LatLng
 
 class LiveClimbingCache {
     private val _data = mutableListOf<LiveClimbingData>()
     val data: List<LiveClimbingData>
         get() = _data
+    private val _latlngPaths = mutableListOf<LatLng>()
+    val latlngPaths: List<LatLng>
+        get() = _latlngPaths
     private var _recordData : ClimbingRecordData? = null
 
     fun initialize(mountainId: Int) {
@@ -30,6 +34,7 @@ class LiveClimbingCache {
                 speed = location.speed,
                 moveDistance = distance ?: 0f
         ))
+        _latlngPaths.add((LatLng(location.latitude, location.longitude)))
         updateDistance()
         Log.d("LiveClimbingCache", "캐싱 : $_data")
     }

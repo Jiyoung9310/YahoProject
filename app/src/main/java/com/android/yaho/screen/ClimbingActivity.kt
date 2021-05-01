@@ -3,6 +3,7 @@ package com.android.yaho.screen
 import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -31,6 +32,7 @@ import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
+import com.naver.maps.map.overlay.PathOverlay
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -214,6 +216,14 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             position = LatLng(mountainData.latitude, mountainData.longitude)
             icon = OverlayImage.fromResource(R.drawable.ic_marker_goal_flag)
             map = naverMap
+        }
+
+        PathOverlay().also {
+            it.coords = get<LiveClimbingCache>().latlngPaths
+            it.width = resources.getDimensionPixelSize(R.dimen.path_overlay_width)
+            it.outlineWidth = 0
+            it.color = Color.BLACK
+            it.map = naverMap
         }
 
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)

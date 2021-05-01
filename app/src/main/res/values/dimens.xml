@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="path_overlay_width">8dp</dimen>
+    <dimen name="path_overlay_width">1dp</dimen>
     <dimen name="path_overlay_outline_width">2dp</dimen>
     <dimen name="overlay_pattern_interval">10dp</dimen>
 </resources>
