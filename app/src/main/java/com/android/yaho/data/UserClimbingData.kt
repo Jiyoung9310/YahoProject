@@ -1,7 +1,5 @@
 package com.android.yaho.data
 
-import androidx.room.Entity
-
 
 data class UserClimbingData(
     val allHeight: Float = 0f,

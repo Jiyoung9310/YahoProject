@@ -12,8 +12,14 @@ interface LiveClimbingDao {
     @Insert
     fun insertSection(pathSectionEntity: PathSectionEntity)
 
+    @Update
+    fun updateSection(pathSectionEntity: PathSectionEntity)
+
     @Insert
     fun insertPoint(pointEntity: PointEntity)
+
+    @Query("SELECT * FROM PointEntity WHERE parentSectionId == :parentSectionId")
+    fun getPoints(parentSectionId: Long): Flow<List<PointEntity>>
 
     @Transaction
     @Query("SELECT * FROM RecordEntity")
@@ -23,6 +29,4 @@ interface LiveClimbingDao {
     @Query("SELECT * FROM PathSectionEntity")
     fun getSectionWithPoints(): Flow<List<SectionWithPoints>>
 
-    @Delete
-    fun deleteRecord(recordId: Long)
 }

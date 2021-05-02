@@ -14,7 +14,7 @@ abstract class YahoRoomDatabase : RoomDatabase() {
     abstract fun climbingDao(): LiveClimbingDao
 
     companion object {
-        private val DB_NAME = "room-db"
+        val DB_NAME = "room-db"
         private var instance: YahoRoomDatabase? = null
 
         fun getInstance(context: Context): YahoRoomDatabase {

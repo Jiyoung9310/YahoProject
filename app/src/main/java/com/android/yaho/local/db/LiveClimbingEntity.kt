@@ -9,6 +9,7 @@ import androidx.room.Relation
 @Entity
 data class RecordEntity(
     @PrimaryKey(autoGenerate = true) val recordId: Long = 0,
+    val mountainId: Int,
     val allRunningTime: Long,
     val totalClimbingTime: Long,
     val totalDistance: Float,
@@ -21,7 +22,7 @@ data class RecordEntity(
 
 @Entity
 data class PathSectionEntity(
-    @PrimaryKey(autoGenerate = true) val sectionId: Long = 0,
+    @PrimaryKey val sectionId: Long = 0,
     val parentRecordId: Long = 0,
     val runningTime: Long,
     val distance: Float,
@@ -37,6 +38,7 @@ data class PointEntity(
     val altitude: Double,
     val speed: Float,
     val timestamp: Long,
+    val distance: Float,
 )
 
 data class RecordWithSectionsAndPoints(

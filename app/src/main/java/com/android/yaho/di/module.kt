@@ -1,10 +1,12 @@
 package com.android.yaho.di
 
 import android.content.Context
+import androidx.room.Room
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.local.cache.MountainListCache
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.YahoPreferenceImpl
+import com.android.yaho.local.db.YahoRoomDatabase
 import com.android.yaho.repository.*
 import com.android.yaho.viewmodel.*
 import com.google.firebase.auth.FirebaseAuth
@@ -27,9 +29,11 @@ val appModule = module {
             YAHO_PREFERENCE,
         Context.MODE_PRIVATE)
     }
+    single { YahoRoomDatabase.getInstance(androidApplication()) }
     single<YahoPreference> { YahoPreferenceImpl(get()) }
     single { MountainListCache() }
     single { LiveClimbingCache() }
+    single { ClimbingSaveHelper(get()) }
 
     factory <LoginRepository> { LoginRepositoryImpl(get(), get()) }
     factory <MountainRepository> { MountainRepositoryImpl(get()) }

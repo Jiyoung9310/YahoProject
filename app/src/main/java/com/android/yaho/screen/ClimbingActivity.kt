@@ -14,7 +14,9 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.isInvisible
+import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.work.*
 import com.android.yaho.*
 import com.android.yaho.BuildConfig
 import com.android.yaho.R
@@ -23,6 +25,8 @@ import com.android.yaho.data.MountainData
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.databinding.ActivityClimbingBinding
 import com.android.yaho.local.LocationUpdatesService
+import com.android.yaho.local.LocationWorker
+import com.android.yaho.viewmodel.ClimbingSaveHelper
 import com.android.yaho.viewmodel.ClimbingViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -35,6 +39,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.concurrent.TimeUnit
 
 class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbingBinding::inflate),
     OnMapReadyCallback, OnSharedPreferenceChangeListener {
@@ -48,7 +53,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     private val viewModel by viewModel<ClimbingViewModel>()
     private var naverMap : NaverMap? = null
-    private lateinit var pathOverlay: PathOverlay
+    private val pathOverlay: PathOverlay by lazy { PathOverlay() }
 
     private val receiver = MyReceiver()
     private var locationUpdatesService: LocationUpdatesService? = null
@@ -72,15 +77,25 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         }
     }
 
+    override fun startActivityForResult(intent: Intent?, requestCode: Int, options: Bundle?) {
+        super.startActivityForResult(intent, requestCode, options)
+        if(requestCode == LocationUpdatesService.REQUEST_CODE) {
+            intent?.getParcelableExtra<MountainData>(KEY_MOUNTAIN_DATA)?.let {
+                mountainData = it
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA)?.let{
-            mountainData = it
-        } ?: run {
-            finish()
+        val data = intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA)
+        if(data != null) {
+            mountainData = data
+            get<LiveClimbingCache>().initialize(mountainData.id)
+//            get<ClimbingSaveHelper>().init(mountainData.id)
+
         }
 
-        get<LiveClimbingCache>().initialize(mountainData.id)
         initView()
         initObserve()
     }
@@ -94,7 +109,9 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         // that since this activity is in the foreground, the service can exit foreground mode.
 
         bindService(
-            Intent(this, LocationUpdatesService::class.java), serviceConnection,
+            Intent(this, LocationUpdatesService::class.java).apply {
+                putExtra(KEY_MOUNTAIN_DATA, mountainData)
+            }, serviceConnection,
             BIND_AUTO_CREATE
         )
     }
@@ -156,6 +173,10 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
                 // state changed
             }
         })
+
+        binding.btnPause.setOnClickListener {
+            get<ClimbingSaveHelper>().updateSection()
+        }
     }
 
     private fun initObserve() {
@@ -195,9 +216,12 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             icon = OverlayImage.fromResource(R.drawable.ic_map_location)
         }
 
-        with(get<LiveClimbingCache>().latlngPaths) {
-            if(this.size < 2) return@with
-            pathOverlay.coords = this
+        get<LiveClimbingCache>().latlngPaths.let { list ->
+            if(list.size < 2) return@let
+            pathOverlay.apply {
+                coords = list
+                map = naverMap
+            }
         }
     }
 
@@ -228,7 +252,6 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             it.width = resources.getDimensionPixelSize(R.dimen.path_overlay_width)
             it.outlineWidth = 0
             it.color = Color.BLACK
-            it.map = naverMap
         }
 
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)

@@ -11,11 +11,16 @@ import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.yaho.*
 import com.android.yaho.R
+import com.android.yaho.data.MountainData
 import com.android.yaho.local.cache.LiveClimbingCache
+import com.android.yaho.local.db.YahoRoomDatabase
 import com.android.yaho.screen.ClimbingActivity
+import com.android.yaho.viewmodel.ClimbingSaveHelper
+import com.android.yaho.viewmodel.ClimbingViewModel
 import com.google.android.gms.location.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koin.core.component.inject
 
 
 class LocationUpdatesService : Service(), KoinComponent {
@@ -33,6 +38,7 @@ class LocationUpdatesService : Service(), KoinComponent {
         private const val UPDATE_INTERVAL_IN_MILLISECONDS: Long = 10000
         private const val FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2
+        const val REQUEST_CODE = 1000
     }
 
 
@@ -43,6 +49,7 @@ class LocationUpdatesService : Service(), KoinComponent {
     private lateinit var notificationManager: NotificationManager
     private var changingConfiguration = false
     private lateinit var serviceHandler: Handler
+    private var mountainData: MountainData? = null
 
 
     override fun onCreate() {
@@ -156,8 +163,10 @@ class LocationUpdatesService : Service(), KoinComponent {
 
         // The PendingIntent to launch activity.
         val activityPendingIntent = PendingIntent.getActivity(
-            this, 0,
-            Intent(this, ClimbingActivity::class.java), 0
+            this, REQUEST_CODE,
+            Intent(this, ClimbingActivity::class.java).apply {
+                putExtra(ClimbingActivity.KEY_MOUNTAIN_DATA, mountainData)
+            }, 0
         )
         val builder = NotificationCompat.Builder(this)
             .addAction(
@@ -194,6 +203,7 @@ class LocationUpdatesService : Service(), KoinComponent {
     }
 
     override fun onBind(intent: Intent?): IBinder {
+        mountainData = intent?.getParcelableExtra<MountainData>(ClimbingActivity.KEY_MOUNTAIN_DATA)
         stopForeground(true)
         changingConfiguration = false
         return binder
