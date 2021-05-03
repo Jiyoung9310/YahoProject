@@ -1,8 +1,10 @@
 package com.android.yaho
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.location.Location
+import android.location.LocationManager
 import android.preference.PreferenceManager
 import java.text.DateFormat
 import java.util.*
@@ -19,6 +21,11 @@ const val KEY_REQUESTING_LOCATION_UPDATES = "requesting_location_updates"
         )
         .apply()
 }*/
+fun Context.isGPSEnabled() = (getSystemService(Context.LOCATION_SERVICE) as LocationManager).isProviderEnabled(
+    LocationManager.GPS_PROVIDER)
+
+fun Context.checkLocationPermission(): Boolean =
+    this.checkCallingOrSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
 fun Location.getLocationResultText(): String {
     val sb = StringBuilder()

@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.view.isInvisible
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.work.*
 import com.android.yaho.*
 import com.android.yaho.BuildConfig
 import com.android.yaho.R
@@ -23,6 +24,7 @@ import com.android.yaho.data.MountainData
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.databinding.ActivityClimbingBinding
 import com.android.yaho.local.LocationUpdatesService
+import com.android.yaho.local.LocationWorker
 import com.android.yaho.viewmodel.ClimbingViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -35,6 +37,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.concurrent.TimeUnit
 
 class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbingBinding::inflate),
     OnMapReadyCallback, OnSharedPreferenceChangeListener {
@@ -74,16 +77,51 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA)?.let{
-            mountainData = it
-        } ?: run {
-            finish()
+        val data = intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA)
+        if(data != null) {
+            mountainData = data
+            get<LiveClimbingCache>().initialize(mountainData.id)
+//            get<ClimbingSaveHelper>().init(mountainData.id)
+
+            startWork()
         }
 
         get<LiveClimbingCache>().initialize(mountainData.id)
         initView()
         initObserve()
     }
+
+    private fun startWork() {
+        // 입력 데이터를 설정합니다. Bundle와 동일합니다.
+        val work = createWorkRequest(Data.EMPTY)
+
+        /* 작업을 큐에 넣을때 동일한 작업인 경우에 대한 정책을 지정할 수 있습니다.
+        ExistingPeriodicWorkPolicy.KEEP은 동일한 작업을 큐에 넣게되며,
+        ExistingPeriodicWorkPolicy.REPLACE인 경우 작업이 대체됩니다. */
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork("Smart work", ExistingPeriodicWorkPolicy.KEEP, work)
+
+        // 작업의 상태를 LiveData를 통해 관찰하게 됩니다.
+        WorkManager.getInstance(this).getWorkInfoByIdLiveData(work.id)
+            .observe(this, { workInfo ->
+                if (workInfo != null && workInfo.state == WorkInfo.State.SUCCEEDED) {
+                    // 작업 완료
+                }
+            })
+    }
+
+    private fun createWorkRequest(data: Data) = PeriodicWorkRequestBuilder<LocationWorker>(5, TimeUnit.SECONDS)
+        .setInputData(data) // 입력 데이터
+        .setConstraints(createConstraints()) // 작업을 재시도 할경우에 대한 정책
+        .setBackoffCriteria(BackoffPolicy.LINEAR,
+            PeriodicWorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
+        .build()
+
+    private fun createConstraints() = Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+        // 다른값(NOT_REQUIRED, CONNECTED, NOT_ROAMING, METERED)
+        .setRequiresBatteryNotLow(true)                 // 배터리가 부족하지 않는 경우
+        .setRequiresStorageNotLow(true)                 // 저장소가 부족하지 않는 경우
+        .build()
 
     override fun onStart() {
         super.onStart()
