@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.isInvisible
-import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.*
 import com.android.yaho.*
@@ -22,10 +21,11 @@ import com.android.yaho.BuildConfig
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.data.MountainData
-import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.databinding.ActivityClimbingBinding
 import com.android.yaho.local.LocationUpdatesService
-import com.android.yaho.local.LocationWorker
+import com.android.yaho.local.YahoPreference
+import com.android.yaho.local.cache.LiveClimbingCache
+import com.android.yaho.local.cache.MountainListCache
 import com.android.yaho.viewmodel.ClimbingSaveHelper
 import com.android.yaho.viewmodel.ClimbingViewModel
 import com.google.android.gms.location.LocationServices
@@ -39,7 +39,6 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.concurrent.TimeUnit
 
 class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbingBinding::inflate),
     OnMapReadyCallback, OnSharedPreferenceChangeListener {
@@ -49,22 +48,26 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
     companion object {
         private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
         const val KEY_MOUNTAIN_DATA = "KEY_MOUNTAIN_DATA"
+        private val KEY_TIME_STAMP = "KEY_TIME_STAMP"
+        private val KEY_RUNNING_TIME = "KEY_RUNNING_TIME"
     }
 
     private val viewModel by viewModel<ClimbingViewModel>()
-    private var naverMap : NaverMap? = null
+    private var naverMap: NaverMap? = null
     private val pathOverlay: PathOverlay by lazy { PathOverlay() }
 
     private val receiver = MyReceiver()
     private var locationUpdatesService: LocationUpdatesService? = null
     private var isBound = false
-    private lateinit var mountainData : MountainData
+    private lateinit var mountainData: MountainData
+    private var runningTime: Long = 0
 
     private val behavior by lazy { BottomSheetBehavior.from(binding.clBottom) }
 
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            val binder: LocationUpdatesService.LocalBinder = service as LocationUpdatesService.LocalBinder
+            val binder: LocationUpdatesService.LocalBinder =
+                service as LocationUpdatesService.LocalBinder
             locationUpdatesService = binder.getService()
             isBound = true
             viewModel.onSettingService(isBound)
@@ -79,7 +82,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     override fun startActivityForResult(intent: Intent?, requestCode: Int, options: Bundle?) {
         super.startActivityForResult(intent, requestCode, options)
-        if(requestCode == LocationUpdatesService.REQUEST_CODE) {
+        if (requestCode == LocationUpdatesService.REQUEST_CODE) {
             intent?.getParcelableExtra<MountainData>(KEY_MOUNTAIN_DATA)?.let {
                 mountainData = it
             }
@@ -88,13 +91,28 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val data = intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA)
-        if(data != null) {
-            mountainData = data
-            get<LiveClimbingCache>().initialize(mountainData.id)
-//            get<ClimbingSaveHelper>().init(mountainData.id)
+        if (get<YahoPreference>().selectedMountainId > 0) {
+            get<MountainListCache>().get(get<YahoPreference>().selectedMountainId)?.let {
+                mountainData = it
+            }
+            get<YahoPreference>().runningTimeStamp.let { timeStamp ->
+                if (timeStamp > 0) {
+                    viewModel.setRunningTime(
+                        get<YahoPreference>().runningTimeCount + (System.currentTimeMillis() / 1000 - timeStamp)
+                    )
+                }
 
+            }
+        } else {
+            val data = intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA)
+            if (data != null) {
+                mountainData = data
+                get<LiveClimbingCache>().initialize(mountainData.id)
+                get<YahoPreference>().selectedMountainId = mountainData.id
+//            get<ClimbingSaveHelper>().init(mountainData.id)
+            }
         }
+        Log.i(TAG, "디버깅!!! onCreate() : $savedInstanceState")
 
         initView()
         initObserve()
@@ -109,9 +127,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         // that since this activity is in the foreground, the service can exit foreground mode.
 
         bindService(
-            Intent(this, LocationUpdatesService::class.java).apply {
-                putExtra(KEY_MOUNTAIN_DATA, mountainData)
-            }, serviceConnection,
+            Intent(this, LocationUpdatesService::class.java), serviceConnection,
             BIND_AUTO_CREATE
         )
     }
@@ -122,11 +138,13 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             receiver,
             IntentFilter(LocationUpdatesService.ACTION_BROADCAST)
         )
+        Log.i(TAG, "디버깅!!! onResume()")
     }
 
     override fun onPause() {
         super.onPause()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+        Log.i(TAG, "디버깅!!! onPause()")
     }
 
     override fun onStop() {
@@ -138,6 +156,12 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             unbindService(serviceConnection)
             isBound = false
         }
+        get<YahoPreference>().apply {
+            runningTimeStamp = System.currentTimeMillis() / 1000
+            runningTimeCount = runningTime
+        }
+
+        Log.i(TAG, "디버깅!!! onStop()")
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, s: String?) {
@@ -181,7 +205,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     private fun initObserve() {
         viewModel.boundService.observe(this) {
-            if(it) locationUpdatesService?.requestLocationUpdates()
+            if (it) locationUpdatesService?.requestLocationUpdates()
         }
 
         viewModel.climbingData.observe(this) {
@@ -194,6 +218,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         }
 
         viewModel.runningTime.observe(this) {
+            runningTime = it
             val hour = it.secondsToHour()
             val min = it.secondsToMinute()
             val sec = it.secondsToSec()
@@ -206,8 +231,8 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             LatLngBounds(
                 LatLng(latitude, longitude),
                 LatLng(mountainData.latitude, mountainData.longitude),
-            )
-            , 150)
+            ), 150
+        )
         naverMap?.moveCamera(cameraUpdate)
 
         naverMap?.locationOverlay?.apply {
@@ -217,7 +242,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         }
 
         get<LiveClimbingCache>().latlngPaths.let { list ->
-            if(list.size < 2) return@let
+            if (list.size < 2) return@let
             pathOverlay.apply {
                 coords = list
                 map = naverMap
@@ -227,6 +252,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
+        Log.i(TAG, "디버깅!!! onMapReady() : $naverMap")
         naverMap.apply {
             isLiteModeEnabled = true
             setBackgroundResource(NaverMap.DEFAULT_BACKGROUND_DRWABLE_DARK)

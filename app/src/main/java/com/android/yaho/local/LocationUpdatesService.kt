@@ -49,7 +49,6 @@ class LocationUpdatesService : Service(), KoinComponent {
     private lateinit var notificationManager: NotificationManager
     private var changingConfiguration = false
     private lateinit var serviceHandler: Handler
-    private var mountainData: MountainData? = null
 
 
     override fun onCreate() {
@@ -164,9 +163,7 @@ class LocationUpdatesService : Service(), KoinComponent {
         // The PendingIntent to launch activity.
         val activityPendingIntent = PendingIntent.getActivity(
             this, REQUEST_CODE,
-            Intent(this, ClimbingActivity::class.java).apply {
-                putExtra(ClimbingActivity.KEY_MOUNTAIN_DATA, mountainData)
-            }, 0
+            Intent(this, ClimbingActivity::class.java), 0
         )
         val builder = NotificationCompat.Builder(this)
             .addAction(
@@ -203,7 +200,6 @@ class LocationUpdatesService : Service(), KoinComponent {
     }
 
     override fun onBind(intent: Intent?): IBinder {
-        mountainData = intent?.getParcelableExtra<MountainData>(ClimbingActivity.KEY_MOUNTAIN_DATA)
         stopForeground(true)
         changingConfiguration = false
         return binder
