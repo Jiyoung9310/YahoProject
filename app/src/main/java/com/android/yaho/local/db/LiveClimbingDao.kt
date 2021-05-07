@@ -7,16 +7,16 @@ import kotlinx.coroutines.flow.Flow
 interface LiveClimbingDao {
 
     @Insert
-    fun insertRecord(recordEntity: RecordEntity)
+    suspend fun insertRecord(recordEntity: RecordEntity)
 
     @Insert
-    fun insertSection(pathSectionEntity: PathSectionEntity)
+    suspend fun insertSection(pathSectionEntity: PathSectionEntity)
 
     @Update
-    fun updateSection(pathSectionEntity: PathSectionEntity)
+    suspend fun updateSection(pathSectionEntity: PathSectionEntity)
 
     @Insert
-    fun insertPoint(pointEntity: PointEntity)
+    suspend fun insertPoint(pointEntity: PointEntity)
 
     @Query("SELECT * FROM PointEntity WHERE parentSectionId == :parentSectionId")
     fun getPoints(parentSectionId: Long): Flow<List<PointEntity>>

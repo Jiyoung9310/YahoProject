@@ -8,30 +8,27 @@ import androidx.room.Relation
 
 @Entity
 data class RecordEntity(
-    @PrimaryKey(autoGenerate = true) val recordId: Long = 0,
-    val mountainId: Int,
-    val allRunningTime: Long,
-    val totalClimbingTime: Long,
-    val totalDistance: Float,
-    val totalCalories: Float,
-    val maxSpeed: Float,
-    val averageSpeed: Float,
-    val startHeight: Float,
-    val maxHeight: Float,
+    var mountainId: Int = 0,
+    var allRunningTime: Long = 0,
+    var totalClimbingTime: Long = 0,
+    var totalDistance: Float = 0f,
+    var totalCalories: Float = 0f,
+    var maxSpeed: Float = 0f,
+    var averageSpeed: Float = 0f,
+    var startHeight: Double = 0.0,
+    var maxHeight: Double = 0.0,
 )
 
 @Entity
 data class PathSectionEntity(
-    @PrimaryKey val sectionId: Long = 0,
-    val parentRecordId: Long = 0,
+    @PrimaryKey(autoGenerate = true) val sectionId: Long = 0,
     val runningTime: Long,
-    val distance: Float,
+    var distance: Float = 0f,
     val calories: Float,
 )
 
 @Entity
 data class PointEntity(
-    @PrimaryKey(autoGenerate = true) val pointId: Long = 0,
     val parentSectionId: Long = 0,
     val latitude: Double,
     val longitude: Double,

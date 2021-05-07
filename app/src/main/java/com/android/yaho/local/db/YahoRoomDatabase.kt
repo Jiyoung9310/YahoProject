@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 
+/*
 @Database(entities = [RecordEntity::class,
     PathSectionEntity::class,
     PointEntity::class], version = 1)
@@ -33,4 +34,4 @@ abstract class YahoRoomDatabase : RoomDatabase() {
         }
     }
 
-}
+}*/

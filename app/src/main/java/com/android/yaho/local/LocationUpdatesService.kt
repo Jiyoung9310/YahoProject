@@ -11,16 +11,11 @@ import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.yaho.*
 import com.android.yaho.R
-import com.android.yaho.data.MountainData
 import com.android.yaho.local.cache.LiveClimbingCache
-import com.android.yaho.local.db.YahoRoomDatabase
 import com.android.yaho.screen.ClimbingActivity
-import com.android.yaho.viewmodel.ClimbingSaveHelper
-import com.android.yaho.viewmodel.ClimbingViewModel
 import com.google.android.gms.location.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koin.core.component.inject
 
 
 class LocationUpdatesService : Service(), KoinComponent {
@@ -133,6 +128,7 @@ class LocationUpdatesService : Service(), KoinComponent {
         Log.i(TAG, "New location: $location")
         myLocation = location
         get<LiveClimbingCache>().put(location, myLocation?.distanceTo(location))
+//        get<ClimbingSaveHelper>().savePoint(location, myLocation?.distanceTo(location))
 
         // Notify anyone listening for broadcasts about the new location.
         LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(

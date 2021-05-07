@@ -26,7 +26,6 @@ import com.android.yaho.local.LocationUpdatesService
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.local.cache.MountainListCache
-import com.android.yaho.viewmodel.ClimbingSaveHelper
 import com.android.yaho.viewmodel.ClimbingViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -109,7 +108,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
                 mountainData = data
                 get<LiveClimbingCache>().initialize(mountainData.id)
                 get<YahoPreference>().selectedMountainId = mountainData.id
-//            get<ClimbingSaveHelper>().init(mountainData.id)
+//                get<ClimbingSaveHelper>().init(mountainData.id)
             }
         }
         Log.i(TAG, "디버깅!!! onCreate() : $savedInstanceState")
@@ -199,7 +198,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         })
 
         binding.btnPause.setOnClickListener {
-            get<ClimbingSaveHelper>().updateSection()
+            viewModel.onClickPause()
         }
     }
 
