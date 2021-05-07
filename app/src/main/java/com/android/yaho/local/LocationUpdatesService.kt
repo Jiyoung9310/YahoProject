@@ -45,6 +45,8 @@ class LocationUpdatesService : Service(), KoinComponent {
     private var changingConfiguration = false
     private lateinit var serviceHandler: Handler
 
+    private var isActive = true
+
 
     override fun onCreate() {
         super.onCreate()
@@ -127,7 +129,7 @@ class LocationUpdatesService : Service(), KoinComponent {
     private fun onNewLocation(location: Location) {
         Log.i(TAG, "New location: $location")
         myLocation = location
-        get<LiveClimbingCache>().put(location, myLocation?.distanceTo(location))
+        if(isActive) get<LiveClimbingCache>().put(location, myLocation?.distanceTo(location))
 //        get<ClimbingSaveHelper>().savePoint(location, myLocation?.distanceTo(location))
 
         // Notify anyone listening for broadcasts about the new location.
@@ -246,6 +248,14 @@ class LocationUpdatesService : Service(), KoinComponent {
             this.setRequestingLocationUpdates(false)
             Log.e(TAG, "Lost location permission. Could not request updates. $unlikely")
         }
+    }
+
+    fun isPause() {
+        isActive = false
+    }
+
+    fun restart() {
+        isActive = true
     }
 
     inner class LocalBinder : Binder() {

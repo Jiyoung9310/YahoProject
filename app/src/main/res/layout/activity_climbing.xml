@@ -22,6 +22,7 @@
         android:paddingStart="20dp"
         android:paddingTop="10dp"
         android:paddingEnd="20dp"
+        android:paddingBottom="50dp"
         app:behavior_peekHeight="84dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         >
@@ -34,10 +35,11 @@
             app:layout_constraintGuide_percent="0.5" />
 
         <androidx.constraintlayout.widget.Group
-            android:id="@+id/bottomComponent"
+            android:id="@+id/bottomActiveView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="tvRunningTime, tvDistance, tvDistanceTitle, tvHeight, tvHeightTitle, btnPause, btnClimbingDone" />
+            app:constraint_referenced_ids="tvDistance, tvDistanceTitle, tvHeight, tvHeightTitle"
+            />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivHandle"
@@ -59,6 +61,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivHandle"
             tools:text="1시간 30분 15초" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvRestTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/live_climbing_rest_title"
+            android:textColor="@color/sub_title"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/tvDistance"
+            app:layout_constraintTop_toBottomOf="@id/tvRunningTime" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvDistance"
@@ -106,10 +119,10 @@
             android:id="@+id/btnPause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:src="@drawable/ic_btn_pause"
+            android:layout_marginBottom="24dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDistanceTitle" />
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btnClimbingDone"

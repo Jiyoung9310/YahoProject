@@ -4,27 +4,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.yaho.data.LiveClimbingData
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.local.db.PointEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
-import org.koin.core.component.get
 
 class ClimbingViewModel(private val climbingCache: LiveClimbingCache) : ViewModel() {
 
-    private var count: Long = 0
-    private var job : Job? = null
+    private var activeCount: Long = 0
+    private var restCount: Long = 0
+    private var count: Long = activeCount
 
     init {
-        job = viewModelScope.launch {
+        viewModelScope.launch {
             ticker(1000).consumeAsFlow()
                 .collect {
                     _runningTime.value = count++
@@ -45,7 +39,7 @@ class ClimbingViewModel(private val climbingCache: LiveClimbingCache) : ViewMode
     val runningTime: LiveData<Long> get() = _runningTime
 
     fun setRunningTime(time: Long) {
-        count = time
+        activeCount = time
     }
 
     fun onSettingService(isBound: Boolean) {
@@ -60,9 +54,15 @@ class ClimbingViewModel(private val climbingCache: LiveClimbingCache) : ViewMode
         )
     }
 
-    fun onClickPause() {
-        climbingCache.updateSection()
-        job?.cancel()
+    fun onClickPause(isActive: Boolean) {
+        if(isActive) {
+            restCount = count
+            count = activeCount
+        } else {
+            activeCount = count
+            count = restCount
+            climbingCache.updateSection()
+        }
     }
 }
 

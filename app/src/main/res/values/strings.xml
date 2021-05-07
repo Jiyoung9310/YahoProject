@@ -34,4 +34,5 @@
     <string name="live_climbing_distance_title">거리</string>
     <string name="live_climbing_height_title">고도</string>
     <string name="live_climbing_btn_done">등산 종료</string>
+    <string name="live_climbing_rest_title">동안 쉬는 중</string>
 </resources>

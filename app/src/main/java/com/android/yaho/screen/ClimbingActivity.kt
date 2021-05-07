@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.*
 import com.android.yaho.*
@@ -60,6 +61,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
     private var isBound = false
     private lateinit var mountainData: MountainData
     private var runningTime: Long = 0
+    private var isActive = true
 
     private val behavior by lazy { BottomSheetBehavior.from(binding.clBottom) }
 
@@ -189,7 +191,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // slide
-                binding.bottomComponent.isInvisible = slideOffset < 0.3
+                binding.tvRunningTime.isInvisible = slideOffset < 0.3
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -198,7 +200,18 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         })
 
         binding.btnPause.setOnClickListener {
-            viewModel.onClickPause()
+            isActive = !isActive
+            binding.bottomActiveView.isVisible = isActive
+            binding.tvRestTitle.isVisible = !isActive
+            viewModel.onClickPause(isActive)
+            if(isActive) {
+                binding.btnPause.setImageResource(R.drawable.ic_btn_pause)
+                locationUpdatesService?.restart()
+            } else {
+                locationUpdatesService?.isPause()
+                binding.btnPause.setImageResource(R.drawable.ic_btn_play)
+            }
+
         }
     }
 
