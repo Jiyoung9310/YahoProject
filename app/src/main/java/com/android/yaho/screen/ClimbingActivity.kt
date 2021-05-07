@@ -234,7 +234,11 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             val hour = it.secondsToHour()
             val min = it.secondsToMinute()
             val sec = it.secondsToSec()
-            binding.tvRunningTime.text = String.format("%d시간 %02d분 %02d초", hour, min, sec)
+            binding.tvRunningTime.text = if(isActive) {
+                String.format("%d시간 %02d분 %02d초", hour, min, sec)
+            } else {
+                String.format("%02d분 %02d초", min, sec)
+            }
         }
     }
 

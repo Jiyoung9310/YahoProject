@@ -60,6 +60,7 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivHandle"
+            app:layout_constraintBottom_toTopOf="@id/tvDistance"
             tools:text="1시간 30분 15초" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -82,6 +83,7 @@
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvRunningTime"
+            app:layout_constraintBottom_toTopOf="@id/tvDistanceTitle"
             tools:text="1.91km" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -91,18 +93,19 @@
             android:text="@string/live_climbing_distance_title"
             android:textColor="@color/sub_title"
             android:textSize="14sp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintStart_toStartOf="@id/tvDistance"
-            app:layout_constraintTop_toBottomOf="@id/tvDistance" />
+            app:layout_constraintTop_toBottomOf="@id/tvDistance"
+            app:layout_constraintBottom_toTopOf="@id/btnPause"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvHeight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:textColor="@color/sub_title"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/tvRunningTime"
+            app:layout_constraintTop_toTopOf="@id/tvDistance"
             tools:text="150.1m" />
 
         <androidx.appcompat.widget.AppCompatTextView
