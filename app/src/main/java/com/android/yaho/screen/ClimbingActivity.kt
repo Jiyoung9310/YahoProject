@@ -27,6 +27,7 @@ import com.android.yaho.local.LocationUpdatesService
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.local.cache.MountainListCache
+import com.android.yaho.ui.ClimbingDoneDialog
 import com.android.yaho.viewmodel.ClimbingViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -215,8 +216,10 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         }
 
         binding.btnClimbingDone.setOnClickListener {
-
-            viewModel.onClickDone()
+            ClimbingDoneDialog(this,
+                climbingTimeText = binding.tvRunningTime.text.toString(),
+                onClickGoal = { viewModel.onClickDone() }
+            ).show()
         }
     }
 
@@ -236,13 +239,10 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
         viewModel.runningTime.observe(this) {
             runningTime = it
-            val hour = it.secondsToHour()
-            val min = it.secondsToMinute()
-            val sec = it.secondsToSec()
             binding.tvRunningTime.text = if(isActive) {
-                String.format("%d시간 %02d분 %02d초", hour, min, sec)
+                it.secondsToHourTimeFormat()
             } else {
-                String.format("%02d분 %02d초", min, sec)
+                it.secondsToMinuteTimeFormat()
             }
         }
     }
