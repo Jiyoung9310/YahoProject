@@ -79,8 +79,8 @@ class LiveClimbingCache {
         Log.d("LiveClimbingCache", "캐싱 섹션 : $_sectionList")
     }
 
-    fun done() {
-        if(_pointList.count() < 2) return
+    fun done() : RecordEntity? {
+        if(_pointList.count() < 2) return null
         updateSection()
         _recordData?.apply {
             allRunningTime = calculateRunningTime(_pointList)
@@ -92,6 +92,7 @@ class LiveClimbingCache {
 
         }
         Log.d("LiveClimbingCache", "캐싱 완료 : $_recordData")
+        return _recordData
     }
 
     private fun calculateRunningTime(list: List<PointEntity>) : Long = if(list.count() < 2) 0 else list.last().timestamp - list.first().timestamp

@@ -43,6 +43,9 @@
         <activity android:name=".screen.ClimbingActivity"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".screen.ClimbingDoneActivity"
+            android:screenOrientation="portrait" />
+
         <service
             android:name=".local.LocationUpdatesService"
             android:enabled="true"

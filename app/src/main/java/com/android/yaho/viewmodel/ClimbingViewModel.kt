@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.local.db.PointEntity
+import com.android.yaho.local.db.RecordEntity
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -38,6 +39,9 @@ class ClimbingViewModel(private val climbingCache: LiveClimbingCache) : ViewMode
     private val _runningTime = MutableLiveData<Long>()
     val runningTime: LiveData<Long> get() = _runningTime
 
+    private val _clickDone = MutableLiveData<RecordEntity?>()
+    val clickDone: LiveData<RecordEntity?> get() = _clickDone
+
     fun setRunningTime(time: Long) {
         activeCount = time
     }
@@ -66,7 +70,7 @@ class ClimbingViewModel(private val climbingCache: LiveClimbingCache) : ViewMode
     }
 
     fun onClickDone() {
-        climbingCache.done()
+        _clickDone.value = climbingCache.done()
     }
 }
 

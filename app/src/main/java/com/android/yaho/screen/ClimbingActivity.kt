@@ -1,5 +1,6 @@
 package com.android.yaho.screen
 
+import android.app.PendingIntent
 import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
@@ -244,6 +245,23 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             } else {
                 it.secondsToMinuteTimeFormat()
             }
+        }
+
+        viewModel.clickDone.observe(this) {
+            if(it != null) {
+
+            } else {
+
+            }
+            startActivity(Intent(this, ClimbingDoneActivity::class.java))
+            PendingIntent.getService(
+                this, 0,
+                Intent(this, LocationUpdatesService::class.java).apply {
+                    putExtra(LocationUpdatesService.EXTRA_STARTED_FROM_NOTIFICATION, true)
+                },
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            finish()
         }
     }
 

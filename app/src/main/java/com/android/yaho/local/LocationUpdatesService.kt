@@ -27,7 +27,7 @@ class LocationUpdatesService : Service(), KoinComponent {
         private const val NOTIFICATION_ID = 12345678
         const val EXTRA_LOCATION: String = "$PACKAGE_NAME.location"
         const val ACTION_BROADCAST = "$PACKAGE_NAME.broadcast"
-        private const val EXTRA_STARTED_FROM_NOTIFICATION = PACKAGE_NAME +
+        const val EXTRA_STARTED_FROM_NOTIFICATION = PACKAGE_NAME +
                 ".started_from_notification"
 
         private const val UPDATE_INTERVAL_IN_MILLISECONDS: Long = 10000
