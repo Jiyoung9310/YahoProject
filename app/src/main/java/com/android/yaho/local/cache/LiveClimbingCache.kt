@@ -71,7 +71,7 @@ class LiveClimbingCache {
         _sectionList.add(
             PathSectionEntity(
                 sectionId = sectionIndex++,
-                runningTime = sectionPointList.last().timestamp - sectionPointList.first().timestamp,
+                runningTime = calculateRunningTime(sectionPointList),
                 distance = _recordData?.totalDistance ?: 0f,
                 calories = 0f
             )
@@ -80,10 +80,20 @@ class LiveClimbingCache {
     }
 
     fun done() {
+        if(_pointList.count() < 2) return
+        updateSection()
         _recordData?.apply {
+            allRunningTime = calculateRunningTime(_pointList)
+            totalClimbingTime = calculateClimbingTime(_sectionList)
+            maxSpeed = _pointList.maxOf { it.speed }
+            averageSpeed = _pointList.map { it.speed }.average()
+            startHeight = _pointList.first().altitude
             maxHeight = _pointList.map { it.altitude }.maxOf { it }
-            allRunningTime = _pointList.last().timestamp - _pointList.first().timestamp
+
         }
         Log.d("LiveClimbingCache", "캐싱 완료 : $_recordData")
     }
+
+    private fun calculateRunningTime(list: List<PointEntity>) : Long = if(list.count() < 2) 0 else list.last().timestamp - list.first().timestamp
+    private fun calculateClimbingTime(list: List<PathSectionEntity>) : Long = list.map { it.runningTime }.fold(0) { total, num -> total + num }
 }

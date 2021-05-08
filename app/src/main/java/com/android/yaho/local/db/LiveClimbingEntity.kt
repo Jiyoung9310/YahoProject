@@ -9,12 +9,12 @@ import androidx.room.Relation
 @Entity
 data class RecordEntity(
     var mountainId: Int = 0,
-    var allRunningTime: Long = 0,
-    var totalClimbingTime: Long = 0,
+    var allRunningTime: Long = 0, // 전체 시간
+    var totalClimbingTime: Long = 0, // 운동 시간
     var totalDistance: Float = 0f,
     var totalCalories: Float = 0f,
     var maxSpeed: Float = 0f,
-    var averageSpeed: Float = 0f,
+    var averageSpeed: Double = 0.0,
     var startHeight: Double = 0.0,
     var maxHeight: Double = 0.0,
 )

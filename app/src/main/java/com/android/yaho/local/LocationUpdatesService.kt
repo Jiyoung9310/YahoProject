@@ -146,15 +146,17 @@ class LocationUpdatesService : Service(), KoinComponent {
     }
 
     private fun getNotification(): Notification? {
-        val intent = Intent(this, LocationUpdatesService::class.java)
         val text = myLocation?.getLocationText()
 
         // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
-        intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true)
+
 
         // The PendingIntent that leads to a call to onStartCommand() in this service.
         val servicePendingIntent = PendingIntent.getService(
-            this, 0, intent,
+            this, 0,
+            Intent(this, LocationUpdatesService::class.java).apply {
+                putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true)
+            },
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 

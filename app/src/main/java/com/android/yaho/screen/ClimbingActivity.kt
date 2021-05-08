@@ -213,6 +213,11 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             }
 
         }
+
+        binding.btnClimbingDone.setOnClickListener {
+
+            viewModel.onClickDone()
+        }
     }
 
     private fun initObserve() {

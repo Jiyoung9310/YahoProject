@@ -64,6 +64,10 @@ class ClimbingViewModel(private val climbingCache: LiveClimbingCache) : ViewMode
             climbingCache.updateSection()
         }
     }
+
+    fun onClickDone() {
+        climbingCache.done()
+    }
 }
 
 data class ClimbingDetailUseCase(
