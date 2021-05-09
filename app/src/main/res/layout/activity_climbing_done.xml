@@ -5,14 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvDone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DONE"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieDone"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:lottie_fileName="lottie_climbing_done.json"
+        app:lottie_autoPlay="true"
+        app:lottie_imageAssetsFolder="images"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
