@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.location.Location
 import android.preference.PreferenceManager
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 const val KEY_LOCATION_UPDATES_RESULT = "location-update-result"
@@ -80,3 +81,12 @@ fun Long.secondsToHourTimeFormat(): String =
     String.format("%d시간 %02d분 %02d초", secondsToHour(), secondsToMinute(), secondsToSec())
 fun Long.secondsToMinuteTimeFormat(): String =
     String.format("%02d분 %02d초", secondsToMinute(), secondsToSec())
+
+const val FULL_FORMAT_DATE_PATTERN = "yyyy.MM.dd (E)"
+fun convertFullFormatDate(milliseconds: Long = 0) : String {
+    val date = Date(milliseconds)
+    val dateFormat = SimpleDateFormat(FULL_FORMAT_DATE_PATTERN, Locale.getDefault()).apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }
+    return dateFormat.format(date)
+}

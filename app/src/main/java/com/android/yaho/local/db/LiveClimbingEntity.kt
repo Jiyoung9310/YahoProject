@@ -9,10 +9,11 @@ import androidx.room.Relation
 @Entity
 data class RecordEntity(
     var mountainId: Int = 0,
+    var climbingDate: String = "",
     var allRunningTime: Long = 0, // 전체 시간
     var totalClimbingTime: Long = 0, // 운동 시간
     var totalDistance: Float = 0f,
-    var totalCalories: Float = 0f,
+    var totalCalories: Float = 0f, // 몸무게 필요
     var maxSpeed: Float = 0f,
     var averageSpeed: Double = 0.0,
     var startHeight: Double = 0.0,

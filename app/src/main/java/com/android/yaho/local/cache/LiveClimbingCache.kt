@@ -2,6 +2,7 @@ package com.android.yaho.local.cache
 
 import android.location.Location
 import android.util.Log
+import com.android.yaho.convertFullFormatDate
 import com.android.yaho.data.ClimbingRecordData
 import com.android.yaho.data.LiveClimbingData
 import com.android.yaho.local.db.PathSectionEntity
@@ -83,6 +84,7 @@ class LiveClimbingCache {
         if(_pointList.count() < 2) return null
         updateSection()
         _recordData?.apply {
+            climbingDate = convertFullFormatDate(_pointList.last().timestamp)
             allRunningTime = calculateRunningTime(_pointList)
             totalClimbingTime = calculateClimbingTime(_sectionList)
             maxSpeed = _pointList.maxOf { it.speed }
