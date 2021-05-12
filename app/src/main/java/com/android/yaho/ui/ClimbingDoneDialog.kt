@@ -27,7 +27,10 @@ class ClimbingDoneDialog(context: Context,
         }
 
         findViewById<ConstraintLayout>(R.id.btnGoal)?.let {
-            it.setOnClickListener { onClickGoal.invoke() }
+            it.setOnClickListener {
+                onClickGoal.invoke()
+                dismiss()
+            }
         }
 
         findViewById<TextView>(R.id.btnCancel)?.let {

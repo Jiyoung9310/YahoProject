@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import com.naver.maps.geometry.LatLng
 
 
 @Entity
@@ -18,6 +19,8 @@ data class RecordEntity(
     var averageSpeed: Double = 0.0,
     var startHeight: Double = 0.0,
     var maxHeight: Double = 0.0,
+    var sections: List<PathSectionEntity>? = null,
+    var path: List<LatLng>? = null,
 )
 
 @Entity
@@ -26,6 +29,7 @@ data class PathSectionEntity(
     val runningTime: Long,
     var distance: Float = 0f,
     val calories: Float,
+    val points: List<PointEntity>,
 )
 
 @Entity

@@ -3,8 +3,6 @@ package com.android.yaho.local.cache
 import android.location.Location
 import android.util.Log
 import com.android.yaho.convertFullFormatDate
-import com.android.yaho.data.ClimbingRecordData
-import com.android.yaho.data.LiveClimbingData
 import com.android.yaho.local.db.PathSectionEntity
 import com.android.yaho.local.db.PointEntity
 import com.android.yaho.local.db.RecordEntity
@@ -26,19 +24,21 @@ class LiveClimbingCache {
     private var sectionIndex: Long = 0
 
     fun initialize(mountainId: Int) {
-        _recordData = RecordEntity().apply { this.mountainId = mountainId }
-        clearCache()
+        if(_recordData == null) {
+            clearCache()
+            _recordData = RecordEntity().apply { this.mountainId = mountainId }
+            Log.d("LiveClimbingCache", "캐싱 initialize : $_recordData")
+        }
     }
 
-    private fun clearCache() {
+    fun clearCache() {
         _pointList.clear()
         _latlngPaths.clear()
         _sectionList.clear()
-        _recordData = null
         sectionIndex = 0
     }
 
-    fun getRecord() = _recordData
+    fun getRecord() = _recordData ?: RecordEntity()
 
     fun getLastClimbingData() = _pointList.last()
 
@@ -60,6 +60,7 @@ class LiveClimbingCache {
 
     private fun updateDistance() {
         _recordData?.let { it.totalDistance += _pointList.last().distance }
+        Log.d("LiveClimbingCache", "캐싱 updateDistance : $_recordData")
     }
 
     fun updateSection() {
@@ -74,7 +75,8 @@ class LiveClimbingCache {
                 sectionId = sectionIndex++,
                 runningTime = calculateRunningTime(sectionPointList),
                 distance = _recordData?.totalDistance ?: 0f,
-                calories = 0f
+                calories = 0f,
+                points = mutableListOf<PointEntity>().apply { addAll(sectionPointList) }
             )
         )
         Log.d("LiveClimbingCache", "캐싱 섹션 : $_sectionList")
@@ -91,7 +93,8 @@ class LiveClimbingCache {
             averageSpeed = _pointList.map { it.speed }.average()
             startHeight = _pointList.first().altitude
             maxHeight = _pointList.map { it.altitude }.maxOf { it }
-
+            sections = mutableListOf<PathSectionEntity>().apply { addAll(_sectionList) }
+            path = mutableListOf<LatLng>().apply { addAll(_latlngPaths) }
         }
         Log.d("LiveClimbingCache", "캐싱 완료 : $_recordData")
         return _recordData

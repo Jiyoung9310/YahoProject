@@ -106,16 +106,16 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
                 }
 
             }
-        } else {
-            val data = intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA)
-            if (data != null) {
-                mountainData = data
-                get<LiveClimbingCache>().initialize(mountainData.id)
+        } else if(intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA) != null) {
+            intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA)?.let {
+                mountainData = it
                 get<YahoPreference>().selectedMountainId = mountainData.id
-//                get<ClimbingSaveHelper>().init(mountainData.id)
             }
+        } else {
+            finish()
         }
-        Log.i(TAG, "디버깅!!! onCreate() : $savedInstanceState")
+        Log.i(TAG, "디버깅!!! onCreate() mountainData id: ${mountainData.id}")
+        get<LiveClimbingCache>().initialize(mountainData.id)
 
         initView()
         initObserve()
@@ -219,7 +219,10 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         binding.btnClimbingDone.setOnClickListener {
             ClimbingDoneDialog(this,
                 climbingTimeText = binding.tvRunningTime.text.toString(),
-                onClickGoal = { viewModel.onClickDone() }
+                onClickGoal = {
+                    viewModel.onClickDone()
+                    locationUpdatesService?.serviceStop()
+                }
             ).show()
         }
     }

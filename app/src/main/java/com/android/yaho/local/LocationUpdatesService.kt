@@ -140,9 +140,9 @@ class LocationUpdatesService : Service(), KoinComponent {
         )
 
         // Update notification content if running as a foreground service.
-        if (serviceIsRunningInForeground(this)) {
+//        if (serviceIsRunningInForeground(this)) {
             notificationManager.notify(NOTIFICATION_ID, getNotification())
-        }
+//        }
     }
 
     private fun getNotification(): Notification? {
@@ -210,7 +210,7 @@ class LocationUpdatesService : Service(), KoinComponent {
         // and binds once again with this service. The service should cease to be a foreground
         // service when that happens.
         Log.i(TAG, "in onRebind()")
-        stopForeground(true)
+//        stopForeground(true)
         changingConfiguration = false
         super.onRebind(intent)
     }
@@ -230,7 +230,9 @@ class LocationUpdatesService : Service(), KoinComponent {
 
     override fun onDestroy() {
         serviceHandler.removeCallbacksAndMessages(null)
-        get<LiveClimbingCache>().done()
+        removeLocationUpdates()
+        stopSelf()
+//        get<LiveClimbingCache>().done()
     }
 
     fun requestLocationUpdates() {
@@ -250,6 +252,12 @@ class LocationUpdatesService : Service(), KoinComponent {
             this.setRequestingLocationUpdates(false)
             Log.e(TAG, "Lost location permission. Could not request updates. $unlikely")
         }
+    }
+
+    fun serviceStop() {
+        stopForeground(true)
+        removeLocationUpdates()
+        stopSelf()
     }
 
     fun isPause() {

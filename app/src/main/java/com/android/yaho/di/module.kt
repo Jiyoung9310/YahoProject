@@ -37,10 +37,12 @@ val appModule = module {
     factory <LoginRepository> { LoginRepositoryImpl(get(), get()) }
     factory <MountainRepository> { MountainRepositoryImpl(get()) }
     factory <UserDataRepository> { UserDataRepositoryImpl(get()) }
+    factory <ClimbingRepository> { ClimbingRepositoryImpl(get()) }
 
     viewModel { LoginViewModel(get()) }
     viewModel { MainViewModel(get()) }
     viewModel { HomeViewModel(get()) }
     viewModel { ReadyViewModel(get(), get()) }
     viewModel { ClimbingViewModel(get()) }
+    viewModel { ClimbingDoneViewModel(get()) }
 }
