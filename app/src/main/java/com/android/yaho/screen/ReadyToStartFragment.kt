@@ -70,15 +70,15 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
             naverMap?.locationOverlay?.apply {
                 isVisible = true
                 position = LatLng(it.latitude, it.longitude)
-                icon = OverlayImage.fromResource(R.drawable.ic_map_location)
+                icon = OverlayImage.fromResource(R.drawable.img_marker_my_location)
                 anchor = PointF(0.5f, 0f)
-                subIcon = OverlayImage.fromResource(R.drawable.ic_marker_go)
+                subIcon = OverlayImage.fromResource(R.drawable.img_marker_start)
                 subAnchor = PointF(0.5f, 1f)
             }
 
             Marker().apply {
                 position = LatLng(mountainData.latitude, mountainData.longitude)
-                icon = OverlayImage.fromResource(R.drawable.ic_marker_goal_flag)
+                icon = OverlayImage.fromResource(R.drawable.img_marker_goal_flag)
                 map = naverMap
             }
         }

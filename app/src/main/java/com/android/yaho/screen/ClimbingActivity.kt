@@ -273,7 +273,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         naverMap?.locationOverlay?.apply {
             isVisible = true
             position = LatLng(latitude, longitude)
-            icon = OverlayImage.fromResource(R.drawable.ic_map_location)
+            icon = OverlayImage.fromResource(R.drawable.img_marker_my_location)
         }
 
         get<LiveClimbingCache>().latlngPaths.let { list ->
@@ -305,7 +305,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
         Marker().apply {
             position = LatLng(mountainData.latitude, mountainData.longitude)
-            icon = OverlayImage.fromResource(R.drawable.ic_marker_goal_flag)
+            icon = OverlayImage.fromResource(R.drawable.img_marker_goal_flag)
             map = naverMap
         }
 
