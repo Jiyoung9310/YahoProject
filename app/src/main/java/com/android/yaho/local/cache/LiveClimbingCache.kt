@@ -3,6 +3,7 @@ package com.android.yaho.local.cache
 import android.location.Location
 import android.util.Log
 import com.android.yaho.convertFullFormatDate
+import com.android.yaho.data.MountainData
 import com.android.yaho.local.db.PathSectionEntity
 import com.android.yaho.local.db.PointEntity
 import com.android.yaho.local.db.RecordEntity
@@ -23,10 +24,13 @@ class LiveClimbingCache {
     private var _recordData : RecordEntity? = null
     private var sectionIndex: Long = 0
 
-    fun initialize(mountainId: Int) {
+    fun initialize(mountain: MountainData) {
         if(_recordData == null) {
             clearCache()
-            _recordData = RecordEntity().apply { this.mountainId = mountainId }
+            _recordData = RecordEntity().apply {
+                this.mountainId = mountain.id
+                this.mountainName = mountain.name
+            }
             Log.d("LiveClimbingCache", "캐싱 initialize : $_recordData")
         }
     }

@@ -115,7 +115,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             finish()
         }
         Log.i(TAG, "디버깅!!! onCreate() mountainData id: ${mountainData.id}")
-        get<LiveClimbingCache>().initialize(mountainData.id)
+        get<LiveClimbingCache>().initialize(mountainData)
 
         initView()
         initObserve()
@@ -252,18 +252,11 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
         viewModel.clickDone.observe(this) {
             if(it != null) {
-
+                startActivity(Intent(this, ClimbingDoneActivity::class.java))
             } else {
-
+                Toast.makeText(applicationContext, "저장할 등산 데이터가 없습니다.", Toast.LENGTH_SHORT).show()
             }
-            startActivity(Intent(this, ClimbingDoneActivity::class.java))
-            PendingIntent.getService(
-                this, 0,
-                Intent(this, LocationUpdatesService::class.java).apply {
-                    putExtra(LocationUpdatesService.EXTRA_STARTED_FROM_NOTIFICATION, true)
-                },
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
+
             finish()
         }
     }

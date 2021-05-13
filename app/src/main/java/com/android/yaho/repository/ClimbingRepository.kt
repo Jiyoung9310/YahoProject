@@ -14,35 +14,40 @@ import org.koin.core.component.get
 
 interface ClimbingRepository {
     fun postClimbingData() : Flow<ClimbingResult>
+    fun updateVisitMountain() : Flow<ClimbingResult>
 }
 
+@ExperimentalCoroutinesApi
 class ClimbingRepositoryImpl(
     private val firestoreDB: FirebaseFirestore,
 ) : ClimbingRepository, KoinComponent {
-    @ExperimentalCoroutinesApi
     override fun postClimbingData(): Flow<ClimbingResult> = callbackFlow {
         val uid = get<YahoPreference>().userId
+        if(uid.isNullOrEmpty()) offer(ClimbingResult.Fail(Throwable("userId 접근 불가")))
+
         val climbCache = get<LiveClimbingCache>()
         Log.w("ClimbingRepository", "ready to climbing data add : ${climbCache.getRecord()}")
-        if(!uid.isNullOrEmpty()) {
-            val script = firestoreDB.collection("users")
-                .document(uid)
-                .collection("climbingData")
-                .add(climbCache.getRecord())
-                .addOnSuccessListener { documentReference ->
-                    Log.w("ClimbingRepository", "climbing data add : $documentReference")
-                    if (documentReference != null) {
-                        offer(ClimbingResult.Success)
-                    } else {
-                        offer(ClimbingResult.Fail(Throwable("Climbing Document 생성 실패")))
-                    }
+        val script = firestoreDB.collection("users")
+            .document(uid!!)
+            .collection("climbingData")
+            .add(climbCache.getRecord())
+            .addOnSuccessListener { documentReference ->
+                Log.w("ClimbingRepository", "climbing data add : $documentReference")
+                if (documentReference != null) {
+                    offer(ClimbingResult.Success)
+                } else {
+                    offer(ClimbingResult.Fail(Throwable("Climbing Document 생성 실패")))
                 }
-                .addOnFailureListener { e ->
-                    Log.w("ClimbingRepository", "Error adding document", e)
-                    offer(ClimbingResult.Fail(e))
-                }
-            awaitClose { (script as ListenerRegistration).remove() }
-        }
+            }
+            .addOnFailureListener { e ->
+                Log.w("ClimbingRepository", "Error adding document", e)
+                offer(ClimbingResult.Fail(e))
+            }
+        awaitClose { (script as ListenerRegistration).remove() }
+    }
+
+    override fun updateVisitMountain(): Flow<ClimbingResult> = callbackFlow {
+
     }
 }
 

@@ -37,6 +37,6 @@ class UserDataRepositoryImpl(private val firestoreDB: FirebaseFirestore) : UserD
                     return@addSnapshotListener
                 }
             }
-            awaitClose { subscription.remove() }
+        awaitClose { subscription.remove() }
     }
 }
