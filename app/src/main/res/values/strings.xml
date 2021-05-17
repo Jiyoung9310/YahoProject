@@ -6,6 +6,7 @@
     <string name="kilo_meter_unit">%skm</string>
     <string name="meter_unit">%sm</string>
     <string name="count_unit">%d회</string>
+    <string name="speed_unit">m/s</string>
 
     <!--home-->
     <string name="home_all_height_title">내가 오른 높이</string>
@@ -38,4 +39,20 @@
     <string name="dialog_climbing_done_title">즐거운 등산 되셨나요?</string>
     <string name="dialog_climbing_done_message">오늘 하루 건강을 위해\n%s 투자했어요!</string>
     <string name="dialog_climbing_done_cancel">아직 더 내려가야해요.</string>
+
+    <!--climbing detail-->
+    <string name="climbing_detail_mountain_name">%s으로 %d번째 등산</string>
+    <string name="climbing_detail_path_title">구간 분석</string>
+    <string name="climbing_detail_info_title">상세 분석</string>
+    <string name="climbing_detail_info_time_title">시간</string>
+    <string name="climbing_detail_info_total_time_title">전체 시간</string>
+    <string name="climbing_detail_info_climbing_time_title">운동 시간</string>
+    <string name="climbing_detail_info_rest_time_title">휴식 시간</string>
+    <string name="climbing_detail_info_distance_title">거리</string>
+    <string name="climbing_detail_info_speed_title">속도</string>
+    <string name="climbing_detail_info_average_speed_title">평균 속도</string>
+    <string name="climbing_detail_info_max_speed_title">최고 속도</string>
+    <string name="climbing_detail_info_height_title">고도</string>
+    <string name="climbing_detail_info_start_height_title">시작 고도</string>
+    <string name="climbing_detail_info_max_height_title">최고 고도</string>
 </resources>

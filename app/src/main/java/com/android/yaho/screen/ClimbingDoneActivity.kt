@@ -1,9 +1,11 @@
 package com.android.yaho.screen
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityClimbingDoneBinding
+import com.android.yaho.repository.ClimbingResult
 import com.android.yaho.viewmodel.ClimbingDoneViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -21,6 +23,10 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(Activi
     private fun initObserve() {
         viewModel.saveResult.observe(this) {
             Toast.makeText(this, TAG + "save Climbing : $it", Toast.LENGTH_SHORT).show()
+            if(it == ClimbingResult.Success) {
+                startActivity(Intent(this, ClimbingDetailActivity::class.java))
+                finish()
+            }
         }
 
         viewModel.error.observe(this) {
