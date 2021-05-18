@@ -255,6 +255,7 @@ class LocationUpdatesService : Service(), KoinComponent {
     }
 
     fun serviceStop() {
+        serviceHandler.removeCallbacksAndMessages(null)
         stopForeground(true)
         removeLocationUpdates()
         stopSelf()

@@ -1,5 +1,8 @@
 package com.android.yaho.screen
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -21,6 +24,15 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     private val TAG = this::class.java.simpleName
     companion object {
         const val KEY_CLIMBING_DATA_ID = "KEY_CLIMBING_DATA_ID"
+
+        fun startClimbingDetailActivity(
+            activity: Activity,
+            climbingId: String,
+        ) {
+            activity.startActivity(Intent(activity, ClimbingDetailActivity::class.java).apply {
+                putExtra(KEY_CLIMBING_DATA_ID, climbingId)
+            })
+        }
     }
 
     private val viewModel by viewModel<ClimbingDetailViewModel>()
@@ -69,21 +81,24 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     }
 
     private fun initObserve() {
-        viewModel.climbingData.observe(this) { record ->
-            record?.let {
-                binding.tvDate.text = it.climbingDate
-                binding.tvMountainName.text = getString(R.string.climbing_detail_mountain_name, it.mountainName, it.mountainVisitCount)
-                binding.tvTotalTime.text = it.allRunningTime.millisecondsToHourTimeFormat()
-                binding.tvClimbingTime.text = it.totalClimbingTime.millisecondsToHourTimeFormat()
-                binding.tvRestTime.text = (it.allRunningTime - it.totalClimbingTime).millisecondsToHourTimeFormat()
-                binding.tvDistance.text = getString(R.string.kilo_meter_unit, it.totalDistance)
-                binding.tvAverageSpeed.text = getString(R.string.speed_unit, it.averageSpeed.toFloat())
-                binding.tvMaxSpeed.text = getString(R.string.speed_unit, it.maxSpeed)
-                binding.tvStartHeight.text = getString(R.string.meter_unit, it.startHeight)
-                binding.tvMaxHeight.text = getString(R.string.meter_unit, it.maxHeight)
-            } ?: run {
-                Log.d(TAG, "데이터가 null")
-            }
+        viewModel.noData.observe(this) {
+            Log.d(TAG, "데이터가 null")
+            Toast.makeText(this, "표시할 데이터가 없습니다.", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+
+        viewModel.climbingData.observe(this) {
+            binding.tvDate.text = it.climbingDate
+            binding.tvMountainName.text = it.mountainNameTitle
+            binding.tvAddress.text = it.mountainAddress
+            binding.tvTotalTime.text = it.allRunningTime
+            binding.tvClimbingTime.text = it.totalClimbingTime
+            binding.tvRestTime.text = it.restTime
+            binding.tvDistance.text = it.totalDistance
+            binding.tvAverageSpeed.text = it.averageSpeed
+            binding.tvMaxSpeed.text = it.maxSpeed
+            binding.tvStartHeight.text = it.startHeight
+            binding.tvMaxHeight.text = it.maxHeight
         }
 
         viewModel.error.observe(this) {

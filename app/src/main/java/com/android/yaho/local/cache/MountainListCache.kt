@@ -31,4 +31,6 @@ class MountainListCache : KoinComponent {
     }
 
     fun get(id: Int) : MountainData? = _data[id]
+
+    fun getAddress(id: Int) : String = _data[id]?.address ?: ""
 }
