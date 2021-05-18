@@ -3,10 +3,10 @@
     <string name="naver_maps_client_id">7abca5361m</string>
 
     <!--unit-->
-    <string name="kilo_meter_unit">%skm</string>
-    <string name="meter_unit">%sm</string>
+    <string name="kilo_meter_unit">%.2fkm</string>
+    <string name="meter_unit">%.2fm</string>
     <string name="count_unit">%d회</string>
-    <string name="speed_unit">m/s</string>
+    <string name="speed_unit">%.2fm/s</string>
 
     <!--home-->
     <string name="home_all_height_title">내가 오른 높이</string>

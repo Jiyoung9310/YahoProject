@@ -115,7 +115,6 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         } else {
             finish()
         }
-        Log.i(TAG, "디버깅!!! onCreate() mountainData id: ${mountainData.id}")
         get<LiveClimbingCache>().initialize(mountainData, intent.getIntExtra(KEY_MOUNTAIN_VISIT_COUNT, 0))
 
         initView()
@@ -234,8 +233,8 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         }
 
         viewModel.climbingData.observe(this) {
-            binding.tvDistance.text = getString(R.string.kilo_meter_unit, it.allDistance.toString())
-            binding.tvHeight.text = getString(R.string.meter_unit, it.height.toString())
+            binding.tvDistance.text = getString(R.string.kilo_meter_unit, it.allDistance)
+            binding.tvHeight.text = getString(R.string.meter_unit, it.height.toFloat())
         }
 
         viewModel.updateMap.observe(this) {

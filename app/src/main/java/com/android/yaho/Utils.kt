@@ -77,8 +77,15 @@ fun Long.secondsToHour() = this / 3600
 fun Long.secondsToMinute() = (this % 3600) / 60
 fun Long.secondsToSec() = (this % 3600) % 60
 
-fun Long.secondsToHourTimeFormat(): String =
-    String.format("%d시간 %02d분 %02d초", secondsToHour(), secondsToMinute(), secondsToSec())
+fun Long.millisecondsToHourTimeFormat(): String = (this / 1000).secondsToHourTimeFormat()
+fun Long.secondsToHourTimeFormat(): String {
+    return if(secondsToHour() > 0) {
+        String.format("%d시간 %02d분 %02d초", secondsToHour(), secondsToMinute(), secondsToSec())
+    } else {
+        String.format("%02d분 %02d초", secondsToMinute(), secondsToSec())
+    }
+}
+
 fun Long.secondsToMinuteTimeFormat(): String =
     String.format("%02d분 %02d초", secondsToMinute(), secondsToSec())
 
