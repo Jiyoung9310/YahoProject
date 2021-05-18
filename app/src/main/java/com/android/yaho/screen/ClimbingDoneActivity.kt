@@ -23,10 +23,10 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(Activi
     private fun initObserve() {
         viewModel.saveResult.observe(this) {
             Toast.makeText(this, TAG + "save Climbing : $it", Toast.LENGTH_SHORT).show()
-            if(it == ClimbingResult.Success) {
-                startActivity(Intent(this, ClimbingDetailActivity::class.java))
-                finish()
-            }
+            startActivity(Intent(this, ClimbingDetailActivity::class.java).apply {
+                putExtra(ClimbingDetailActivity.KEY_CLIMBING_DATA_ID, it)
+            })
+            finish()
         }
 
         viewModel.error.observe(this) {

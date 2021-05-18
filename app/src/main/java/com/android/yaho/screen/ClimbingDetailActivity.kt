@@ -17,13 +17,23 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(ActivityClimbingDetailBinding::inflate),
     OnMapReadyCallback {
 
+    companion object {
+        const val KEY_CLIMBING_DATA_ID = "KEY_CLIMBING_DATA_ID"
+    }
+
     private val viewModel by viewModel<ClimbingDetailViewModel>()
     private val behavior by lazy { BottomSheetBehavior.from(binding.clDetailInfo) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        intent.extras?.getString(KEY_CLIMBING_DATA_ID)?.let {
+            viewModel.getClimbingData(it)
+        } ?: run {
+            finish()
+        }
 
         initView()
+        initObserve()
     }
 
     private fun initView() {
@@ -53,6 +63,10 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
                 // state changed
             }
         })
+    }
+
+    private fun initObserve() {
+
     }
 
     override fun onMapReady(naverMap: NaverMap) {

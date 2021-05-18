@@ -19,19 +19,21 @@ class ClimbingDoneViewModel(private val repo: ClimbingRepository,
                             private val pref : YahoPreference,
 ) : ViewModel() {
 
-    private val _saveResult = MutableLiveData<ClimbingResult>()
-    val saveResult : LiveData<ClimbingResult> get() = _saveResult
+    private val _saveResult = MutableLiveData<String>()
+    val saveResult : LiveData<String> get() = _saveResult
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
+    private val climbingId = System.currentTimeMillis().toString()
     init {
         saveClimbData()
     }
 
     fun saveClimbData() {
+        // TODO : network 연결 아닌 상태인 케이스 처리 추가 필요
         viewModelScope.launch {
-            repo.postClimbingData()
+            repo.postClimbingData(climbingId)
                 .catch { e:Throwable -> _error.value = e }
                 .collect { data ->
                     if(data == ClimbingResult.Success) updateVisitMountain()
@@ -43,8 +45,8 @@ class ClimbingDoneViewModel(private val repo: ClimbingRepository,
         viewModelScope.launch {
             repo.updateVisitMountain()
                 .catch { e:Throwable -> _error.value = e }
-                .collect { result ->
-                    _saveResult.value = result
+                .collect {
+                    _saveResult.value = climbingId
                     climbingCache.clearCache()
                     pref.clearSelectedMountain()
                 }

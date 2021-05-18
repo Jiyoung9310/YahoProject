@@ -13,7 +13,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
 interface ClimbingRepository {
-    suspend fun postClimbingData() : Flow<ClimbingResult>
+    suspend fun postClimbingData(climbingId: String) : Flow<ClimbingResult>
     suspend fun updateVisitMountain() : Flow<ClimbingResult>
     suspend fun getVisitMountain(mountainId: Int): Flow<Int>
 }
@@ -22,7 +22,7 @@ interface ClimbingRepository {
 class ClimbingRepositoryImpl(
     private val firestoreDB: FirebaseFirestore,
 ) : ClimbingRepository, KoinComponent {
-    override suspend fun postClimbingData(): Flow<ClimbingResult> = callbackFlow {
+    override suspend fun postClimbingData(climbingId: String): Flow<ClimbingResult> = callbackFlow {
         val uid = get<YahoPreference>().userId
         if(uid.isNullOrEmpty()) offer(ClimbingResult.Fail(Throwable("userId 접근 불가")))
 
@@ -31,7 +31,7 @@ class ClimbingRepositoryImpl(
         val script = firestoreDB.collection("users")
             .document(uid!!)
             .collection("climbingData")
-            .document(System.currentTimeMillis().toString())
+            .document(climbingId)
             .set(climbCache.getRecord())
             .addOnSuccessListener { documentReference ->
                 Log.w("ClimbingRepository", "climbing data add : $documentReference")
