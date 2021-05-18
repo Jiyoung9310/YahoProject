@@ -110,6 +110,8 @@
             android:id="@+id/rvList"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             app:layout_constraintTop_toBottomOf="@id/tvPathTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -119,6 +121,7 @@
             android:id="@+id/divider"
             android:layout_width="0dp"
             android:layout_height="8dp"
+            android:layout_marginTop="40dp"
             android:background="@color/gray_50"
             app:layout_constraintTop_toBottomOf="@id/rvList"
             app:layout_constraintStart_toStartOf="parent"
@@ -138,6 +141,22 @@
             app:layout_constraintStart_toStartOf="parent"
             />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintGuide_percent="0.18"
+            android:orientation="vertical"
+            />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintGuide_percent="0.38"
+            android:orientation="vertical"
+            />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvTimeTitle"
             android:layout_width="wrap_content"
@@ -155,25 +174,23 @@
             android:id="@+id/tvTotalTimeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="26dp"
             android:textSize="12sp"
             android:textColor="@color/gray_600"
             android:text="@string/climbing_detail_info_total_time_title"
             app:layout_constraintTop_toTopOf="@id/tvTimeTitle"
             app:layout_constraintBottom_toBottomOf="@id/tvTimeTitle"
-            app:layout_constraintStart_toEndOf="@id/tvTimeTitle"
+            app:layout_constraintStart_toEndOf="@id/guideline1"
             />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvTotalTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:textSize="14sp"
             android:textColor="@color/gray_800"
             app:layout_constraintTop_toTopOf="@id/tvTotalTimeTitle"
             app:layout_constraintBottom_toBottomOf="@id/tvTotalTimeTitle"
-            app:layout_constraintStart_toEndOf="@id/tvTotalTimeTitle"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
             tools:text="2시간 40분 29초"
             />
 
@@ -184,25 +201,8 @@
             android:textSize="12sp"
             android:textColor="@color/gray_600"
             app:layout_constraintTop_toBottomOf="@id/tvTotalTime"
-            app:layout_constraintStart_toStartOf="@id/tvTotalTime"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
             tools:text="오전 8시 3분 ~ 오전 10시 43분"
-            />
-
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/tvTotalTimeTitle"
-            android:orientation="vertical"
-            />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/tvTotalTime"
-            android:orientation="vertical"
             />
 
         <androidx.appcompat.widget.AppCompatTextView

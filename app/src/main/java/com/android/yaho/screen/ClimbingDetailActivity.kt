@@ -7,10 +7,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityClimbingDetailBinding
 import com.android.yaho.millisecondsToHourTimeFormat
+import com.android.yaho.ui.ClimbingDetailSectionAdapter
 import com.android.yaho.viewmodel.ClimbingDetailViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naver.maps.map.MapFragment
@@ -38,6 +41,7 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     private val viewModel by viewModel<ClimbingDetailViewModel>()
     private val behavior by lazy { BottomSheetBehavior.from(binding.clDetailInfo) }
     private var naverMap : NaverMap? = null
+    private lateinit var climbingDetailSectionAdapter : ClimbingDetailSectionAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,8 +70,13 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
 
         mapFragment.getMapAsync(this)
 
+        climbingDetailSectionAdapter = ClimbingDetailSectionAdapter()
+        binding.rvList.apply {
+            layoutManager = LinearLayoutManager(this@ClimbingDetailActivity, RecyclerView.VERTICAL, false)
+            adapter = climbingDetailSectionAdapter
+        }
 
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // slide
@@ -99,6 +108,10 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
             binding.tvMaxSpeed.text = it.maxSpeed
             binding.tvStartHeight.text = it.startHeight
             binding.tvMaxHeight.text = it.maxHeight
+        }
+
+        viewModel.sectionData.observe(this) {
+            climbingDetailSectionAdapter.sectionList = it
         }
 
         viewModel.error.observe(this) {
