@@ -3,6 +3,7 @@ package com.android.yaho.repository
 import android.util.Log
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.cache.LiveClimbingCache
+import com.android.yaho.local.db.RecordEntity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,6 +16,7 @@ import org.koin.core.component.get
 interface ClimbingRepository {
     suspend fun postClimbingData(climbingId: String) : Flow<ClimbingResult>
     suspend fun updateVisitMountain() : Flow<ClimbingResult>
+    suspend fun getClimbingData(climbingId: String) : Flow<RecordEntity?>
     suspend fun getVisitMountain(mountainId: Int): Flow<Int>
 }
 
@@ -65,10 +67,37 @@ class ClimbingRepositoryImpl(
                 offer(ClimbingResult.Success)
             }
             .addOnFailureListener { e ->
-                Log.w("ClimbingRepository", "Error adding document", e)
+                Log.w("ClimbingRepository", "Fail adding document", e)
                 offer(ClimbingResult.Fail(e))
             }
         awaitClose { (script as ListenerRegistration).remove() }
+    }
+
+    override suspend fun getClimbingData(climbingId: String): Flow<RecordEntity?> = callbackFlow {
+        val uid = get<YahoPreference>().userId
+        if(uid.isNullOrEmpty()) offer(null)
+
+        val subscription = firestoreDB.collection("users")
+            .document(uid!!)
+            .collection("climbingData")
+            .document(climbingId)
+            .get()
+            .addOnSuccessListener {
+                try {
+                    val data = it.toObject(RecordEntity::class.java)
+                    offer(data)
+                    Log.w("ClimbingRepository", "success getClimbingData : $data")
+                } catch (e: Throwable) {
+                    offer(null)
+                    Log.w("ClimbingRepository", "catch getClimbingData error : ${e.message}")
+                }
+            }
+            .addOnFailureListener {
+                offer(null)
+                Log.w("ClimbingRepository", "fail getClimbingData : ${it.message}")
+            }
+
+        awaitClose { (subscription as ListenerRegistration).remove() }
     }
 
     override suspend fun getVisitMountain(mountainId: Int): Flow<Int> = callbackFlow {
@@ -83,7 +112,7 @@ class ClimbingRepositoryImpl(
             .addOnSuccessListener {
                 (it.get("visitCount"))?.let {count ->
                     offer(count.toString().toInt())
-                    Log.w("ClimbingRepository", "get visitCount : $count")
+                    Log.w("ClimbingRepository", "success get visitCount : $count")
                 } ?: run {
                     offer(0)
                     Log.w("ClimbingRepository", "get visitCount just 0")
@@ -91,7 +120,7 @@ class ClimbingRepositoryImpl(
             }
             .addOnFailureListener {
                 offer(0)
-                Log.w("ClimbingRepository", "get visitCount error : ${it.message}")
+                Log.w("ClimbingRepository", "fail get visitCount error : ${it.message}")
             }
 
         awaitClose { (subscription as ListenerRegistration).remove() }

@@ -45,5 +45,5 @@ val appModule = module {
     viewModel { ReadyViewModel(get(), get(), get()) }
     viewModel { ClimbingViewModel(get()) }
     viewModel { ClimbingDoneViewModel(get(), get(), get()) }
-    viewModel { ClimbingDetailViewModel(get()) }
+    viewModel { ClimbingDetailViewModel(get(), get()) }
 }

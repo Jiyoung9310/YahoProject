@@ -4,18 +4,20 @@ import android.location.Location
 import android.util.Log
 import com.android.yaho.convertFullFormatDate
 import com.android.yaho.data.MountainData
+import com.android.yaho.local.db.LatLng
 import com.android.yaho.local.db.PathSectionEntity
 import com.android.yaho.local.db.PointEntity
 import com.android.yaho.local.db.RecordEntity
-import com.naver.maps.geometry.LatLng
 
 class LiveClimbingCache {
     private val _pointList = mutableListOf<PointEntity>()
     val pointList: List<PointEntity>
         get() = _pointList
     private val _latlngPaths = mutableListOf<LatLng>()
-    val latlngPaths: List<LatLng>
-        get() = _latlngPaths
+    val latlngPaths: List<com.naver.maps.geometry.LatLng>
+        get() = _latlngPaths.map {
+            com.naver.maps.geometry.LatLng(it.latitude, it.longitude)
+        }
 
     private val _sectionList = mutableListOf<PathSectionEntity>()
     val sectionList: List<PathSectionEntity>

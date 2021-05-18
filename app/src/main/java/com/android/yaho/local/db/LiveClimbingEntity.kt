@@ -4,8 +4,11 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import com.naver.maps.geometry.LatLng
 
+data class LatLng(
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+)
 
 @Entity
 data class RecordEntity(
@@ -28,21 +31,21 @@ data class RecordEntity(
 @Entity
 data class PathSectionEntity(
     @PrimaryKey(autoGenerate = true) val sectionId: Long = 0,
-    val runningTime: Long,
+    val runningTime: Long = 0,
     var distance: Float = 0f,
-    val calories: Float,
-    val points: List<PointEntity>,
+    val calories: Float = 0f,
+    val points: List<PointEntity>? = null,
 )
 
 @Entity
 data class PointEntity(
     val parentSectionId: Long = 0,
-    val latitude: Double,
-    val longitude: Double,
-    val altitude: Double,
-    val speed: Float,
-    val timestamp: Long,
-    val distance: Float,
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+    val altitude: Double = 0.0,
+    val speed: Float = 0f,
+    val timestamp: Long = 0,
+    val distance: Float = 0f,
 )
 
 data class RecordWithSectionsAndPoints(
