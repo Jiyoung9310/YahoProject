@@ -28,9 +28,18 @@ class ClimbingDoneViewModel(private val repo: ClimbingRepository) : ViewModel() 
             repo.postClimbingData()
                 .catch { e:Throwable -> _error.value = e }
                 .collect { data ->
-                    _saveResult.value = data
+                    if(data == ClimbingResult.Success) updateVisitMountain()
                 }
         }
+    }
 
+    private fun updateVisitMountain() {
+        viewModelScope.launch {
+            repo.updateVisitMountain()
+                .catch { e:Throwable -> _error.value = e }
+                .collect { result ->
+                    _saveResult.value = result
+                }
+        }
     }
 }

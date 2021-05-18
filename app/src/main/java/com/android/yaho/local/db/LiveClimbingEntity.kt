@@ -11,6 +11,7 @@ import com.naver.maps.geometry.LatLng
 data class RecordEntity(
     var mountainId: Int = 0,
     var mountainName: String = "",
+    var mountainVisitCount: Int = 0,
     var climbingDate: String = "",
     var allRunningTime: Long = 0, // 전체 시간
     var totalClimbingTime: Long = 0, // 운동 시간

@@ -24,12 +24,13 @@ class LiveClimbingCache {
     private var _recordData : RecordEntity? = null
     private var sectionIndex: Long = 0
 
-    fun initialize(mountain: MountainData) {
+    fun initialize(mountain: MountainData, visitCount: Int) {
         if(_recordData == null) {
             clearCache()
             _recordData = RecordEntity().apply {
                 this.mountainId = mountain.id
                 this.mountainName = mountain.name
+                this.mountainVisitCount = visitCount
             }
             Log.d("LiveClimbingCache", "캐싱 initialize : $_recordData")
         }

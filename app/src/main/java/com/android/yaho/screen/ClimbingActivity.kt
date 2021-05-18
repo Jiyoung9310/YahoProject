@@ -50,6 +50,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
     companion object {
         private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
         const val KEY_MOUNTAIN_DATA = "KEY_MOUNTAIN_DATA"
+        const val KEY_MOUNTAIN_VISIT_COUNT = "KEY_MOUNTAIN_VISIT_COUNT"
         private val KEY_TIME_STAMP = "KEY_TIME_STAMP"
         private val KEY_RUNNING_TIME = "KEY_RUNNING_TIME"
     }
@@ -115,7 +116,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             finish()
         }
         Log.i(TAG, "디버깅!!! onCreate() mountainData id: ${mountainData.id}")
-        get<LiveClimbingCache>().initialize(mountainData)
+        get<LiveClimbingCache>().initialize(mountainData, intent.getIntExtra(KEY_MOUNTAIN_VISIT_COUNT, 0))
 
         initView()
         initObserve()

@@ -25,11 +25,12 @@ class CountDownFragment : BindingFragment<FragmentCountdownBinding>(FragmentCoun
 
         initView()
         initObserve()
-        viewModel.countDown(mountainData)
+        viewModel.countDown()
     }
 
     private fun initView() {
-        binding.tvMountainName.text = mountainData.name
+        binding.tvMountainName.text = viewModel.selectedMountain?.name
+        binding.tvMyChallengeCount.text = getString(R.string.count_unit, viewModel.visitCount)
     }
 
     private fun initObserve() {

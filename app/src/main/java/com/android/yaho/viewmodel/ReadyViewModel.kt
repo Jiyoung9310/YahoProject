@@ -10,22 +10,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.yaho.data.MountainData
-import com.android.yaho.local.cache.MountainListCache
 import com.android.yaho.di.ContextDelegate
-import com.android.yaho.repository.MountainRepository
+import com.android.yaho.local.cache.MountainListCache
+import com.android.yaho.repository.ClimbingRepository
 import com.android.yaho.screen.ClimbingActivity
 import com.android.yaho.screen.ReadyActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 class ReadyViewModel(
     private val contextDelegate: ContextDelegate,
-    private val mountainCache: MountainListCache
+    private val mountainCache: MountainListCache,
+    private val repo: ClimbingRepository,
 ) : ViewModel() {
 
     private val _moveScreen = MutableLiveData<Pair<String, Bundle?>>()
@@ -57,6 +57,9 @@ class ReadyViewModel(
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
+
+    var selectedMountain : MountainData? = null
+    var visitCount : Int = 0
 
     fun moveScreen(screen: String, bundle: Bundle? = null) {
         _moveScreen.value = screen to bundle
@@ -90,7 +93,7 @@ class ReadyViewModel(
         _nearByList.value = data
     }
 
-    fun countDown(mountain: MountainData) {
+    fun countDown() {
         viewModelScope.launch {
             val totalSeconds = TimeUnit.SECONDS.toSeconds(3)
             for (second in totalSeconds downTo 1) {
@@ -99,12 +102,23 @@ class ReadyViewModel(
             }
             moveScreen(
                 ReadyActivity.SCREEN_GO_CLIMBING,
-                Bundle().apply { putParcelable(ClimbingActivity.KEY_MOUNTAIN_DATA, mountain) })
+                Bundle().apply {
+                    putParcelable(ClimbingActivity.KEY_MOUNTAIN_DATA, selectedMountain)
+                    putInt(ClimbingActivity.KEY_MOUNTAIN_VISIT_COUNT, visitCount)
+                })
         }
     }
 
     fun onClickMountain(mountain: MountainData) {
-        _clickMountain.value = mountain
+        selectedMountain = mountain
+        viewModelScope.launch {
+            repo.getVisitMountain(mountain.id)
+                .catch { e:Throwable -> _error.value = e }
+                .collect { count ->
+                    visitCount = count + 1
+                    _clickMountain.value = mountain
+                }
+        }
     }
 
 }
