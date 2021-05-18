@@ -8,6 +8,7 @@ interface YahoPreference {
     var selectedMountainId: Int
     var runningTimeStamp: Long
     var runningTimeCount: Long
+    fun clearSelectedMountain()
 }
 
 class YahoPreferenceImpl(
@@ -33,4 +34,10 @@ class YahoPreferenceImpl(
     override var runningTimeCount: Long
         get() = preferences.getLong(KEY_RUNNING_TIME_COUNT, 0)
         set(value) { preferences.edit { putLong(KEY_RUNNING_TIME_COUNT, value) }}
+
+    override fun clearSelectedMountain() {
+        selectedMountainId = 0
+        runningTimeStamp = 0
+        runningTimeCount = 0
+    }
 }

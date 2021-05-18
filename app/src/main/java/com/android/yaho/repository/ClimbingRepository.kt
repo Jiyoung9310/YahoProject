@@ -1,10 +1,8 @@
 package com.android.yaho.repository
 
 import android.util.Log
-import com.android.yaho.data.MountainData
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.cache.LiveClimbingCache
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.ExperimentalCoroutinesApi

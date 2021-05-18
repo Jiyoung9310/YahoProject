@@ -26,7 +26,10 @@ class LiveClimbingCache {
 
     fun initialize(mountain: MountainData, visitCount: Int) {
         if(_recordData == null) {
-            clearCache()
+            _pointList.clear()
+            _latlngPaths.clear()
+            _sectionList.clear()
+            sectionIndex = 0
             _recordData = RecordEntity().apply {
                 this.mountainId = mountain.id
                 this.mountainName = mountain.name
@@ -41,6 +44,7 @@ class LiveClimbingCache {
         _latlngPaths.clear()
         _sectionList.clear()
         sectionIndex = 0
+        _recordData = null
     }
 
     fun getRecord() = _recordData ?: RecordEntity()
