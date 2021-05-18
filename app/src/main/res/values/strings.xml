@@ -7,6 +7,7 @@
     <string name="meter_unit">%.2fm</string>
     <string name="count_unit">%d회</string>
     <string name="speed_unit">%.2fm/s</string>
+    <string name="kcal_unit">%.2fkcal</string>
 
     <!--home-->
     <string name="home_all_height_title">내가 오른 높이</string>
@@ -49,10 +50,16 @@
     <string name="climbing_detail_info_climbing_time_title">운동 시간</string>
     <string name="climbing_detail_info_rest_time_title">휴식 시간</string>
     <string name="climbing_detail_info_distance_title">거리</string>
+    <string name="climbing_detail_info_move_distance_title">이동 거리</string>
     <string name="climbing_detail_info_speed_title">속도</string>
     <string name="climbing_detail_info_average_speed_title">평균 속도</string>
     <string name="climbing_detail_info_max_speed_title">최고 속도</string>
     <string name="climbing_detail_info_height_title">고도</string>
     <string name="climbing_detail_info_start_height_title">시작 고도</string>
     <string name="climbing_detail_info_max_height_title">최고 고도</string>
+
+    <string name="climbing_detail_info_section_start_time_title">등산 시작</string>
+    <string name="climbing_detail_info_section_rest_title">휴식</string>
+    <string name="climbing_detail_info_section_end_time_title">등산 종료</string>
+
 </resources>

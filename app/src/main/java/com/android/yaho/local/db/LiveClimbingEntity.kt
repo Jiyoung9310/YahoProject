@@ -8,6 +8,7 @@ import androidx.room.Relation
 data class LatLng(
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
+    val timestamp: Long = 0,
 )
 
 @Entity
@@ -26,20 +27,21 @@ data class RecordEntity(
     var maxHeight: Double = 0.0,
     var sections: List<PathSectionEntity>? = null,
     var path: List<LatLng>? = null,
+    var points: List<PointEntity>? = null,
 )
 
 @Entity
 data class PathSectionEntity(
-    @PrimaryKey(autoGenerate = true) val sectionId: Long = 0,
+    @PrimaryKey(autoGenerate = true) val sectionId: Int = 0,
     val runningTime: Long = 0,
     var distance: Float = 0f,
     val calories: Float = 0f,
-    val points: List<PointEntity>? = null,
+    val restIndex: Int = 0
 )
 
 @Entity
 data class PointEntity(
-    val parentSectionId: Long = 0,
+    val parentSectionId: Int = 0,
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
     val altitude: Double = 0.0,

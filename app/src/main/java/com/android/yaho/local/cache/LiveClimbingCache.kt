@@ -24,7 +24,7 @@ class LiveClimbingCache {
         get() = _sectionList
 
     private var _recordData : RecordEntity? = null
-    private var sectionIndex: Long = 0
+    private var sectionIndex: Int = 0
 
     fun initialize(mountain: MountainData, visitCount: Int) {
         if(_recordData == null) {
@@ -64,7 +64,7 @@ class LiveClimbingCache {
                 speed = location.speed,
                 distance = distance ?: 0f
         ))
-        _latlngPaths.add((LatLng(location.latitude, location.longitude)))
+        _latlngPaths.add((LatLng(location.latitude, location.longitude, location.time)))
         updateDistance()
         Log.d("LiveClimbingCache", "캐싱 : $_pointList")
     }
@@ -85,9 +85,9 @@ class LiveClimbingCache {
             PathSectionEntity(
                 sectionId = sectionIndex++,
                 runningTime = calculateRunningTime(sectionPointList),
-                distance = _recordData?.totalDistance ?: 0f,
+                distance = sectionPointList.map { it.distance }.fold(0f) { total, num -> total + num },
                 calories = 0f,
-                points = mutableListOf<PointEntity>().apply { addAll(sectionPointList) }
+                restIndex = _pointList.lastIndex
             )
         )
         Log.d("LiveClimbingCache", "캐싱 섹션 : $_sectionList")
@@ -106,6 +106,7 @@ class LiveClimbingCache {
             maxHeight = _pointList.map { it.altitude }.maxOf { it }
             sections = mutableListOf<PathSectionEntity>().apply { addAll(_sectionList) }
             path = mutableListOf<LatLng>().apply { addAll(_latlngPaths) }
+            points = mutableListOf<PointEntity>().apply { addAll(_pointList) }
         }
         Log.d("LiveClimbingCache", "캐싱 완료 : $_recordData")
         return _recordData
