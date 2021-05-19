@@ -39,7 +39,7 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
                 },
                 myClimbsClickAction = {
                     // 등산 기록 확인하기 화면으로 이동
-                    startClimbingDetailActivity(this@HomeActivity, "1621330057879")
+                    startClimbingDetailActivity(this@HomeActivity, "1621395171715")
                 },
                 removeAdsClickAction = {
                     // 광고 제거 결제 화면으로 이동 

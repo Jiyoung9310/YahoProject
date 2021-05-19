@@ -13,9 +13,9 @@ class LiveClimbingCache {
     private val _pointList = mutableListOf<PointEntity>()
     val pointList: List<PointEntity>
         get() = _pointList
-    private val _latlngPaths = mutableListOf<LatLng>()
+
     val latlngPaths: List<com.naver.maps.geometry.LatLng>
-        get() = _latlngPaths.map {
+        get() = _pointList.map {
             com.naver.maps.geometry.LatLng(it.latitude, it.longitude)
         }
 
@@ -29,7 +29,6 @@ class LiveClimbingCache {
     fun initialize(mountain: MountainData, visitCount: Int) {
         if(_recordData == null) {
             _pointList.clear()
-            _latlngPaths.clear()
             _sectionList.clear()
             sectionIndex = 0
             _recordData = RecordEntity().apply {
@@ -43,7 +42,6 @@ class LiveClimbingCache {
 
     fun clearCache() {
         _pointList.clear()
-        _latlngPaths.clear()
         _sectionList.clear()
         sectionIndex = 0
         _recordData = null
@@ -64,8 +62,8 @@ class LiveClimbingCache {
                 speed = location.speed,
                 distance = distance ?: 0f
         ))
-        _latlngPaths.add((LatLng(location.latitude, location.longitude, location.time)))
         updateDistance()
+        if(_pointList.count() == 1) updateSection()
         Log.d("LiveClimbingCache", "캐싱 : $_pointList")
     }
 
@@ -75,7 +73,11 @@ class LiveClimbingCache {
     }
 
     fun updateSection() {
-        if(_pointList.count() < 2) return
+        if(_pointList.count() < 2) {
+            _sectionList.add(PathSectionEntity())
+            Log.d("LiveClimbingCache", "캐싱 섹션 : $_sectionList")
+            return
+        }
 
         val sectionPointList = _pointList.filter { it.parentSectionId == sectionIndex }
 
@@ -105,7 +107,6 @@ class LiveClimbingCache {
             startHeight = _pointList.first().altitude
             maxHeight = _pointList.map { it.altitude }.maxOf { it }
             sections = mutableListOf<PathSectionEntity>().apply { addAll(_sectionList) }
-            path = mutableListOf<LatLng>().apply { addAll(_latlngPaths) }
             points = mutableListOf<PointEntity>().apply { addAll(_pointList) }
         }
         Log.d("LiveClimbingCache", "캐싱 완료 : $_recordData")

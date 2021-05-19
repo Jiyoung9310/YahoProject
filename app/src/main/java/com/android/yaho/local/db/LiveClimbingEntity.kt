@@ -26,7 +26,6 @@ data class RecordEntity(
     var startHeight: Double = 0.0,
     var maxHeight: Double = 0.0,
     var sections: List<PathSectionEntity>? = null,
-    var path: List<LatLng>? = null,
     var points: List<PointEntity>? = null,
 )
 

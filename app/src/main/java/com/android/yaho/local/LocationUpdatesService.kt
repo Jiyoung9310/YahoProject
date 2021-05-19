@@ -129,20 +129,22 @@ class LocationUpdatesService : Service(), KoinComponent {
     private fun onNewLocation(location: Location) {
         Log.i(TAG, "New location: $location")
         myLocation = location
-        if(isActive) get<LiveClimbingCache>().put(location, myLocation?.distanceTo(location))
+        if(isActive) {
+            get<LiveClimbingCache>().put(location, myLocation?.distanceTo(location))
 //        get<ClimbingSaveHelper>().savePoint(location, myLocation?.distanceTo(location))
 
-        // Notify anyone listening for broadcasts about the new location.
-        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(
-            Intent(ACTION_BROADCAST).apply {
-                putExtra(EXTRA_LOCATION, location)
-            }
-        )
+            // Notify anyone listening for broadcasts about the new location.
+            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(
+                Intent(ACTION_BROADCAST).apply {
+                    putExtra(EXTRA_LOCATION, location)
+                }
+            )
 
-        // Update notification content if running as a foreground service.
+            // Update notification content if running as a foreground service.
 //        if (serviceIsRunningInForeground(this)) {
             notificationManager.notify(NOTIFICATION_ID, getNotification())
 //        }
+        }
     }
 
     private fun getNotification(): Notification? {

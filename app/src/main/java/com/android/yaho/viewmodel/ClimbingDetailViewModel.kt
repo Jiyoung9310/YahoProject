@@ -46,6 +46,44 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
 
                         val sectionList = mutableListOf<ClimbingDetailSectionUseCase>()
 
+                        record.sections?.let { sections ->
+                            sectionList.add(
+                                ClimbingDetailSectionUseCase(
+                                    sectionNumber = 1,
+                                    sectionTitle = contextDelegate.getString(R.string.climbing_detail_info_section_start_time_title),
+                                    sectionPeriod = record.points?.get(0)?.timestamp?.let { convertHourTimeFormat(it) } ?: "",
+                                )
+                            )
+                            for(i in 1 until sections.size-1) {
+                                sectionList.add(ClimbingDetailSectionUseCase(
+                                    sectionNumber = i + 1,
+                                    sectionTitle = contextDelegate.getString(R.string.climbing_detail_info_section_rest_title),
+                                    sectionPeriod = run {
+                                        val startRest = record.points?.get(sections[i].restIndex)?.timestamp?.let { convertHourTimeFormat(it) } ?: ""
+                                        val endRest = record.points?.get(sections[i].restIndex + 1)?.timestamp?.let { convertHourTimeFormat(it) } ?: ""
+                                        "$startRest ~ $endRest"
+                                    },
+                                    sectionData = ClimbingSectionData(
+                                        climbingTime = sections[i].runningTime.millisecondsToHourTimeFormat(),
+                                        distance =  contextDelegate.getString(R.string.kilo_meter_unit, sections[i].distance),
+                                        calories = contextDelegate.getString(R.string.kcal_unit, sections[i].calories)
+                                    )
+                                ))
+                            }
+                            sectionList.add(ClimbingDetailSectionUseCase(
+                                sectionNumber = sections.size,
+                                sectionTitle = contextDelegate.getString(R.string.climbing_detail_info_section_end_time_title),
+                                sectionPeriod = record.points?.last()?.timestamp?.let { convertHourTimeFormat(it) } ?: "",
+                                sectionData = ClimbingSectionData(
+                                    climbingTime = sections.last().runningTime.millisecondsToHourTimeFormat(),
+                                    distance =  contextDelegate.getString(R.string.kilo_meter_unit, sections.last().distance),
+                                    calories = contextDelegate.getString(R.string.kcal_unit, sections.last().calories)
+                                )
+                            ))
+                            _sectionData.value = sectionList
+                        }
+
+/*
                         record.sections?.mapIndexed { index, pathSectionEntity ->
                             ClimbingDetailSectionUseCase(
                                 sectionNumber = index + 1,
@@ -78,7 +116,7 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
                             )
 
                             _sectionData.value = sectionList
-                        }
+                        }*/
                     }
                 }
         }

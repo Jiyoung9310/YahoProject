@@ -39,7 +39,6 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     }
 
     private val viewModel by viewModel<ClimbingDetailViewModel>()
-    private val behavior by lazy { BottomSheetBehavior.from(binding.clDetailInfo) }
     private var naverMap : NaverMap? = null
     private lateinit var climbingDetailSectionAdapter : ClimbingDetailSectionAdapter
 
@@ -56,6 +55,13 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     }
 
     private fun initView() {
+        binding.toolbar.setNavigationOnClickListener {
+            finish()
+        }
+        binding.btnClose.setOnClickListener {
+            finish()
+        }
+
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as MapFragment?
             ?: MapFragment.newInstance(
                 NaverMapOptions()
@@ -76,17 +82,6 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
             adapter = climbingDetailSectionAdapter
         }
 
-        behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                // slide
-
-            }
-
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                // state changed
-            }
-        })
     }
 
     private fun initObserve() {

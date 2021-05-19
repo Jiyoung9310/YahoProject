@@ -98,7 +98,7 @@ fun convertFullFormatDate(milliseconds: Long = 0) : String {
     return dateFormat.format(date)
 }
 
-const val HOUR_TIME_FORMAT_PATTERN = "a hh시 mm분"
+const val HOUR_TIME_FORMAT_PATTERN = "a h시 mm분"
 fun convertHourTimeFormat(milliseconds: Long = 0) : String {
     val date = Date(milliseconds)
     val dateFormat = SimpleDateFormat(HOUR_TIME_FORMAT_PATTERN, Locale.getDefault()).apply {

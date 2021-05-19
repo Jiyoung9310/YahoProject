@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,436 +10,414 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:elevation="1dp"
+        android:background="@color/white"
         app:contentInsetStartWithNavigation="0dp"
-        app:navigationIcon="@drawable/ic_back"
-        >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_back">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btnClose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:src="@drawable/ic_close"
             android:layout_marginEnd="16dp"
-            />
+            android:src="@drawable/ic_close" />
     </androidx.appcompat.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/mapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="360:184"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clDetailInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="24dp"
-        android:paddingBottom="50dp"
-        android:background="@color/white"
-        app:behavior_peekHeight="84dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/mapFragment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clMountainInfo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:padding="20dp"
-            android:background="@drawable/bg_btn_main_green"
-            android:backgroundTint="#4D64F4C0"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            >
+            android:id="@+id/clDetailInfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:paddingTop="24dp"
+            android:paddingBottom="50dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clMountainInfo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_btn_main_green"
+                android:backgroundTint="#4D64F4C0"
+                android:padding="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/gray_800"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="2021.04.03 (토)" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvMountainName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/gray_900"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvDate"
+                    tools:text="북한산으로 3번째 등산" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/gray_600"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvMountainName"
+                    tools:text="서울 도봉, 은평, 경기 고양 신도읍 [국립공원]" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvDate"
+                android:id="@+id/tvPathTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/climbing_detail_path_title"
                 android:textColor="@color/gray_800"
-                app:layout_constraintTop_toTopOf="parent"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="2021.04.03 (토)"
-                />
+                app:layout_constraintTop_toBottomOf="@id/clMountainInfo" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvList"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvPathTitle" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/gray_50"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rvList" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvMountainName"
+                android:id="@+id/tvDetailInfoTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="18sp"
-                android:textColor="@color/gray_900"
-                app:layout_constraintTop_toBottomOf="@id/tvDate"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/climbing_detail_info_title"
+                android:textColor="@color/gray_800"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="북한산으로 3번째 등산"
-                />
+                app:layout_constraintTop_toBottomOf="@id/divider" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.18" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.38" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvAddress"
+                android:id="@+id/tvTimeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:layout_marginTop="16dp"
+                android:text="@string/climbing_detail_info_time_title"
+                android:textColor="@color/gray_800"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/tvDetailInfoTitle"
+                app:layout_constraintTop_toBottomOf="@id/tvDetailInfoTitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTotalTimeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/climbing_detail_info_total_time_title"
                 android:textColor="@color/gray_600"
-                app:layout_constraintTop_toBottomOf="@id/tvMountainName"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvTimeTitle"
+                app:layout_constraintStart_toEndOf="@id/guideline1"
+                app:layout_constraintTop_toTopOf="@id/tvTimeTitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTotalTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_800"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvTotalTimeTitle"
+                app:layout_constraintStart_toEndOf="@id/guideline2"
+                app:layout_constraintTop_toTopOf="@id/tvTotalTimeTitle"
+                tools:text="2시간 40분 29초" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTotalTimePeriod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_600"
+                android:textSize="12sp"
+                app:layout_constraintStart_toEndOf="@id/guideline2"
+                app:layout_constraintTop_toBottomOf="@id/tvTotalTime"
+                tools:text="오전 8시 3분 ~ 오전 10시 43분" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvClimbingTimeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/climbing_detail_info_climbing_time_title"
+                android:textColor="@color/gray_600"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/guideline1"
+                app:layout_constraintTop_toBottomOf="@id/tvTotalTimePeriod" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvClimbingTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_800"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvClimbingTimeTitle"
+                app:layout_constraintStart_toEndOf="@id/guideline2"
+                app:layout_constraintTop_toTopOf="@id/tvClimbingTimeTitle"
+                tools:text="2시간 27분 29초" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvRestTimeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/climbing_detail_info_rest_time_title"
+                android:textColor="@color/gray_600"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/guideline1"
+                app:layout_constraintTop_toBottomOf="@id/tvClimbingTimeTitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvRestTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_800"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvRestTimeTitle"
+                app:layout_constraintStart_toEndOf="@id/guideline2"
+                app:layout_constraintTop_toTopOf="@id/tvRestTimeTitle"
+                tools:text="13분" />
+
+            <View
+                android:id="@+id/sub_divider1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                android:background="@color/gray_100"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="서울 도봉, 은평, 경기 고양 신도읍 [국립공원]"
-                />
+                app:layout_constraintTop_toBottomOf="@id/tvRestTimeTitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDistanceTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/climbing_detail_info_distance_title"
+                android:textColor="@color/gray_800"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/tvDetailInfoTitle"
+                app:layout_constraintTop_toBottomOf="@id/sub_divider1" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_800"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvDistanceTitle"
+                app:layout_constraintStart_toEndOf="@id/guideline1"
+                app:layout_constraintTop_toTopOf="@id/tvDistanceTitle"
+                tools:text="10.37km" />
+
+            <View
+                android:id="@+id/sub_divider2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                android:background="@color/gray_100"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDistanceTitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvSpeedTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/climbing_detail_info_speed_title"
+                android:textColor="@color/gray_800"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/tvDetailInfoTitle"
+                app:layout_constraintTop_toBottomOf="@id/sub_divider2" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvAverageSpeedTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/climbing_detail_info_average_speed_title"
+                android:textColor="@color/gray_600"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvSpeedTitle"
+                app:layout_constraintStart_toStartOf="@id/guideline1"
+                app:layout_constraintTop_toTopOf="@id/tvSpeedTitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvAverageSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_800"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvAverageSpeedTitle"
+                app:layout_constraintStart_toEndOf="@id/guideline2"
+                app:layout_constraintTop_toTopOf="@id/tvAverageSpeedTitle"
+                tools:text="25.03m/s" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvMaxSpeedTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/climbing_detail_info_max_speed_title"
+                android:textColor="@color/gray_600"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/guideline1"
+                app:layout_constraintTop_toBottomOf="@id/tvSpeedTitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvMaxSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_800"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvMaxSpeedTitle"
+                app:layout_constraintStart_toEndOf="@id/guideline2"
+                app:layout_constraintTop_toTopOf="@id/tvMaxSpeedTitle"
+                tools:text="25.03m/s" />
+
+            <View
+                android:id="@+id/sub_divider3"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                android:background="@color/gray_100"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvMaxSpeedTitle" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvHeightTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/climbing_detail_info_height_title"
+                android:textColor="@color/gray_800"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/tvDetailInfoTitle"
+                app:layout_constraintTop_toBottomOf="@id/sub_divider3" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvStartHeightTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/climbing_detail_info_start_height_title"
+                android:textColor="@color/gray_600"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvHeightTitle"
+                app:layout_constraintStart_toStartOf="@id/guideline1"
+                app:layout_constraintTop_toTopOf="@id/tvHeightTitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvStartHeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_800"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvStartHeightTitle"
+                app:layout_constraintStart_toEndOf="@id/guideline2"
+                app:layout_constraintTop_toTopOf="@id/tvStartHeightTitle"
+                tools:text="6m" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvMaxHeightTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/climbing_detail_info_max_height_title"
+                android:textColor="@color/gray_600"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/guideline1"
+                app:layout_constraintTop_toBottomOf="@id/tvStartHeightTitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvMaxHeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_800"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvMaxHeightTitle"
+                app:layout_constraintStart_toEndOf="@id/guideline2"
+                app:layout_constraintTop_toTopOf="@id/tvMaxHeightTitle"
+                tools:text="250m" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvPathTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="20dp"
-            android:text="@string/climbing_detail_path_title"
-            android:textSize="16sp"
-            android:textColor="@color/gray_800"
-            app:layout_constraintTop_toBottomOf="@id/clMountainInfo"
-            app:layout_constraintStart_toStartOf="parent"
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvList"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintTop_toBottomOf="@id/tvPathTitle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            />
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="0dp"
-            android:layout_height="8dp"
-            android:layout_marginTop="40dp"
-            android:background="@color/gray_50"
-            app:layout_constraintTop_toBottomOf="@id/rvList"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvDetailInfoTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="20dp"
-            android:text="@string/climbing_detail_info_title"
-            android:textSize="16sp"
-            android:textColor="@color/gray_800"
-            app:layout_constraintTop_toBottomOf="@id/divider"
-            app:layout_constraintStart_toStartOf="parent"
-            />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintGuide_percent="0.18"
-            android:orientation="vertical"
-            />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintGuide_percent="0.38"
-            android:orientation="vertical"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvTimeTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/climbing_detail_info_time_title"
-            android:textSize="14sp"
-            android:textColor="@color/gray_800"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/tvDetailInfoTitle"
-            app:layout_constraintStart_toStartOf="@id/tvDetailInfoTitle"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvTotalTimeTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/gray_600"
-            android:text="@string/climbing_detail_info_total_time_title"
-            app:layout_constraintTop_toTopOf="@id/tvTimeTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvTimeTitle"
-            app:layout_constraintStart_toEndOf="@id/guideline1"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvTotalTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/gray_800"
-            app:layout_constraintTop_toTopOf="@id/tvTotalTimeTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvTotalTimeTitle"
-            app:layout_constraintStart_toEndOf="@id/guideline2"
-            tools:text="2시간 40분 29초"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvTotalTimePeriod"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/gray_600"
-            app:layout_constraintTop_toBottomOf="@id/tvTotalTime"
-            app:layout_constraintStart_toEndOf="@id/guideline2"
-            tools:text="오전 8시 3분 ~ 오전 10시 43분"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvClimbingTimeTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textSize="12sp"
-            android:textColor="@color/gray_600"
-            android:text="@string/climbing_detail_info_climbing_time_title"
-            app:layout_constraintTop_toBottomOf="@id/tvTotalTimePeriod"
-            app:layout_constraintStart_toStartOf="@id/guideline1"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvClimbingTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/gray_800"
-            app:layout_constraintTop_toTopOf="@id/tvClimbingTimeTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvClimbingTimeTitle"
-            app:layout_constraintStart_toEndOf="@id/guideline2"
-            tools:text="2시간 27분 29초"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvRestTimeTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textSize="12sp"
-            android:textColor="@color/gray_600"
-            android:text="@string/climbing_detail_info_rest_time_title"
-            app:layout_constraintTop_toBottomOf="@id/tvClimbingTimeTitle"
-            app:layout_constraintStart_toStartOf="@id/guideline1"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvRestTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/gray_800"
-            app:layout_constraintTop_toTopOf="@id/tvRestTimeTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvRestTimeTitle"
-            app:layout_constraintStart_toEndOf="@id/guideline2"
-            tools:text="13분"
-            />
-
-        <View
-            android:id="@+id/sub_divider1"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:background="@color/gray_100"
-            app:layout_constraintTop_toBottomOf="@id/tvRestTimeTitle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvDistanceTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/climbing_detail_info_distance_title"
-            android:textSize="14sp"
-            android:textColor="@color/gray_800"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/sub_divider1"
-            app:layout_constraintStart_toStartOf="@id/tvDetailInfoTitle"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvDistance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/gray_800"
-            app:layout_constraintTop_toTopOf="@id/tvDistanceTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvDistanceTitle"
-            app:layout_constraintStart_toEndOf="@id/guideline1"
-            tools:text="10.37km"
-            />
-
-        <View
-            android:id="@+id/sub_divider2"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:background="@color/gray_100"
-            app:layout_constraintTop_toBottomOf="@id/tvDistanceTitle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvSpeedTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/climbing_detail_info_speed_title"
-            android:textSize="14sp"
-            android:textColor="@color/gray_800"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/sub_divider2"
-            app:layout_constraintStart_toStartOf="@id/tvDetailInfoTitle"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvAverageSpeedTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/gray_600"
-            android:text="@string/climbing_detail_info_average_speed_title"
-            app:layout_constraintTop_toTopOf="@id/tvSpeedTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvSpeedTitle"
-            app:layout_constraintStart_toStartOf="@id/guideline1"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvAverageSpeed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/gray_800"
-            app:layout_constraintTop_toTopOf="@id/tvAverageSpeedTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvAverageSpeedTitle"
-            app:layout_constraintStart_toEndOf="@id/guideline2"
-            tools:text="25.03m/s"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvMaxSpeedTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textSize="12sp"
-            android:textColor="@color/gray_600"
-            android:text="@string/climbing_detail_info_max_speed_title"
-            app:layout_constraintTop_toBottomOf="@id/tvSpeedTitle"
-            app:layout_constraintStart_toStartOf="@id/guideline1"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvMaxSpeed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/gray_800"
-            app:layout_constraintTop_toTopOf="@id/tvMaxSpeedTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvMaxSpeedTitle"
-            app:layout_constraintStart_toEndOf="@id/guideline2"
-            tools:text="25.03m/s"
-            />
-
-        <View
-            android:id="@+id/sub_divider3"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:background="@color/gray_100"
-            app:layout_constraintTop_toBottomOf="@id/tvMaxSpeedTitle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            />
-
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvHeightTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/climbing_detail_info_height_title"
-            android:textSize="14sp"
-            android:textColor="@color/gray_800"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/sub_divider3"
-            app:layout_constraintStart_toStartOf="@id/tvDetailInfoTitle"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvStartHeightTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/gray_600"
-            android:text="@string/climbing_detail_info_start_height_title"
-            app:layout_constraintTop_toTopOf="@id/tvHeightTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvHeightTitle"
-            app:layout_constraintStart_toStartOf="@id/guideline1"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvStartHeight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/gray_800"
-            app:layout_constraintTop_toTopOf="@id/tvStartHeightTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvStartHeightTitle"
-            app:layout_constraintStart_toEndOf="@id/guideline2"
-            tools:text="6m"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvMaxHeightTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textSize="12sp"
-            android:textColor="@color/gray_600"
-            android:text="@string/climbing_detail_info_max_height_title"
-            app:layout_constraintTop_toBottomOf="@id/tvStartHeightTitle"
-            app:layout_constraintStart_toStartOf="@id/guideline1"
-            />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvMaxHeight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/gray_800"
-            app:layout_constraintTop_toTopOf="@id/tvMaxHeightTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvMaxHeightTitle"
-            app:layout_constraintStart_toEndOf="@id/guideline2"
-            tools:text="250m"
-            />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
