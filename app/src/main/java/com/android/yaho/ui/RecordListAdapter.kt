@@ -21,7 +21,7 @@ data class UIItem(
     }
 }
 
-class RecordListAdapter : ListAdapter<UIItem, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<UIItem>() {
+class RecordListAdapter(private val clickItem : (String) -> Unit) : ListAdapter<UIItem, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<UIItem>() {
     override fun areItemsTheSame(oldItem: UIItem, newItem: UIItem): Boolean {
         return oldItem.id == newItem.id
     }
@@ -40,7 +40,7 @@ class RecordListAdapter : ListAdapter<UIItem, RecyclerView.ViewHolder>(object : 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
             RECORD_HEADER_VIEW_TYPE -> RecordHeaderViewHolder(parent)
-            else -> RecordItemViewHolder(parent)
+            else -> RecordItemViewHolder(parent, clickItem)
         }
     }
 
@@ -66,8 +66,13 @@ class RecordHeaderViewHolder(parent: ViewGroup) : BindingViewHolder<ItemRecordHe
     }
 }
 
-class RecordItemViewHolder(parent: ViewGroup) : BindingViewHolder<ItemRecordListBinding>(parent, ItemRecordListBinding::inflate) {
+class RecordItemViewHolder(parent: ViewGroup, private val clickItem : (String) -> Unit) : BindingViewHolder<ItemRecordListBinding>(parent, ItemRecordListBinding::inflate) {
+    private var data : RecordUseCase? = null
+    init {
+        binding.root.setOnClickListener { data?.let { clickItem.invoke(it.recordId) } }
+    }
     fun bind(data : RecordUseCase) {
+        this.data = data
         binding.tvDate.text = data.recordDate
         binding.tvMountainName.text = data.mountainName
         binding.tvRunningTime.text = data.runningTime

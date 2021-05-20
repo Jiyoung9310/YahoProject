@@ -11,6 +11,7 @@ import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityRecordListBinding
 import com.android.yaho.dp
+import com.android.yaho.screen.ClimbingDetailActivity.Companion.startClimbingDetailActivity
 import com.android.yaho.ui.RecordListAdapter
 import com.android.yaho.ui.SimpleDividerItemDecoration
 import com.android.yaho.viewmodel.RecordListViewModel
@@ -29,7 +30,13 @@ class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRe
     }
 
     private fun initView() {
-        recordListAdapter = RecordListAdapter()
+        recordListAdapter = RecordListAdapter {
+            startClimbingDetailActivity(
+                activity = this,
+                climbingId = it
+            )
+        }
+
         binding.rvList.apply {
             layoutManager = LinearLayoutManager(this@RecordListActivity, RecyclerView.VERTICAL, false)
             adapter = recordListAdapter
