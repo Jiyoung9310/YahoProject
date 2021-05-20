@@ -16,6 +16,7 @@ data class LatLng(
 
 @Entity
 data class RecordEntity(
+    var recordId : String = "",
     var mountainId: Int = 0,
     var mountainName: String = "",
     var mountainVisitCount: Int = 0,

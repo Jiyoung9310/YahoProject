@@ -1,9 +1,11 @@
 package com.android.yaho.repository
 
 import android.util.Log
+import com.android.yaho.data.MountainData
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.local.db.RecordEntity
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,6 +20,7 @@ interface ClimbingRepository {
     suspend fun updateVisitMountain() : Flow<ClimbingResult>
     suspend fun getClimbingData(climbingId: String) : Flow<RecordEntity?>
     suspend fun getVisitMountain(mountainId: Int): Flow<Int>
+    suspend fun getClimbingRecordList() : Flow<List<RecordEntity>>
 }
 
 @ExperimentalCoroutinesApi
@@ -28,13 +31,16 @@ class ClimbingRepositoryImpl(
         val uid = get<YahoPreference>().userId
         if(uid.isNullOrEmpty()) offer(ClimbingResult.Fail(Throwable("userId 접근 불가")))
 
-        val climbCache = get<LiveClimbingCache>()
-        Log.w("ClimbingRepository", "ready to climbing data add : ${climbCache.getRecord()}")
+        val recordCache = get<LiveClimbingCache>().getRecord()
+        recordCache.apply {
+            recordId = climbingId
+        }
+        Log.w("ClimbingRepository", "ready to climbing data add : $recordCache")
         val script = firestoreDB.collection("users")
             .document(uid!!)
             .collection("climbingData")
             .document(climbingId)
-            .set(climbCache.getRecord())
+            .set(recordCache)
             .addOnSuccessListener { documentReference ->
                 Log.w("ClimbingRepository", "climbing data add : $documentReference")
                 offer(ClimbingResult.Success)
@@ -124,6 +130,39 @@ class ClimbingRepositoryImpl(
             }
 
         awaitClose { (subscription as ListenerRegistration).remove() }
+    }
+
+    override suspend fun getClimbingRecordList(): Flow<List<RecordEntity>> = callbackFlow {
+        val uid = get<YahoPreference>().userId
+        if(uid.isNullOrEmpty()) offer(emptyList<RecordEntity>())
+
+        var eventCollection: CollectionReference? = null
+        try{
+            eventCollection = firestoreDB.collection("users")
+                .document(uid!!)
+                .collection("climbingData")
+            Log.w("ClimbingRepository", "ready to getClimbingRecordList")
+        } catch (e: Throwable) {
+            Log.w("ClimbingRepository", "getClimbingRecordList close")
+            close(e)
+        }
+
+        val subscription = eventCollection?.addSnapshotListener { snapshot, error ->
+            if(snapshot == null) {
+                offer(emptyList<RecordEntity>())
+                return@addSnapshotListener
+            }
+            try {
+                val data = snapshot.toObjects(RecordEntity::class.java)
+                Log.w("ClimbingRepository", "success getClimbingRecordList : $data")
+                offer(data)
+            } catch (e: Throwable) {
+                Log.w("MountainRepository", "getClimbingRecordList error : ${e.message}")
+                offer(emptyList<RecordEntity>())
+                return@addSnapshotListener
+            }
+        }
+        awaitClose { subscription?.remove() }
     }
 }
 

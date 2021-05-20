@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.location.Location
 import android.preference.PreferenceManager
 import java.text.DateFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -106,3 +107,29 @@ fun convertHourTimeFormat(milliseconds: Long = 0) : String {
     }
     return dateFormat.format(date)
 }
+
+private const val HEADER_DATE_FORMAT_PATTERN = "yyyy.MM"
+fun String?.convertHeaderDateFormat(): String {
+    this ?: return ""
+
+    val milliseconds = this.toLong()
+    val date = Date(milliseconds)
+    val fromFormat = SimpleDateFormat(HEADER_DATE_FORMAT_PATTERN, Locale.getDefault()).apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }
+    return fromFormat.format(date)
+}
+
+private const val RECORD_DATE_FORMAT_PATTERN = "MM.dd"
+fun String?.convertRecordDateFormat(): String {
+    this ?: return ""
+
+    val milliseconds = this.toLong()
+    val date = Date(milliseconds)
+    val fromFormat = SimpleDateFormat(RECORD_DATE_FORMAT_PATTERN, Locale.getDefault()).apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }
+    return fromFormat.format(date)
+}
+
+fun Float.km(context: Context) : String = context.getString(R.string.kilo_meter_unit, this)
