@@ -1,5 +1,6 @@
 package com.android.yaho.data
 
+import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 

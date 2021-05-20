@@ -1,23 +1,20 @@
 package com.android.yaho.screen
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityClimbingDetailBinding
-import com.android.yaho.dp
-import com.android.yaho.millisecondsToHourTimeFormat
+import com.android.yaho.screen.ClimbingPathActivity.Companion.KEY_PATH_LIST
+import com.android.yaho.screen.ClimbingPathActivity.Companion.KEY_SECTION_MARK_LIST
 import com.android.yaho.ui.ClimbingDetailSectionAdapter
 import com.android.yaho.viewmodel.ClimbingDetailViewModel
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
@@ -47,6 +44,9 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     private lateinit var climbingDetailSectionAdapter : ClimbingDetailSectionAdapter
     private val pathOverlay: PathOverlay by lazy { PathOverlay() }
 
+    private val pathList = arrayListOf<com.android.yaho.local.db.LatLng>()
+    private val sectionMarkList = arrayListOf<com.android.yaho.local.db.LatLng>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -63,7 +63,10 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
         }
 
         binding.btnWide.setOnClickListener {
-            startActivity(Intent(this, ClimbingPathActivity::class.java))
+            startActivity(Intent(this, ClimbingPathActivity::class.java).apply {
+                putExtra(KEY_PATH_LIST, pathList)
+                putExtra(KEY_SECTION_MARK_LIST, sectionMarkList)
+            })
         }
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as MapFragment?
@@ -110,6 +113,9 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
         }
 
         viewModel.pathData.observe(this) { list ->
+            pathList.addAll(list.map{
+                com.android.yaho.local.db.LatLng(it.latitude, it.longitude)
+            })
             naverMap?.let {
                 if (list.size >= 2) {
                     pathOverlay.apply {
@@ -121,6 +127,9 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
         }
 
         viewModel.sectionMark.observe(this) { list ->
+            sectionMarkList.addAll(list.map{
+                com.android.yaho.local.db.LatLng(it.latitude, it.longitude)
+            })
             naverMap?.let {
                 list.forEach {
                     Marker().apply {

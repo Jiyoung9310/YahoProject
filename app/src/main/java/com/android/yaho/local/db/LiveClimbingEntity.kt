@@ -1,15 +1,18 @@
 package com.android.yaho.local.db
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class LatLng(
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
-    val timestamp: Long = 0,
-)
+) : Parcelable
 
 @Entity
 data class RecordEntity(
