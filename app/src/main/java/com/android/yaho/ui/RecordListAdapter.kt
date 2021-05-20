@@ -47,25 +47,30 @@ class RecordListAdapter : ListAdapter<UIItem, RecyclerView.ViewHolder>(object : 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder){
             is RecordHeaderViewHolder -> {
-                holder.bind(currentList[position] as RecordHeader)
+                holder.bind(currentList[position].item as RecordHeader)
             }
             is RecordItemViewHolder -> {
-                holder.bind(currentList[position] as RecordUseCase)
+                holder.bind(currentList[position].item as RecordUseCase)
             }
         }
     }
 
     override fun getItemCount(): Int = currentList.count()
+
+    override fun getItemViewType(position: Int): Int = currentList[position].viewType
 }
 
 class RecordHeaderViewHolder(parent: ViewGroup) : BindingViewHolder<ItemRecordHeaderBinding>(parent, ItemRecordHeaderBinding::inflate) {
     fun bind(data : RecordHeader) {
-
+        binding.tvHeader.text = data.headerDate
     }
 }
 
 class RecordItemViewHolder(parent: ViewGroup) : BindingViewHolder<ItemRecordListBinding>(parent, ItemRecordListBinding::inflate) {
     fun bind(data : RecordUseCase) {
-
+        binding.tvDate.text = data.recordDate
+        binding.tvMountainName.text = data.mountainName
+        binding.tvRunningTime.text = data.runningTime
+        binding.tvDistance.text = data.distance
     }
 }
