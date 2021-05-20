@@ -3,6 +3,7 @@ package com.android.yaho.screen
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,14 +13,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityClimbingDetailBinding
+import com.android.yaho.dp
 import com.android.yaho.millisecondsToHourTimeFormat
 import com.android.yaho.ui.ClimbingDetailSectionAdapter
 import com.android.yaho.viewmodel.ClimbingDetailViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.naver.maps.map.MapFragment
-import com.naver.maps.map.NaverMap
-import com.naver.maps.map.NaverMapOptions
-import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
+import com.naver.maps.map.*
+import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.OverlayImage
+import com.naver.maps.map.overlay.PathOverlay
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(ActivityClimbingDetailBinding::inflate),
@@ -41,14 +45,10 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     private val viewModel by viewModel<ClimbingDetailViewModel>()
     private var naverMap : NaverMap? = null
     private lateinit var climbingDetailSectionAdapter : ClimbingDetailSectionAdapter
+    private val pathOverlay: PathOverlay by lazy { PathOverlay() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        intent.extras?.getString(KEY_CLIMBING_DATA_ID)?.let {
-            viewModel.getClimbingData(it)
-        } ?: run {
-            finish()
-        }
 
         initView()
         initObserve()
@@ -105,6 +105,34 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
             binding.tvMaxHeight.text = it.maxHeight
         }
 
+        viewModel.pathData.observe(this) { list ->
+            naverMap?.let {
+                if (list.size >= 2) {
+                    pathOverlay.apply {
+                        coords = list
+                        map = naverMap
+                    }
+                }
+            }
+        }
+
+        viewModel.sectionMark.observe(this) { list ->
+            naverMap?.let {
+                list.forEach {
+                    Marker().apply {
+                        position = LatLng(it.latitude, it.longitude)
+                        icon = OverlayImage.fromResource(R.drawable.img_marker_section)
+                        map = naverMap
+                    }
+                }
+
+                val cameraUpdate = CameraUpdate.fitBounds(
+                    LatLngBounds.Builder().include(list).build(), 150
+                )
+                naverMap?.moveCamera(cameraUpdate)
+            }
+        }
+
         viewModel.sectionData.observe(this) {
             climbingDetailSectionAdapter.sectionList = it
         }
@@ -116,5 +144,32 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
 
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
+
+        naverMap.apply {
+            isLiteModeEnabled = true
+            setBackgroundResource(NaverMap.DEFAULT_BACKGROUND_DRWABLE_DARK)
+            mapType = NaverMap.MapType.Terrain
+            setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, true)
+            minZoom = 4.0
+            maxZoom = 13.0
+            uiSettings.apply {
+                isZoomControlEnabled = false
+                isCompassEnabled = false
+                isScaleBarEnabled = false
+            }
+            setContentPadding(0, 0, 0, 0)
+        }
+
+        pathOverlay.also {
+            it.width = resources.getDimensionPixelSize(R.dimen.path_overlay_width)
+            it.outlineWidth = 0
+            it.color = Color.BLACK
+        }
+
+        intent.extras?.getString(KEY_CLIMBING_DATA_ID)?.let {
+            viewModel.getClimbingData(it)
+        } ?: run {
+            finish()
+        }
     }
 }

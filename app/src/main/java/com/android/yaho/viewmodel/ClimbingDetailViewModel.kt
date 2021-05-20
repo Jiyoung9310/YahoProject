@@ -11,6 +11,7 @@ import com.android.yaho.local.cache.MountainListCache
 import com.android.yaho.local.db.RecordEntity
 import com.android.yaho.millisecondsToHourTimeFormat
 import com.android.yaho.repository.ClimbingRepository
+import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -25,6 +26,12 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
 
     private val _sectionData = MutableLiveData<List<ClimbingDetailSectionUseCase>>()
     val sectionData : LiveData<List<ClimbingDetailSectionUseCase>> get() = _sectionData
+
+    private val _pathData = MutableLiveData<List<LatLng>>()
+    val pathData : LiveData<List<LatLng>> get() = _pathData
+
+    private val _sectionMark = MutableLiveData<List<LatLng>>()
+    val sectionMark : LiveData<List<LatLng>> get() = _sectionMark
 
     private val _noData = MutableLiveData<Unit>()
     val noData: LiveData<Unit> get() = _noData
@@ -42,6 +49,10 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
                     } else {
                         _climbingData.value = record.toUseCase().apply {
                             mountainAddress = mountainListCache.getAddress(record.mountainId)
+                        }
+
+                        _pathData.value = record.points?.map { LatLng(it.latitude, it.longitude) }.apply {
+                            mutableListOf(this)
                         }
 
                         val sectionList = mutableListOf<ClimbingDetailSectionUseCase>()
@@ -81,42 +92,19 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
                                 )
                             ))
                             _sectionData.value = sectionList
+
+
+                            _sectionMark.value = record.points?.let { points ->
+                                sections.map {
+                                    points[it.restIndex]
+                                }.map {
+                                    LatLng(it.latitude, it.longitude)
+                                }.apply {
+                                    mutableListOf(this)
+                                }
+                            }
                         }
 
-/*
-                        record.sections?.mapIndexed { index, pathSectionEntity ->
-                            ClimbingDetailSectionUseCase(
-                                sectionNumber = index + 1,
-                                sectionTitle = if(index == 0) {
-                                    contextDelegate.getString(R.string.climbing_detail_info_section_start_time_title)
-                                } else {
-                                    contextDelegate.getString(R.string.climbing_detail_info_section_rest_title)
-                                },
-                                sectionPeriod = if(index == 0) {
-                                    record.points?.get(0)?.timestamp?.let { convertHourTimeFormat(it) } ?: ""
-                                } else {
-                                    val startRest = record.points?.get(pathSectionEntity.restIndex)?.timestamp?.let { convertHourTimeFormat(it) } ?: ""
-                                    val endRest = record.points?.get(pathSectionEntity.restIndex + 1)?.timestamp?.let { convertHourTimeFormat(it) } ?: ""
-                                    "$startRest ~ $endRest"
-                                },
-                                sectionData = ClimbingSectionData(
-                                    climbingTime = pathSectionEntity.runningTime.millisecondsToHourTimeFormat(),
-                                    distance =  contextDelegate.getString(R.string.kilo_meter_unit, pathSectionEntity.distance),
-                                    calories = contextDelegate.getString(R.string.kcal_unit, pathSectionEntity.calories)
-                                )
-                            )
-                        }?.apply {
-                            sectionList.addAll(this)
-                            sectionList.add(
-                                ClimbingDetailSectionUseCase(
-                                    sectionNumber = this.count() + 1,
-                                    sectionTitle = contextDelegate.getString(R.string.climbing_detail_info_section_end_time_title),
-                                    sectionPeriod = record.points?.last()?.timestamp?.let { convertHourTimeFormat(it) } ?: ""
-                                )
-                            )
-
-                            _sectionData.value = sectionList
-                        }*/
                     }
                 }
         }
