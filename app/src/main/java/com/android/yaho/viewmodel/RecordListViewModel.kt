@@ -32,7 +32,8 @@ class RecordListViewModel(private val contextDelegate: ContextDelegate,
                 .catch { e: Throwable -> _error.value = e }
                 .collect {
                     val recordItemList = mutableListOf<UIItem>()
-                    it.map { data ->
+                    it.sortedByDescending { it.recordId.toLong() }
+                        .map { data ->
                         UIItem(
                             id = data.recordId,
                             item = RecordUseCase(
