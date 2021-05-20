@@ -52,6 +52,9 @@
         <activity android:name=".screen.ClimbingPathActivity"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".screen.RecordListActivity"
+            android:screenOrientation="portrait" />
+
         <service
             android:name=".local.LocationUpdatesService"
             android:enabled="true"
