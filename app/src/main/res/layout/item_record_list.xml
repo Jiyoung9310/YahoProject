@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp"
+    >
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.15"
+        android:orientation="vertical"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/gray_800"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="4.4"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvMountainName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/gray_900"
+        app:layout_constraintTop_toTopOf="@id/tvDate"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="@id/tvDate"
+        tools:text="북한산"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvRunningTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="14sp"
+        android:textColor="@color/gray_600"
+        app:layout_constraintTop_toBottomOf="@id/tvMountainName"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        tools:text="1시간 40분"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/dot1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:text="·"
+        android:textSize="20sp"
+        android:textColor="@color/gray_600"
+        app:layout_constraintTop_toTopOf="@id/tvRunningTime"
+        app:layout_constraintBottom_toBottomOf="@id/tvRunningTime"
+        app:layout_constraintStart_toEndOf="@id/tvRunningTime"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:textSize="14sp"
+        android:textColor="@color/gray_600"
+        app:layout_constraintTop_toTopOf="@id/tvRunningTime"
+        app:layout_constraintBottom_toBottomOf="@id/tvRunningTime"
+        app:layout_constraintStart_toEndOf="@id/dot1"
+        tools:text="1.9km"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_arrow"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

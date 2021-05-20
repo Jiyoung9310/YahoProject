@@ -1,0 +1,81 @@
+package com.android.yaho.ui
+
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.android.yaho.R
+import com.android.yaho.base.BindingViewHolder
+import com.android.yaho.databinding.ItemRecordHeaderBinding
+import com.android.yaho.databinding.ItemRecordListBinding
+import com.android.yaho.viewmodel.RecordHeader
+import com.android.yaho.viewmodel.RecordUseCase
+
+data class UIItem(
+    var id: Any? = null,
+    var item: Any = Unit,
+    var viewType: Int = 0
+) {
+    init {
+        if (id == null) id = hashCode()
+    }
+}
+
+class RecordListAdapter(private val clickItem : (String) -> Unit) : ListAdapter<UIItem, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<UIItem>() {
+    override fun areItemsTheSame(oldItem: UIItem, newItem: UIItem): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: UIItem, newItem: UIItem): Boolean {
+        return oldItem == newItem
+    }
+}){
+
+    companion object {
+        const val RECORD_HEADER_VIEW_TYPE = R.layout.item_record_header
+        const val RECORD_ITEM_VIEW_TYPE = R.layout.item_record_list
+    }
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when(viewType) {
+            RECORD_HEADER_VIEW_TYPE -> RecordHeaderViewHolder(parent)
+            else -> RecordItemViewHolder(parent, clickItem)
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when(holder){
+            is RecordHeaderViewHolder -> {
+                holder.bind(currentList[position].item as RecordHeader)
+            }
+            is RecordItemViewHolder -> {
+                holder.bind(currentList[position].item as RecordUseCase)
+            }
+        }
+    }
+
+    override fun getItemCount(): Int = currentList.count()
+
+    override fun getItemViewType(position: Int): Int = currentList[position].viewType
+}
+
+class RecordHeaderViewHolder(parent: ViewGroup) : BindingViewHolder<ItemRecordHeaderBinding>(parent, ItemRecordHeaderBinding::inflate) {
+    fun bind(data : RecordHeader) {
+        binding.tvHeader.text = data.headerDate
+    }
+}
+
+class RecordItemViewHolder(parent: ViewGroup, private val clickItem : (String) -> Unit) : BindingViewHolder<ItemRecordListBinding>(parent, ItemRecordListBinding::inflate) {
+    private var data : RecordUseCase? = null
+    init {
+        binding.root.setOnClickListener { data?.let { clickItem.invoke(it.recordId) } }
+    }
+    fun bind(data : RecordUseCase) {
+        this.data = data
+        binding.tvDate.text = data.recordDate
+        binding.tvMountainName.text = data.mountainName
+        binding.tvRunningTime.text = data.runningTime
+        binding.tvDistance.text = data.distance
+    }
+}

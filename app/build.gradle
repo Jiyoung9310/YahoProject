@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'com.google.gms.google-services'
     id 'kotlin-parcelize'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -57,18 +58,31 @@ dependencies {
 
     // Koin for Kotlin Multiplatform
     implementation "io.insert-koin:koin-core:$koin_version"
-// Koin Test for Kotlin Multiplatform
+    // Koin Test for Kotlin Multiplatform
     testImplementation "io.insert-koin:koin-test:$koin_version"
     // Koin main features for Android (Scope,ViewModel ...)
     implementation "io.insert-koin:koin-android:$koin_version"
-// Koin Android - experimental builder extensions
+    // Koin Android - experimental builder extensions
     implementation "io.insert-koin:koin-android-ext:$koin_version"
-// Koin for Jetpack WorkManager
+    // Koin for Jetpack WorkManager
     implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
 
-    
+
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
+
     implementation 'com.naver.maps:map-sdk:3.11.0'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
+
+    implementation 'com.facebook.stetho:stetho:1.5.1'
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
+    implementation 'com.facebook.stetho:stetho-urlconnection:1.5.1'
+    implementation 'com.facebook.stetho:stetho-js-rhino:1.5.1'
+
+    implementation "com.airbnb.android:lottie:3.7.0"
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

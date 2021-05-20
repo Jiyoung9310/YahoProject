@@ -4,7 +4,7 @@ import android.util.Log
 import com.android.yaho.data.UserClimbingData
 import com.android.yaho.local.YahoPreference
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -27,33 +27,51 @@ class LoginRepositoryImpl(private val auth: FirebaseAuth,
     override suspend fun saveUserID(uid: String): Flow<LoginResult> = callbackFlow {
         get<YahoPreference>().userId = uid
 
-        val subscription = firestoreDB.collection("users")
-            .document(uid)
-            .addSnapshotListener { snapshot, _ ->
-                if(snapshot != null && snapshot.exists()) {
-                    offer(LoginResult.LoginSuccess)
-                } else {
-                    offer(LoginResult.NoLoginData)
-                }
-            }
+        var eventsCollection: DocumentReference? = null
+        try {
+            eventsCollection = firestoreDB.collection("users").document(uid)
+        } catch (e: Throwable) {
+            close(e)
+        }
 
-        awaitClose { subscription.remove() }
+        val subscription = eventsCollection?.addSnapshotListener { snapshot, _ ->
+            if (snapshot == null || !snapshot.exists()) {
+                offer(LoginResult.NoLoginData)
+                return@addSnapshotListener
+            }
+            try {
+
+                offer(LoginResult.LoginSuccess)
+                Log.w("LoginRepository", "LoginSuccess")
+            } catch (e: Throwable) {
+                Log.w("LoginRepository", "saveUserID error : ${e.message}")
+            }
+        }
+
+        awaitClose { subscription?.remove() }
 
     }
 
     override suspend fun updateNewUser(): Flow<LoginResult> = callbackFlow {
-        if(!get<YahoPreference>().userId.isNullOrEmpty()) {
-            firestoreDB.collection("users")
-                .document(get<YahoPreference>().userId!!)
-                .set(UserClimbingData())
+        val uid = get<YahoPreference>().userId
+        if(!uid.isNullOrEmpty()) {
+            val script = firestoreDB.collection("users")
+                .document(uid)
+                .collection("total")
+                .add(UserClimbingData())
                 .addOnSuccessListener { documentReference ->
-                    Log.d("LoginRepository","DocumentSnapshot added with ID: ${documentReference}")
-                    offer(LoginResult.NewUserSignUp)
+                    Log.w("LoginRepository", "DocumentSnapshot added with ID: $documentReference")
+                    if(documentReference != null) {
+                        offer(LoginResult.NewUserSignUp)
+                    } else {
+                        offer(LoginResult.SignUpFail(Throwable("유저 Document 생성 실패")))
+                    }
                 }
                 .addOnFailureListener { e ->
-                    Log.w("LoginRepository","Error adding document", e)
+                    Log.w("LoginRepository", "Error adding document", e)
                     offer(LoginResult.SignUpFail(e))
                 }
+            awaitClose { (script as ListenerRegistration).remove() }
         }
     }
 }

@@ -64,22 +64,21 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
                 LatLngBounds(
                     LatLng(it.latitude, it.longitude),
                     LatLng(mountainData.latitude, mountainData.longitude),
-                )
-            )
+                ), 150)
             naverMap?.moveCamera(cameraUpdate)
 
             naverMap?.locationOverlay?.apply {
                 isVisible = true
                 position = LatLng(it.latitude, it.longitude)
-                icon = OverlayImage.fromResource(R.drawable.ic_map_location)
+                icon = OverlayImage.fromResource(R.drawable.img_marker_my_location)
                 anchor = PointF(0.5f, 0f)
-                subIcon = OverlayImage.fromResource(R.drawable.ic_marker_go)
+                subIcon = OverlayImage.fromResource(R.drawable.img_marker_start)
                 subAnchor = PointF(0.5f, 1f)
             }
 
             Marker().apply {
                 position = LatLng(mountainData.latitude, mountainData.longitude)
-                icon = OverlayImage.fromResource(R.drawable.ic_marker_goal)
+                icon = OverlayImage.fromResource(R.drawable.img_marker_goal_flag)
                 map = naverMap
             }
         }
@@ -94,12 +93,7 @@ class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(Fragmen
             setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, true)
             minZoom = 4.0
             maxZoom = 13.0
-            setContentPadding(150, 150, 150, 150)
             uiSettings.apply {
-                isTiltGesturesEnabled = false
-                isRotateGesturesEnabled = false
-                isScrollGesturesEnabled = false
-                isZoomGesturesEnabled = false
                 isZoomControlEnabled = false
                 isCompassEnabled = false
                 isScaleBarEnabled = false

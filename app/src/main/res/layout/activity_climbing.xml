@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/mapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clBottom"
+        android:layout_width="match_parent"
+        android:layout_height="290dp"
+        android:background="@drawable/bg_climbing_bottom_round"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="50dp"
+        app:behavior_peekHeight="84dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        >
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/bottomActiveView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="tvDistance, tvDistanceTitle, tvHeight, tvHeightTitle"
+            />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivHandle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_rectangle_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvRunningTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/gray_900"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivHandle"
+            app:layout_constraintBottom_toTopOf="@id/tvDistance"
+            tools:text="1시간 30분 15초" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvRestTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/live_climbing_rest_title"
+            android:textColor="@color/gray_600"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/tvDistance"
+            app:layout_constraintTop_toBottomOf="@id/tvRunningTime" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/gray_600"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvRunningTime"
+            app:layout_constraintBottom_toTopOf="@id/tvDistanceTitle"
+            tools:text="1.91km" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDistanceTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/live_climbing_distance_title"
+            android:textColor="@color/gray_600"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintStart_toStartOf="@id/tvDistance"
+            app:layout_constraintTop_toBottomOf="@id/tvDistance"
+            app:layout_constraintBottom_toTopOf="@id/btnPause"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvHeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_600"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="@id/tvDistance"
+            tools:text="150.1m" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvHeightTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/live_climbing_height_title"
+            android:textColor="@color/gray_600"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/tvHeight"
+            app:layout_constraintTop_toBottomOf="@id/tvHeight" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btnPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_btn_pause"
+            android:layout_marginBottom="24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btnClimbingDone"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/bg_live_climbing_btn_done"
+            android:gravity="center"
+            android:text="@string/live_climbing_btn_done"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btnPause"
+            app:layout_constraintTop_toTopOf="@id/btnPause" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

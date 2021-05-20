@@ -2,11 +2,16 @@
     <string name="app_name">Yaho</string>
     <string name="naver_maps_client_id">7abca5361m</string>
 
+    <!--unit-->
+    <string name="kilo_meter_unit">%.2fkm</string>
+    <string name="meter_unit">%.2fm</string>
+    <string name="count_unit">%d회</string>
+    <string name="speed_unit">%.2fm/s</string>
+    <string name="kcal_unit">%.2fkcal</string>
+
     <!--home-->
     <string name="home_all_height_title">내가 오른 높이</string>
     <string name="home_all_climb_count">나의 등산</string>
-    <string name="home_height_unit">%skm</string>
-    <string name="home_climb_count">%d회</string>
 
     <string name="home_menu_start_climbing">오늘의 등산</string>
     <string name="home_menu_my_climbs">나의 등산 기록</string>
@@ -18,7 +23,43 @@
     <!--ready-->
     <string name="ready_near_mountain_title">지금 어떤 산을\n오르시나요?</string>
     <string name="ready_near_mountain_height">정상까지 높이</string>
-    <string name="ready_near_height_unit">%dm</string>
     <string name="ready_near_level">난이도</string>
     <string name="ready_to_start_title">%s 정복을\n시작합니다!</string>
+
+    <string name="permission_denied_explanation">권한이 거부되었지만 핵심 기능에 필요합니다.</string>
+    <string name="settings">Settings</string>
+    <string name="launch_activity">Launch activity</string>
+    <string name="remove_location_updates">Remove location updates</string>
+    <string name="location_updated">Location Updated: %1$s</string>
+
+    <!--climbing-->
+    <string name="live_climbing_distance_title">거리</string>
+    <string name="live_climbing_height_title">고도</string>
+    <string name="live_climbing_btn_done">등산 종료</string>
+    <string name="live_climbing_rest_title">동안 쉬는 중</string>
+    <string name="dialog_climbing_done_title">즐거운 등산 되셨나요?</string>
+    <string name="dialog_climbing_done_message">오늘 하루 건강을 위해\n%s 투자했어요!</string>
+    <string name="dialog_climbing_done_cancel">아직 더 내려가야해요.</string>
+
+    <!--climbing detail-->
+    <string name="climbing_detail_mountain_name">%s으로 %d번째 등산</string>
+    <string name="climbing_detail_path_title">구간 분석</string>
+    <string name="climbing_detail_info_title">상세 분석</string>
+    <string name="climbing_detail_info_time_title">시간</string>
+    <string name="climbing_detail_info_total_time_title">전체 시간</string>
+    <string name="climbing_detail_info_climbing_time_title">운동 시간</string>
+    <string name="climbing_detail_info_rest_time_title">휴식 시간</string>
+    <string name="climbing_detail_info_distance_title">거리</string>
+    <string name="climbing_detail_info_move_distance_title">이동 거리</string>
+    <string name="climbing_detail_info_speed_title">속도</string>
+    <string name="climbing_detail_info_average_speed_title">평균 속도</string>
+    <string name="climbing_detail_info_max_speed_title">최고 속도</string>
+    <string name="climbing_detail_info_height_title">고도</string>
+    <string name="climbing_detail_info_start_height_title">시작 고도</string>
+    <string name="climbing_detail_info_max_height_title">최고 고도</string>
+
+    <string name="climbing_detail_info_section_start_time_title">등산 시작</string>
+    <string name="climbing_detail_info_section_rest_title">휴식</string>
+    <string name="climbing_detail_info_section_end_time_title">등산 종료</string>
+
 </resources>

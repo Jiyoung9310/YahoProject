@@ -64,7 +64,7 @@ class MainActivity : BindingActivity<ActivityMainBinding>(ActivityMainBinding::i
                 locationList.addAll(list)
                 path.addAll(list.map { LatLng(it) })
             }
-            binding.tvLog.text = locationList.getLocationResultText()
+//            binding.tvLog.text = locationList.getLocationResultText()
 
             val coord = LatLng(lastLocation)
             val locationOverlay = naverMap.locationOverlay

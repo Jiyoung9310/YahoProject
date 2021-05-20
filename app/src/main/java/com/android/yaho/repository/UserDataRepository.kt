@@ -18,22 +18,25 @@ interface UserDataRepository {
 class UserDataRepositoryImpl(private val firestoreDB: FirebaseFirestore) : UserDataRepository, KoinComponent {
     @ExperimentalCoroutinesApi
     override fun getUserData(): Flow<UserClimbingData> = callbackFlow {
-        if(get<YahoPreference>().userId == null) offer(UserClimbingData())
+        val uid = get<YahoPreference>().userId
+        if(uid == null) offer(UserClimbingData())
 
         val subscription = firestoreDB.collection("users")
-            .document(get<YahoPreference>().userId!!)
+            .document(uid!!)
+            .collection("total")
             .addSnapshotListener { snapshot, error ->
                 try {
-                    if(snapshot != null && snapshot.exists()) {
-                        val data = snapshot.toObject(UserClimbingData::class.java)
-                        data?.let { offer(data) }
-                        Log.d("UserDataRepository", "geteUserData : $data")
+                    val data = snapshot?.documents?.firstOrNull()
+                    if(data != null) {
+                        val totalData = data.toObject(UserClimbingData::class.java)
+                        totalData?.let { offer(it) }
+                        Log.d("UserDataRepository", "geteUserData : $totalData")
                     }
                 } catch (e: Throwable) {
                     Log.w("UserDataRepository", "firestore error : ${e.message}")
                     return@addSnapshotListener
                 }
             }
-            awaitClose { subscription.remove() }
+        awaitClose { subscription.remove() }
     }
 }

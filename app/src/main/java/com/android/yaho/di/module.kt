@@ -3,11 +3,11 @@ package com.android.yaho.di
 import android.content.Context
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.YahoPreferenceImpl
+import com.android.yaho.local.cache.LiveClimbingCache
+import com.android.yaho.local.cache.MountainListCache
+
 import com.android.yaho.repository.*
-import com.android.yaho.viewmodel.HomeViewModel
-import com.android.yaho.viewmodel.LoginViewModel
-import com.android.yaho.viewmodel.MainViewModel
-import com.android.yaho.viewmodel.ReadyViewModel
+import com.android.yaho.viewmodel.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,15 +28,23 @@ val appModule = module {
             YAHO_PREFERENCE,
         Context.MODE_PRIVATE)
     }
-
+//    single { YahoRoomDatabase.getInstance(androidApplication()) }
     single<YahoPreference> { YahoPreferenceImpl(get()) }
+    single { MountainListCache() }
+    single { LiveClimbingCache() }
+//    single { ClimbingSaveHelper(get()) }
 
     factory <LoginRepository> { LoginRepositoryImpl(get(), get()) }
     factory <MountainRepository> { MountainRepositoryImpl(get()) }
     factory <UserDataRepository> { UserDataRepositoryImpl(get()) }
+    factory <ClimbingRepository> { ClimbingRepositoryImpl(get()) }
 
     viewModel { LoginViewModel(get()) }
     viewModel { MainViewModel(get()) }
     viewModel { HomeViewModel(get()) }
-    viewModel { ReadyViewModel(get(), get()) }
+    viewModel { ReadyViewModel(get(), get(), get()) }
+    viewModel { ClimbingViewModel(get()) }
+    viewModel { ClimbingDoneViewModel(get(), get(), get()) }
+    viewModel { ClimbingDetailViewModel(get(), get(), get()) }
+    viewModel { RecordListViewModel(get(), get()) }
 }

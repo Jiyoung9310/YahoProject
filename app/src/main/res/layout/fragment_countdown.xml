@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_green">
+    android:background="@color/main_green_500">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvTodayMountain"
@@ -15,7 +15,7 @@
         android:layout_marginTop="90dp"
         android:text="@string/home_all_height_title"
         android:textSize="14sp"
-        android:textColor="@color/small_title"
+        android:textColor="@color/gray_900"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="@color/small_title"
+        android:textColor="@color/gray_900"
         app:layout_constraintTop_toBottomOf="@id/tvTodayMountain"
         app:layout_constraintStart_toStartOf="@id/tvTodayMountain"
         tools:text="2023km"
@@ -39,7 +39,7 @@
         android:layout_marginTop="27dp"
         android:text="@string/home_all_climb_count"
         android:textSize="14sp"
-        android:textColor="@color/small_title"
+        android:textColor="@color/gray_900"
         app:layout_constraintTop_toBottomOf="@id/tvMountainName"
         app:layout_constraintStart_toStartOf="@id/tvMountainName"
         />
@@ -51,7 +51,7 @@
         android:text="0회"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="@color/small_title"
+        android:textColor="@color/gray_900"
         app:layout_constraintTop_toBottomOf="@id/tvMyChallenge"
         app:layout_constraintStart_toStartOf="@id/tvMyChallenge"
         tools:text="3회"

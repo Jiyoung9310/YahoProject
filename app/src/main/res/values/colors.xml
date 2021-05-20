@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="white">@android:color/white</color>
+    <color name="black">@android:color/black</color>
 
-    <color name="main_green">#64F4C0</color>
+    <color name="main_green_500">#64F4C0</color>
+    <color name="main_green_600">#57DBAB</color>
 
-    <!--home-->
-    <color name="small_title">#212529</color>
-    <color name="home_menu_my_climbs">#CFF464</color>
-    <color name="home_menu_remove_ads">#C9BEFF</color>
-    <color name="home_menu_btn">#1A212529</color>
+    <color name="gray_50">#F8F9FA</color>
+    <color name="gray_100">#F1F3F5</color>
+    <color name="gray_400">#CED4DA</color>
+    <color name="gray_500">#ADB5BD</color>
+    <color name="gray_600">#868E96</color>
+    <color name="gray_800">#343A40</color>
+    <color name="gray_900">#212529</color>
 
-    <!--ready-->
-    <color name="sub_title">#868E96</color>
-    <color name="ready_item_background">#F8F9FA</color>
-    <color name="ready_go_btn">#CED4DA</color>
+    <color name="point_olive_500">#CFF464</color>
+    <color name="point_olive_600">#BBE14D</color>
+
+    <color name="point_violet_500">#C9BEFF</color>
+    <color name="point_violet_600">#B5A9F5</color>
+
     <color name="near_mountain_item_text_selected">#B3212529</color>
+
 </resources>

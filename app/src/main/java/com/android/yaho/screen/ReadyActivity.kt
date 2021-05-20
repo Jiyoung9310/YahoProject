@@ -3,15 +3,20 @@ package com.android.yaho.screen
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
+import com.android.yaho.BuildConfig
+import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityReadyBinding
 import com.android.yaho.viewmodel.ReadyViewModel
 import com.google.android.gms.location.*
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding::inflate)  {
@@ -19,7 +24,6 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
     private val TAG = this::class.simpleName
 
     companion object {
-        const val KEY_MY_LOCATION = "KEY_MY_LOCATION"
         const val KEY_SELECT_MOUNTAIN = "KEY_SELECT_MOUNTAIN"
 
         const val SCREEN_NEAR_MOUNTAIN = "SCREEN_NEAR_MOUNTAIN"
@@ -61,7 +65,38 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
         grantResults: IntArray
     ) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            return
+            when {
+                grantResults.isEmpty() -> {
+                    // If user interaction was interrupted, the permission request is cancelled and you
+                    // receive empty arrays.
+                    Log.i(TAG, "User interaction was cancelled.")
+                }
+                grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
+                    // Permission was granted.
+                    getCurrentLocation()
+                }
+                else -> {
+                    Snackbar.make(
+                        binding.root, R.string.permission_denied_explanation,
+                        Snackbar.LENGTH_INDEFINITE
+                    )
+                        .setAction(
+                            R.string.settings
+                        ) { // Build intent that displays the App settings screen.
+                            val intent = Intent()
+                            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                            val uri = Uri.fromParts(
+                                "package",
+                                BuildConfig.APPLICATION_ID, null
+                            )
+                            intent.data = uri
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+                        }
+                        .show()
+                }
+            }
+
         } else {
             Toast.makeText(this, "위치 정보가 필요합니다.", Toast.LENGTH_SHORT).show()
             finish()
@@ -83,7 +118,7 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
             finish()
             return
         }
-        fusedLocationClient.requestLocationUpdates(locationRequest, object: LocationCallback() {
+        fusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
             override fun onLocationResult(result: LocationResult?) {
                 val lastLocation = result?.lastLocation ?: return
                 viewModel.getMyLocation(lastLocation)
@@ -100,6 +135,15 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
     private fun initObserve() {
         viewModel.moveScreen.observe(this) { (screen, bundle) ->
             binding.toolbar.isVisible = true
+
+            if(screen == SCREEN_GO_CLIMBING) {
+                startActivity(Intent(this, ClimbingActivity::class.java).apply {
+                    bundle?.let { putExtras(bundle) }
+                })
+                finish()
+                return@observe
+            }
+
             val fragment = when(screen) {
                 SCREEN_NEAR_MOUNTAIN -> NearMountainFragment()
                 SCREEN_SELECT_MOUNTAIN -> ReadyToStartFragment()
@@ -110,11 +154,6 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
                 else -> NearMountainFragment()
             }.apply {
                 arguments = bundle
-            }
-
-            if(screen == SCREEN_GO_CLIMBING) {
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
             }
 
             supportFragmentManager.beginTransaction()

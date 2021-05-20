@@ -42,7 +42,7 @@ class NearMountainViewHolder(parent: ViewGroup, private val itemClickAction: (Mo
     fun bind(data: MountainData) {
         mountainData = data
         binding.tvMountainName.text = data.name
-        binding.tvHeight.text = binding.root.context.getString(R.string.ready_near_height_unit, data.height)
+        binding.tvHeight.text = binding.root.context.getString(R.string.meter_unit, data.height)
 
         val levelInt = when(data.level) {
             "최상" -> 4
