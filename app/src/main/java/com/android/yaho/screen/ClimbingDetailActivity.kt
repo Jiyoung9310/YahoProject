@@ -62,6 +62,10 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
             finish()
         }
 
+        binding.btnWide.setOnClickListener {
+            startActivity(Intent(this, ClimbingPathActivity::class.java))
+        }
+
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as MapFragment?
             ?: MapFragment.newInstance(
                 NaverMapOptions()
