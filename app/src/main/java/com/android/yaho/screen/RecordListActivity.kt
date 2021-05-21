@@ -1,8 +1,11 @@
 package com.android.yaho.screen
 
+import android.content.DialogInterface
 import android.graphics.Canvas
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AlertDialogLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +24,7 @@ class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRe
 
     private val viewModel by viewModel<RecordListViewModel>()
     private lateinit var recordListAdapter : RecordListAdapter
+    private var recordHeaderList : Array<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,12 +34,26 @@ class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRe
     }
 
     private fun initView() {
-        recordListAdapter = RecordListAdapter {
-            startClimbingDetailActivity(
-                activity = this,
-                climbingId = it
-            )
+        binding.toolbar.setNavigationOnClickListener {
+            finish()
         }
+
+        recordListAdapter = RecordListAdapter(
+            clickItem = {
+                startClimbingDetailActivity(
+                    activity = this,
+                    climbingId = it
+                )
+            },
+            selectDate = {
+                if(!recordHeaderList.isNullOrEmpty()) {
+                    AlertDialog.Builder(this@RecordListActivity)
+                        .setSingleChoiceItems(recordHeaderList, 0) { dialog, which ->
+                            viewModel.onSelectDate(which)
+                            dialog.dismiss()
+                        }.create().show()
+                }
+            })
 
         binding.rvList.apply {
             layoutManager = LinearLayoutManager(this@RecordListActivity, RecyclerView.VERTICAL, false)
@@ -58,6 +76,9 @@ class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRe
     private fun initObserve() {
         viewModel.recordList.observe(this) {
             recordListAdapter.submitList(it)
+        }
+        viewModel.recordHeaderDateList.observe(this) { list ->
+            recordHeaderList = list
         }
     }
 }

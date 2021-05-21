@@ -62,4 +62,8 @@
     <string name="climbing_detail_info_section_rest_title">휴식</string>
     <string name="climbing_detail_info_section_end_time_title">등산 종료</string>
 
+    <!--climbing record-->
+    <string name="climbing_record_list_title">나의 등산 기록</string>
+    <string name="climbing_record_select_all">전체</string>
+
 </resources>
