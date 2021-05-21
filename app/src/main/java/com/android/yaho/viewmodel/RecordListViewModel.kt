@@ -26,6 +26,8 @@ class RecordListViewModel(private val contextDelegate: ContextDelegate,
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
+    private val _allRecordList = mutableListOf<RecordItem>()
+
     init {
         getRecordList()
     }
@@ -35,9 +37,8 @@ class RecordListViewModel(private val contextDelegate: ContextDelegate,
             repo.getClimbingRecordList()
                 .catch { e: Throwable -> _error.value = e }
                 .collect {
-                    val recordItemList = mutableListOf<RecordItem>()
                     val recordHeaderList = mutableListOf<String>()
-                    recordItemList.add(RecordItem.RecordTitle(contextDelegate.getString(R.string.climbing_record_select_all)))
+                    _allRecordList.add(RecordItem.RecordTitle(contextDelegate.getString(R.string.climbing_record_select_all)))
                     recordHeaderList.add(contextDelegate.getString(R.string.climbing_record_select_all))
 
                     it.sortedByDescending { it.recordId.toLong() }
@@ -54,10 +55,10 @@ class RecordListViewModel(private val contextDelegate: ContextDelegate,
                             groupBy { item -> item.headerDate }
                                 .forEach { (header, item) ->
                                     recordHeaderList.add(header)
-                                    recordItemList.add(RecordItem.RecordHeader(header))
-                                    recordItemList.addAll(item)
+                                    _allRecordList.add(RecordItem.RecordHeader(header))
+                                    _allRecordList.addAll(item)
                                 }
-                            _recordList.value = recordItemList
+                            _recordList.value = _allRecordList
                             _recordHeaderDateList.value = recordHeaderList.toTypedArray()
                         }
                 }
@@ -68,14 +69,16 @@ class RecordListViewModel(private val contextDelegate: ContextDelegate,
         val recordDate = recordHeaderDateList.value?.get(index)
         recordDate?.let {
             val newList = mutableListOf<RecordItem>()
-            recordList.value?.let {
-                it.filter { it.headerDate == recordDate }
+            if (index == 0) {
+                newList.addAll(_allRecordList)
+            } else {
+                _allRecordList.filter { it.headerDate == recordDate }
                     .apply {
                         newList.add(RecordItem.RecordTitle(selectDate = recordDate))
                         newList.addAll(this)
                     }
-                _recordList.value = newList
             }
+            _recordList.value = newList
         }
     }
 }

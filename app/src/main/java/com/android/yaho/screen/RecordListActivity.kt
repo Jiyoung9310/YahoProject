@@ -25,6 +25,7 @@ class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRe
     private val viewModel by viewModel<RecordListViewModel>()
     private lateinit var recordListAdapter : RecordListAdapter
     private var recordHeaderList : Array<String>? = null
+    private var selectedDate : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +49,9 @@ class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRe
             selectDate = {
                 if(!recordHeaderList.isNullOrEmpty()) {
                     AlertDialog.Builder(this@RecordListActivity)
-                        .setSingleChoiceItems(recordHeaderList, 0) { dialog, which ->
+                        .setSingleChoiceItems(recordHeaderList, selectedDate) { dialog, which ->
                             viewModel.onSelectDate(which)
+                            selectedDate = which
                             dialog.dismiss()
                         }.create().show()
                 }
