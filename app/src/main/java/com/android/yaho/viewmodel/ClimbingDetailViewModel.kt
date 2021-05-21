@@ -11,6 +11,7 @@ import com.android.yaho.local.cache.MountainListCache
 import com.android.yaho.local.db.RecordEntity
 import com.android.yaho.millisecondsToHourTimeFormat
 import com.android.yaho.repository.ClimbingRepository
+import com.android.yaho.repository.ClimbingResult
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -33,13 +34,19 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
     private val _sectionMark = MutableLiveData<List<LatLng>>()
     val sectionMark : LiveData<List<LatLng>> get() = _sectionMark
 
+    private val _deleteDone = MutableLiveData<Unit>()
+    val deleteDone : LiveData<Unit> get() = _deleteDone
+
     private val _noData = MutableLiveData<Unit>()
     val noData: LiveData<Unit> get() = _noData
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
+    private var recordId : String = ""
+
     fun getClimbingData(climbingId: String) {
+        recordId = climbingId
         viewModelScope.launch {
             repo.getClimbingData(climbingId)
                 .catch { e: Throwable -> _error.value = e }
@@ -125,6 +132,15 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
             maxHeight = contextDelegate.getString(R.string.meter_unit, maxHeight)
         )
 
+    fun deleteRecord() {
+        viewModelScope.launch {
+            repo.deleteClimbingData(recordId)
+                .catch { e: Throwable -> _error.value = e }
+                .collect {
+                    if(it == ClimbingResult.Success) _deleteDone.value = Unit
+                }
+        }
+    }
 }
 
 data class ClimbingDetailDataUseCase(

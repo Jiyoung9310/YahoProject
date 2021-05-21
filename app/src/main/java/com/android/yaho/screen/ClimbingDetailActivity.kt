@@ -74,7 +74,12 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
             finish()
         }
         binding.btnClose.setOnClickListener {
+            startActivity(Intent(this, HomeActivity::class.java))
             finish()
+        }
+
+        binding.btnDelete.setOnClickListener {
+            viewModel.deleteRecord()
         }
 
         binding.btnWide.setOnClickListener {
@@ -167,6 +172,11 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
 
         viewModel.error.observe(this) {
             Toast.makeText(this, "데이터를 불러올 수 없습니다. ${it.message}", Toast.LENGTH_SHORT).show()
+        }
+
+        viewModel.deleteDone.observe(this) {
+            Toast.makeText(applicationContext, "등산 데이터가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 
