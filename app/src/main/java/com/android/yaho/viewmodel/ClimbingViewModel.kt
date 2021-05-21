@@ -44,6 +44,7 @@ class ClimbingViewModel(private val climbingCache: LiveClimbingCache) : ViewMode
 
     fun setRunningTime(time: Long) {
         activeCount = time
+        count = activeCount
     }
 
     fun onSettingService(isBound: Boolean) {

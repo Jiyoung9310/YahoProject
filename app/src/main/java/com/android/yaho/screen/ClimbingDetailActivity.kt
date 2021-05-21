@@ -74,8 +74,7 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
             finish()
         }
         binding.btnClose.setOnClickListener {
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
+            onBackPressed()
         }
 
         binding.btnDelete.setOnClickListener {
@@ -209,5 +208,13 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
         } ?: run {
             finish()
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        startActivity(Intent(this, HomeActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        })
+        finish()
     }
 }
