@@ -1,6 +1,7 @@
 package com.android.yaho.ui
 
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -55,7 +56,9 @@ class RecordListAdapter(private val clickItem : (String) -> Unit,
                 holder.bind(currentList[position] as RecordItem.RecordHeader)
             }
             is RecordItemViewHolder -> {
-                holder.bind(currentList[position] as RecordItem.RecordUseCase)
+                holder.bind(currentList[position] as RecordItem.RecordUseCase,
+                    !(currentList.lastIndex == position || currentList[position+1] is RecordItem.RecordHeader)
+                )
             }
             is RecordTitleViewHolder -> {
                 holder.bind(currentList[position] as RecordItem.RecordTitle)
@@ -98,11 +101,12 @@ class RecordItemViewHolder(parent: ViewGroup, private val clickItem : (String) -
     init {
         binding.root.setOnClickListener { data?.let { clickItem.invoke(it.recordId) } }
     }
-    fun bind(data : RecordItem.RecordUseCase) {
+    fun bind(data : RecordItem.RecordUseCase, showDivider : Boolean) {
         this.data = data
         binding.tvDate.text = data.recordDate
         binding.tvMountainName.text = data.mountainName
         binding.tvRunningTime.text = data.runningTime
         binding.tvDistance.text = data.distance
+        binding.divider.isVisible = showDivider
     }
 }

@@ -60,18 +60,6 @@ class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRe
         binding.rvList.apply {
             layoutManager = LinearLayoutManager(this@RecordListActivity, RecyclerView.VERTICAL, false)
             adapter = recordListAdapter
-            addItemDecoration(
-                SimpleDividerItemDecoration(
-                    context,
-                    orientation = RecyclerView.VERTICAL,
-                    startIndex = 1,
-                    space = 20.dp
-                ).apply {
-                    ContextCompat.getDrawable(context, R.drawable.item_decoration_divider)?.let {
-                        setDrawable(it)
-                    }
-                }
-            )
         }
     }
 
