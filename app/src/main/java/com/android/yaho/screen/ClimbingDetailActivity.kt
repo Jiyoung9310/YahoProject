@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.yaho.R
@@ -28,13 +29,16 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     private val TAG = this::class.java.simpleName
     companion object {
         const val KEY_CLIMBING_DATA_ID = "KEY_CLIMBING_DATA_ID"
+        const val KEY_SHOW_MOUNTAIN_NAME = "KEY_SHOW_MOUNTAIN_NAME"
 
         fun startClimbingDetailActivity(
             activity: Activity,
             climbingId: String,
+            mountainName: String? = null
         ) {
             activity.startActivity(Intent(activity, ClimbingDetailActivity::class.java).apply {
                 putExtra(KEY_CLIMBING_DATA_ID, climbingId)
+                mountainName?.let { putExtra(KEY_SHOW_MOUNTAIN_NAME, it) }
             })
         }
     }
@@ -55,6 +59,17 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     }
 
     private fun initView() {
+        intent.hasExtra(KEY_SHOW_MOUNTAIN_NAME).let {
+            binding.toolbarTitle.isVisible = it
+            binding.btnDelete.isVisible = it
+            binding.btnClose.isVisible = !it
+            if(it) binding.toolbar.setNavigationIcon(R.drawable.ic_back)
+        }
+
+        intent.extras?.getString(KEY_SHOW_MOUNTAIN_NAME)?.let {
+            binding.toolbarTitle.text = getString(R.string.climbing_detail_toolbar_title, it)
+        }
+
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }

@@ -40,10 +40,11 @@ class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRe
         }
 
         recordListAdapter = RecordListAdapter(
-            clickItem = {
+            clickItem = { id, name ->
                 startClimbingDetailActivity(
                     activity = this,
-                    climbingId = it
+                    climbingId = id,
+                    mountainName = name
                 )
             },
             selectDate = {

@@ -22,7 +22,7 @@ data class UIItem(
     }
 }
 
-class RecordListAdapter(private val clickItem : (String) -> Unit,
+class RecordListAdapter(private val clickItem : (String, String) -> Unit,
                         private val selectDate: () -> Unit,
 ) : ListAdapter<RecordItem, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<RecordItem>() {
     override fun areItemsTheSame(oldItem: RecordItem, newItem: RecordItem): Boolean {
@@ -96,10 +96,10 @@ class RecordHeaderViewHolder(parent: ViewGroup) : BindingViewHolder<ItemRecordHe
     }
 }
 
-class RecordItemViewHolder(parent: ViewGroup, private val clickItem : (String) -> Unit) : BindingViewHolder<ItemRecordListBinding>(parent, ItemRecordListBinding::inflate) {
+class RecordItemViewHolder(parent: ViewGroup, private val clickItem : (String, String) -> Unit) : BindingViewHolder<ItemRecordListBinding>(parent, ItemRecordListBinding::inflate) {
     private var data : RecordItem.RecordUseCase? = null
     init {
-        binding.root.setOnClickListener { data?.let { clickItem.invoke(it.recordId) } }
+        binding.root.setOnClickListener { data?.let { clickItem.invoke(it.recordId, it.mountainName) } }
     }
     fun bind(data : RecordItem.RecordUseCase, showDivider : Boolean) {
         this.data = data

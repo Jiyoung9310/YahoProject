@@ -42,6 +42,7 @@
     <string name="dialog_climbing_done_cancel">아직 더 내려가야해요.</string>
 
     <!--climbing detail-->
+    <string name="climbing_detail_toolbar_title">%s 상세 기록</string>
     <string name="climbing_detail_mountain_name">%s으로 %d번째 등산</string>
     <string name="climbing_detail_path_title">구간 분석</string>
     <string name="climbing_detail_info_title">상세 분석</string>
