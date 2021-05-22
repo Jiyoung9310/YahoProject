@@ -2,10 +2,10 @@ package com.android.yaho.data
 
 
 data class UserClimbingData(
-    val allHeight: Float = 0f,
-    val allDistance: Float = 0f,
-    val allTime: Int = 0,
-    val totalCount: Int = 0,
+    var allHeight: Double = 0.0,
+    var allDistance: Float = 0f,
+    var allTime: Long = 0,
+    var totalCount: Int = 0,
 )
 
 data class ClimbingRecordData(

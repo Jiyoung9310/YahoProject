@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.yaho.R
@@ -28,13 +29,16 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     private val TAG = this::class.java.simpleName
     companion object {
         const val KEY_CLIMBING_DATA_ID = "KEY_CLIMBING_DATA_ID"
+        const val KEY_SHOW_MOUNTAIN_NAME = "KEY_SHOW_MOUNTAIN_NAME"
 
         fun startClimbingDetailActivity(
             activity: Activity,
             climbingId: String,
+            mountainName: String? = null
         ) {
             activity.startActivity(Intent(activity, ClimbingDetailActivity::class.java).apply {
                 putExtra(KEY_CLIMBING_DATA_ID, climbingId)
+                mountainName?.let { putExtra(KEY_SHOW_MOUNTAIN_NAME, it) }
             })
         }
     }
@@ -55,11 +59,26 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     }
 
     private fun initView() {
+        intent.hasExtra(KEY_SHOW_MOUNTAIN_NAME).let {
+            binding.toolbarTitle.isVisible = it
+            binding.btnDelete.isVisible = it
+            binding.btnClose.isVisible = !it
+            if(it) binding.toolbar.setNavigationIcon(R.drawable.ic_back)
+        }
+
+        intent.extras?.getString(KEY_SHOW_MOUNTAIN_NAME)?.let {
+            binding.toolbarTitle.text = getString(R.string.climbing_detail_toolbar_title, it)
+        }
+
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }
         binding.btnClose.setOnClickListener {
-            finish()
+            onBackPressed()
+        }
+
+        binding.btnDelete.setOnClickListener {
+            viewModel.deleteRecord()
         }
 
         binding.btnWide.setOnClickListener {
@@ -153,6 +172,11 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
         viewModel.error.observe(this) {
             Toast.makeText(this, "데이터를 불러올 수 없습니다. ${it.message}", Toast.LENGTH_SHORT).show()
         }
+
+        viewModel.deleteDone.observe(this) {
+            Toast.makeText(applicationContext, "등산 데이터가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+            finish()
+        }
     }
 
     override fun onMapReady(naverMap: NaverMap) {
@@ -184,5 +208,13 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
         } ?: run {
             finish()
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        startActivity(Intent(this, HomeActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        })
+        finish()
     }
 }

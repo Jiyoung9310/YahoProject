@@ -1,7 +1,7 @@
 package com.android.yaho.repository
 
 import android.util.Log
-import com.android.yaho.data.MountainData
+import com.android.yaho.data.UserClimbingData
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.local.db.RecordEntity
@@ -16,34 +16,64 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
 interface ClimbingRepository {
-    suspend fun postClimbingData(climbingId: String) : Flow<ClimbingResult>
+    suspend fun postClimbingData(recordId: String) : Flow<ClimbingResult>
     suspend fun updateVisitMountain() : Flow<ClimbingResult>
-    suspend fun getClimbingData(climbingId: String) : Flow<RecordEntity?>
+    suspend fun getClimbingData(recordId: String) : Flow<RecordEntity?>
     suspend fun getVisitMountain(mountainId: Int): Flow<Int>
     suspend fun getClimbingRecordList() : Flow<List<RecordEntity>>
+    suspend fun deleteClimbingData(recordId: String) : Flow<ClimbingResult>
 }
 
 @ExperimentalCoroutinesApi
 class ClimbingRepositoryImpl(
     private val firestoreDB: FirebaseFirestore,
 ) : ClimbingRepository, KoinComponent {
-    override suspend fun postClimbingData(climbingId: String): Flow<ClimbingResult> = callbackFlow {
+    override suspend fun postClimbingData(recordId: String): Flow<ClimbingResult> = callbackFlow {
         val uid = get<YahoPreference>().userId
         if(uid.isNullOrEmpty()) offer(ClimbingResult.Fail(Throwable("userId 접근 불가")))
 
         val recordCache = get<LiveClimbingCache>().getRecord()
         recordCache.apply {
-            recordId = climbingId
+            this.recordId = recordId
         }
         Log.w("ClimbingRepository", "ready to climbing data add : $recordCache")
-        val script = firestoreDB.collection("users")
-            .document(uid!!)
-            .collection("climbingData")
-            .document(climbingId)
+        val accessUsers = firestoreDB.collection("users").document(uid!!)
+        val script = accessUsers.collection("climbingData")
+            .document(recordId)
             .set(recordCache)
             .addOnSuccessListener { documentReference ->
-                Log.w("ClimbingRepository", "climbing data add : $documentReference")
-                offer(ClimbingResult.Success)
+                try {
+                    accessUsers.collection("climbingData")
+                        .get()
+                        .addOnSuccessListener { result ->
+                            val list = result.documents.map {
+                                it.toObject(RecordEntity::class.java)
+                            }
+                            val newTotalData = UserClimbingData()
+                            newTotalData.totalCount = list.count()
+                            list.forEach {
+                                it?.let {
+                                    newTotalData.apply {
+                                        allHeight += it.maxHeight
+                                        allDistance += it.totalDistance
+                                        allTime += it.allRunningTime
+                                    }
+                                }
+                            }
+                            accessUsers.collection("total").document(uid).set(newTotalData)
+                                .addOnSuccessListener {
+                                    Log.w("ClimbingRepository", "climbing data add : $documentReference")
+                                    offer(ClimbingResult.Success)
+                                }.addOnFailureListener { e ->
+                                    Log.w("ClimbingRepository", "Error adding document", e)
+                                    offer(ClimbingResult.Fail(e))
+                                }
+                        }
+
+                } catch (e: Throwable) {
+                    Log.w("ClimbingRepository", "Error adding document", e)
+                    offer(ClimbingResult.Fail(e))
+                }
             }
             .addOnFailureListener { e ->
                 Log.w("ClimbingRepository", "Error adding document", e)
@@ -79,14 +109,14 @@ class ClimbingRepositoryImpl(
         awaitClose { (script as ListenerRegistration).remove() }
     }
 
-    override suspend fun getClimbingData(climbingId: String): Flow<RecordEntity?> = callbackFlow {
+    override suspend fun getClimbingData(recordId: String): Flow<RecordEntity?> = callbackFlow {
         val uid = get<YahoPreference>().userId
         if(uid.isNullOrEmpty()) offer(null)
 
         val subscription = firestoreDB.collection("users")
             .document(uid!!)
             .collection("climbingData")
-            .document(climbingId)
+            .document(recordId)
             .get()
             .addOnSuccessListener {
                 try {
@@ -163,6 +193,27 @@ class ClimbingRepositoryImpl(
             }
         }
         awaitClose { subscription?.remove() }
+    }
+
+    override suspend fun deleteClimbingData(recordId: String): Flow<ClimbingResult> = callbackFlow {
+        val uid = get<YahoPreference>().userId
+        if(uid.isNullOrEmpty()) offer(ClimbingResult.Fail(Throwable("userId 접근 불가")))
+
+        Log.w("ClimbingRepository", "ready to delete climbing data : $recordId")
+        val script = firestoreDB.collection("users")
+            .document(uid!!)
+            .collection("climbingData")
+            .document(recordId)
+            .delete()
+            .addOnSuccessListener { documentReference ->
+                Log.w("ClimbingRepository", "climbing data delete : ${documentReference.toString()}")
+                offer(ClimbingResult.Success)
+            }
+            .addOnFailureListener { e ->
+                Log.w("ClimbingRepository", "Error delete document", e)
+                offer(ClimbingResult.Fail(e))
+            }
+        awaitClose { (script as ListenerRegistration).remove() }
     }
 }
 

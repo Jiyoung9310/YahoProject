@@ -94,7 +94,7 @@ const val FULL_FORMAT_DATE_PATTERN = "yyyy.MM.dd (E)"
 fun convertFullFormatDate(milliseconds: Long = 0) : String {
     val date = Date(milliseconds)
     val dateFormat = SimpleDateFormat(FULL_FORMAT_DATE_PATTERN, Locale.getDefault()).apply {
-        timeZone = TimeZone.getTimeZone("UTC")
+        timeZone = TimeZone.getTimeZone("Asia/Seoul")
     }
     return dateFormat.format(date)
 }
@@ -103,7 +103,7 @@ const val HOUR_TIME_FORMAT_PATTERN = "a h시 mm분"
 fun convertHourTimeFormat(milliseconds: Long = 0) : String {
     val date = Date(milliseconds)
     val dateFormat = SimpleDateFormat(HOUR_TIME_FORMAT_PATTERN, Locale.getDefault()).apply {
-        timeZone = TimeZone.getTimeZone("UTC")
+        timeZone = TimeZone.getTimeZone("Asia/Seoul")
     }
     return dateFormat.format(date)
 }
@@ -115,7 +115,7 @@ fun String?.convertHeaderDateFormat(): String {
     val milliseconds = this.toLong()
     val date = Date(milliseconds)
     val fromFormat = SimpleDateFormat(HEADER_DATE_FORMAT_PATTERN, Locale.getDefault()).apply {
-        timeZone = TimeZone.getTimeZone("UTC")
+        timeZone = TimeZone.getTimeZone("Asia/Seoul")
     }
     return fromFormat.format(date)
 }
@@ -127,7 +127,7 @@ fun String?.convertRecordDateFormat(): String {
     val milliseconds = this.toLong()
     val date = Date(milliseconds)
     val fromFormat = SimpleDateFormat(RECORD_DATE_FORMAT_PATTERN, Locale.getDefault()).apply {
-        timeZone = TimeZone.getTimeZone("UTC")
+        timeZone = TimeZone.getTimeZone("Asia/Seoul")
     }
     return fromFormat.format(date)
 }
