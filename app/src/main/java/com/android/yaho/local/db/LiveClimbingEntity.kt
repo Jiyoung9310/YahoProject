@@ -23,7 +23,7 @@ data class RecordEntity(
     var climbingDate: String = "",
     var allRunningTime: Long = 0, // 전체 시간
     var totalClimbingTime: Long = 0, // 운동 시간
-    var totalDistance: Float = 0f,
+    var totalDistance: Float = 0f, // meter
     var totalCalories: Float = 0f, // 몸무게 필요
     var maxSpeed: Float = 0f,
     var averageSpeed: Double = 0.0,
@@ -37,7 +37,7 @@ data class RecordEntity(
 data class PathSectionEntity(
     @PrimaryKey(autoGenerate = true) val sectionId: Int = 0,
     val runningTime: Long = 0,
-    var distance: Float = 0f,
+    var distance: Float = 0f, // meter
     val calories: Float = 0f,
     val restIndex: Int = 0
 )
@@ -50,7 +50,7 @@ data class PointEntity(
     val altitude: Double = 0.0,
     val speed: Float = 0f,
     val timestamp: Long = 0,
-    val distance: Float = 0f,
+    val distance: Float = 0f, // meter
 )
 
 data class RecordWithSectionsAndPoints(

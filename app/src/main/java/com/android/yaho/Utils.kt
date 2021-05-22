@@ -133,3 +133,19 @@ fun String?.convertRecordDateFormat(): String {
 }
 
 fun Float.km(context: Context) : String = context.getString(R.string.kilo_meter_unit, this)
+
+fun Double.meter(context: Context) : String {
+    return if(this < 1000) {
+        context.getString(R.string.meter_unit, this)
+    } else {
+        context.getString(R.string.kilo_meter_unit, this/1000)
+    }
+}
+
+fun Float.meter(context: Context) : String {
+    return if(this < 1000) {
+        context.getString(R.string.meter_unit, this)
+    } else {
+        context.getString(R.string.kilo_meter_unit, this/1000)
+    }
+}

@@ -11,7 +11,7 @@ import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityHomeBinding
 import com.android.yaho.dp
-import com.android.yaho.screen.ClimbingDetailActivity.Companion.startClimbingDetailActivity
+import com.android.yaho.meter
 import com.android.yaho.ui.HomeMenuAdapter
 import com.android.yaho.viewmodel.HomeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -88,7 +88,7 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
 
     private fun initObserve() {
         viewModel.userData.observe(this) {
-            binding.tvAllHeight.text = getString(R.string.kilo_meter_unit, it.allHeight)
+            binding.tvAllHeight.text = it.allHeight.meter(this)
             binding.tvClimbNumber.text = getString(R.string.count_unit, it.totalCount)
         }
     }
