@@ -15,7 +15,6 @@ import org.koin.core.component.get
 interface LoginRepository {
     fun getUserID(): String?
     suspend fun saveUserID(uid: String): Flow<LoginResult>
-    suspend fun updateNewUser(): Flow<LoginResult>
 }
 
 @ExperimentalCoroutinesApi
@@ -29,30 +28,53 @@ class LoginRepositoryImpl(private val auth: FirebaseAuth,
 
         var eventsCollection: DocumentReference? = null
         try {
-            eventsCollection = firestoreDB.collection("users").document(uid)
+            eventsCollection = firestoreDB
+                .collection("users").document(uid)
+                .collection("total").document(uid)
         } catch (e: Throwable) {
+            offer(LoginResult.SignUpFail(e))
             close(e)
         }
 
-        val subscription = eventsCollection?.addSnapshotListener { snapshot, _ ->
-            if (snapshot == null || !snapshot.exists()) {
+        val subscription = eventsCollection?.get()
+            ?.addOnSuccessListener {
+                if(it.exists()) {
+                    offer(LoginResult.LoginSuccess)
+                    Log.w("LoginRepository", "LoginSuccess")
+                } else {
+                    eventsCollection.set(UserClimbingData())
+                        .addOnSuccessListener {
+                            offer(LoginResult.NewUserSignUp)
+                            Log.w("LoginRepository", "OnSuccess NewUserSignUp")
+                        }
+                }
+            }?.addOnFailureListener { e : Throwable ->
+                offer(LoginResult.SignUpFail(e))
+                Log.w("LoginRepository", "saveUserID error : ${e.message}")
+            }
+/*
+        val subscription = eventsCollection?.collection("total")?.addSnapshotListener { snapshot, _ ->
+            if(snapshot?.documents.isNullOrEmpty()) {
                 offer(LoginResult.NoLoginData)
                 return@addSnapshotListener
+            } else {
+                offer(LoginResult.LoginSuccess)
+                Log.w("LoginRepository", "LoginSuccess")
             }
             try {
-
                 offer(LoginResult.LoginSuccess)
                 Log.w("LoginRepository", "LoginSuccess")
             } catch (e: Throwable) {
+                offer(LoginResult.SignUpFail(e))
                 Log.w("LoginRepository", "saveUserID error : ${e.message}")
             }
-        }
+        }*/
 
-        awaitClose { subscription?.remove() }
+        awaitClose { (subscription as ListenerRegistration).remove() }
 
     }
 
-    override suspend fun updateNewUser(): Flow<LoginResult> = callbackFlow {
+    /*override suspend fun updateNewUser(): Flow<LoginResult> = callbackFlow {
         val uid = get<YahoPreference>().userId
         if(!uid.isNullOrEmpty()) {
             val script = firestoreDB.collection("users")
@@ -73,7 +95,7 @@ class LoginRepositoryImpl(private val auth: FirebaseAuth,
                 }
             awaitClose { (script as ListenerRegistration).remove() }
         }
-    }
+    }*/
 }
 
 sealed class LoginResult {

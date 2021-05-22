@@ -57,7 +57,7 @@ class LoginViewModel(private val repo : LoginRepository) : ViewModel() {
 
     }
 
-    fun signUp() {
+    /*fun signUp() {
         viewModelScope.launch {
             repo.updateNewUser()
                 .catch { e : Throwable ->
@@ -70,13 +70,12 @@ class LoginViewModel(private val repo : LoginRepository) : ViewModel() {
 
 
         }
-    }
+    }*/
 
     private fun getNetworkResult(result: LoginResult) {
         when(result) {
-            LoginResult.LoginSuccess -> _goToHome.value = Unit
-            LoginResult.NoLoginData -> signUp()
-            LoginResult.NewUserSignUp -> _goToHome.value = Unit
+            LoginResult.LoginSuccess, LoginResult.NewUserSignUp -> _goToHome.value = Unit
+            LoginResult.NoLoginData -> {}
             is LoginResult.SignUpFail -> _error.value = result.e
         }
     }

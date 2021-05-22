@@ -4,6 +4,7 @@ import android.util.Log
 import com.android.yaho.data.UserClimbingData
 import com.android.yaho.local.YahoPreference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -21,22 +22,22 @@ class UserDataRepositoryImpl(private val firestoreDB: FirebaseFirestore) : UserD
         val uid = get<YahoPreference>().userId
         if(uid == null) offer(UserClimbingData())
 
-        val subscription = firestoreDB.collection("users")
-            .document(uid!!)
-            .collection("total")
-            .addSnapshotListener { snapshot, error ->
+        val subscription = firestoreDB
+            .collection("users").document(uid!!)
+            .collection("total").document(uid)
+            .get()
+            .addOnSuccessListener { snapshot ->
                 try {
-                    val data = snapshot?.documents?.firstOrNull()
-                    if(data != null) {
-                        val totalData = data.toObject(UserClimbingData::class.java)
-                        totalData?.let { offer(it) }
-                        Log.d("UserDataRepository", "geteUserData : $totalData")
+                    snapshot.toObject(UserClimbingData::class.java)?.let {
+                        offer(it)
+                        Log.d("UserDataRepository", "getUserData : $it")
                     }
                 } catch (e: Throwable) {
+                    offer(UserClimbingData())
                     Log.w("UserDataRepository", "firestore error : ${e.message}")
-                    return@addSnapshotListener
+                    return@addOnSuccessListener
                 }
             }
-        awaitClose { subscription.remove() }
+        awaitClose { (subscription as ListenerRegistration).remove() }
     }
 }
