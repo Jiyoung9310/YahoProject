@@ -25,30 +25,18 @@ class UserDataRepositoryImpl(private val firestoreDB: FirebaseFirestore) : UserD
 
         val subscription = firestoreDB
             .collection("users").document(uid!!)
-            .collection("climbingData")
+            .collection("total").document(uid)
             .get()
             .addOnSuccessListener { snapshot ->
                 try {
-                    val totalData = UserClimbingData()
-                    if(snapshot.isEmpty) {
+                    val totalData = snapshot.toObject(UserClimbingData::class.java)
+                    if(totalData == null) {
+                        offer(UserClimbingData())
                         Log.d("UserDataRepository", "totalData isEmpty")
                     } else {
-                        val list = snapshot.documents.map {
-                            it.toObject(RecordEntity::class.java)
-                        }
-                        totalData.totalCount = list.count()
-                        list.forEach {
-                            it?.let {
-                                totalData.apply {
-                                    allHeight += it.maxHeight
-                                    allDistance += it.totalDistance
-                                    allTime += it.allRunningTime
-                                }
-                            }
-                        }
+                        offer(totalData)
+                        Log.d("UserDataRepository", "get totalData success")
                     }
-                    offer(totalData)
-                    Log.d("UserDataRepository", "totalData isEmpty")
 
                 } catch (e: Throwable) {
                     offer(UserClimbingData())

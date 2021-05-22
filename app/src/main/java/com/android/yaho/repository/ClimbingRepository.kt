@@ -1,6 +1,7 @@
 package com.android.yaho.repository
 
 import android.util.Log
+import com.android.yaho.data.UserClimbingData
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.local.db.RecordEntity
@@ -36,14 +37,43 @@ class ClimbingRepositoryImpl(
             this.recordId = recordId
         }
         Log.w("ClimbingRepository", "ready to climbing data add : $recordCache")
-        val script = firestoreDB.collection("users")
-            .document(uid!!)
-            .collection("climbingData")
+        val accessUsers = firestoreDB.collection("users").document(uid!!)
+        val script = accessUsers.collection("climbingData")
             .document(recordId)
             .set(recordCache)
             .addOnSuccessListener { documentReference ->
-                Log.w("ClimbingRepository", "climbing data add : $documentReference")
-                offer(ClimbingResult.Success)
+                try {
+                    accessUsers.collection("climbingData")
+                        .get()
+                        .addOnSuccessListener { result ->
+                            val list = result.documents.map {
+                                it.toObject(RecordEntity::class.java)
+                            }
+                            val newTotalData = UserClimbingData()
+                            newTotalData.totalCount = list.count()
+                            list.forEach {
+                                it?.let {
+                                    newTotalData.apply {
+                                        allHeight += it.maxHeight
+                                        allDistance += it.totalDistance
+                                        allTime += it.allRunningTime
+                                    }
+                                }
+                            }
+                            accessUsers.collection("total").document(uid).set(newTotalData)
+                                .addOnSuccessListener {
+                                    Log.w("ClimbingRepository", "climbing data add : $documentReference")
+                                    offer(ClimbingResult.Success)
+                                }.addOnFailureListener { e ->
+                                    Log.w("ClimbingRepository", "Error adding document", e)
+                                    offer(ClimbingResult.Fail(e))
+                                }
+                        }
+
+                } catch (e: Throwable) {
+                    Log.w("ClimbingRepository", "Error adding document", e)
+                    offer(ClimbingResult.Fail(e))
+                }
             }
             .addOnFailureListener { e ->
                 Log.w("ClimbingRepository", "Error adding document", e)
