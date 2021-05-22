@@ -1,5 +1,6 @@
 package com.android.yaho.screen
 
+import android.animation.Animator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -18,12 +19,35 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(Activi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initView()
         initObserve()
+    }
+    private fun initView() {
+        binding.lottieDone.addAnimatorListener(object: Animator.AnimatorListener {
+            override fun onAnimationStart(p0: Animator?) {
+                viewModel.saveClimbData()
+            }
+
+            override fun onAnimationEnd(p0: Animator?) {
+                viewModel.animationEnd()
+            }
+
+            override fun onAnimationCancel(p0: Animator?) {
+
+            }
+
+            override fun onAnimationRepeat(p0: Animator?) {
+
+            }
+        })
     }
 
     private fun initObserve() {
         viewModel.saveResult.observe(this) {
-            Log.w(TAG, "등산 데이터 저장 완료! : $it")
+            Toast.makeText(this, "등산 데이터 저장 완료!", Toast.LENGTH_SHORT).show()
+        }
+
+        viewModel.goToDetail.observe(this) {
             ClimbingDetailActivity.startClimbingDetailActivity(this, it)
             finish()
         }

@@ -1,9 +1,6 @@
 package com.android.yaho.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.android.yaho.data.UserClimbingData
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.cache.LiveClimbingCache
@@ -19,16 +16,24 @@ class ClimbingDoneViewModel(private val repo: ClimbingRepository,
                             private val pref : YahoPreference,
 ) : ViewModel() {
 
-    private val _saveResult = MutableLiveData<String>()
-    val saveResult : LiveData<String> get() = _saveResult
+    private val _saveResult = MutableLiveData<Boolean>()
+    val saveResult : LiveData<Boolean> get() = _saveResult
+    private val _animationResult = MutableLiveData<Boolean>()
+
+    private val _goToDetail = MediatorLiveData<String>().apply {
+        addSource(_saveResult) {
+            if(it && _animationResult.value == true) this.value = climbingId
+        }
+        addSource(_animationResult) {
+            if(_saveResult.value == true && it) this.value = climbingId
+        }
+    }
+    val goToDetail : LiveData<String> get() = _goToDetail
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
     private val climbingId = System.currentTimeMillis().toString()
-    init {
-        saveClimbData()
-    }
 
     fun saveClimbData() {
         // TODO : network 연결 아닌 상태인 케이스 처리 추가 필요
@@ -46,10 +51,14 @@ class ClimbingDoneViewModel(private val repo: ClimbingRepository,
             repo.updateVisitMountain()
                 .catch { e:Throwable -> _error.value = e }
                 .collect {
-                    _saveResult.value = climbingId
+                    _saveResult.value = it == ClimbingResult.Success
                     climbingCache.clearCache()
                     pref.clearSelectedMountain()
                 }
         }
+    }
+
+    fun animationEnd() {
+        _animationResult.value = true
     }
 }
