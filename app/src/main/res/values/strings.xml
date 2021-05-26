@@ -25,6 +25,7 @@
     <string name="ready_near_mountain_height">정상까지 높이</string>
     <string name="ready_near_level">난이도</string>
     <string name="ready_to_start_title">%s 정복을\n시작합니다!</string>
+    <string name="ready_near_mountain_not_found">근처에 오를 산이 없어요ㅠㅠ</string>
 
     <string name="permission_denied_explanation">권한이 거부되었지만 핵심 기능에 필요합니다.</string>
     <string name="settings">Settings</string>

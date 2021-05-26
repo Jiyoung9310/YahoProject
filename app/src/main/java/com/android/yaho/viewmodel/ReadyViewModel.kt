@@ -89,7 +89,7 @@ class ReadyViewModel(
             }.filter {
                 abs(it.longitude - location.longitude) < 0.1
             }.take(4)
-        Log.d("MainViewModel", "getNearByMountain $data")
+        Log.d("ReadyViewModel", "getNearByMountain $data")
         _nearByList.value = data
     }
 
