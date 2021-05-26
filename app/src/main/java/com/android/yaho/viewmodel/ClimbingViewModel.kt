@@ -1,5 +1,6 @@
 package com.android.yaho.viewmodel
 
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.local.db.PointEntity
 import com.android.yaho.local.db.RecordEntity
+import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -32,6 +34,9 @@ class ClimbingViewModel(private val climbingCache: LiveClimbingCache) : ViewMode
 
     private val _updateMap = MutableLiveData<PointEntity>()
     val updateMap: LiveData<PointEntity> get() = _updateMap
+
+    private val _stampMarker = MutableLiveData<LatLng>()
+    val stampMarker: LiveData<LatLng> get() = _stampMarker
 
     private val _climbingData = MutableLiveData<ClimbingDetailUseCase>()
     val climbingData: LiveData<ClimbingDetailUseCase> get() = _climbingData
@@ -63,10 +68,12 @@ class ClimbingViewModel(private val climbingCache: LiveClimbingCache) : ViewMode
         if(isActive) {
             restCount = count
             count = activeCount
+            _stampMarker.value = climbingCache.latlngPaths.last()
         } else {
             activeCount = count
             count = restCount
             climbingCache.updateSection()
+            _stampMarker.value = climbingCache.latlngPaths.last()
         }
     }
 

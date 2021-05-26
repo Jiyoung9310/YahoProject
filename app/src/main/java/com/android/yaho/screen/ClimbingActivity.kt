@@ -65,6 +65,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
     private lateinit var mountainData: MountainData
     private var runningTime: Long = 0
     private var isActive = true
+    private var restingMarker : Marker? = null
 
     private val behavior by lazy { BottomSheetBehavior.from(binding.clBottom) }
 
@@ -259,16 +260,13 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
             finish()
         }
+
+        viewModel.stampMarker.observe(this) {
+            sectionMarker(it)
+        }
     }
 
     private fun updateMapMarker(latitude: Double, longitude: Double) {
-        val cameraUpdate = CameraUpdate.fitBounds(
-            LatLngBounds(
-                LatLng(latitude, longitude),
-                LatLng(mountainData.latitude, mountainData.longitude),
-            ), 150
-        )
-        naverMap?.moveCamera(cameraUpdate)
 
         naverMap?.locationOverlay?.apply {
             isVisible = true
@@ -280,6 +278,25 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             if (list.size < 2) return@let
             pathOverlay.apply {
                 coords = list
+                map = naverMap
+            }
+        }
+    }
+
+    private fun sectionMarker(latlng: LatLng) {
+        if(isActive) {
+            restingMarker?.map = null
+            Marker().apply {
+                position = latlng
+                icon =
+                    OverlayImage.fromResource(R.drawable.img_marker_section)
+                map = naverMap
+            }
+        } else {
+            restingMarker = Marker().apply {
+                position = latlng
+                icon =
+                    OverlayImage.fromResource(R.drawable.img_marker_rest)
                 map = naverMap
             }
         }
@@ -323,6 +340,14 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
                         val lastLocation = task.result
                         naverMap.apply {
                             updateMapMarker(lastLocation.latitude, lastLocation.longitude)
+                            val cameraUpdate = CameraUpdate.fitBounds(
+                                LatLngBounds(
+                                    LatLng(lastLocation.latitude, lastLocation.longitude),
+                                    LatLng(mountainData.latitude, mountainData.longitude),
+                                ), 150
+                            )
+                            naverMap.moveCamera(cameraUpdate)
+                            sectionMarker(LatLng(lastLocation.latitude, lastLocation.longitude))
                         }
                     } else {
                         Log.w(TAG, "Failed to get location.")
