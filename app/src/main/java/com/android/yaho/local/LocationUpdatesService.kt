@@ -81,8 +81,12 @@ class LocationUpdatesService : Service(), KoinComponent {
             NotificationChannel(
                 CHANNEL_ID,
                 getString(R.string.app_name),
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                setShowBadge(true)
+                vibrationPattern = longArrayOf(0) // 진동 끄기
+                enableVibration(true) // 진동 끄기
+            }
         )
     }
 
@@ -192,7 +196,7 @@ class LocationUpdatesService : Service(), KoinComponent {
             .setContentTitle(getLocationTitle(get<LiveClimbingCache>().getRecord().mountainName))
             .setOngoing(true)
             .setPriority(NotificationManagerCompat.IMPORTANCE_LOW)
-            .setVibrate(null)
+            .setVibrate(longArrayOf(0))
             .setSmallIcon(R.mipmap.ic_launcher)
             .setTicker(notiText)
             .setWhen(System.currentTimeMillis())
