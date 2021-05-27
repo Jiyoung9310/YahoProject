@@ -199,7 +199,7 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
 
         pathOverlay.also {
             it.width = resources.getDimensionPixelSize(R.dimen.path_overlay_width)
-            it.outlineWidth = 0
+            it.outlineWidth = resources.getDimensionPixelSize(R.dimen.path_overlay_outline_width)
             it.color = Color.BLACK
         }
 
