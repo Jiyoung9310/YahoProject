@@ -8,14 +8,19 @@ import android.location.Location
 import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.android.yaho.*
 import com.android.yaho.R
+import com.android.yaho.getLocationTitle
 import com.android.yaho.local.cache.LiveClimbingCache
+import com.android.yaho.requestingLocationUpdates
 import com.android.yaho.screen.ClimbingActivity
+import com.android.yaho.setRequestingLocationUpdates
 import com.google.android.gms.location.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import java.text.DateFormat
+import java.util.*
 
 
 class LocationUpdatesService : Service(), KoinComponent {
@@ -44,6 +49,11 @@ class LocationUpdatesService : Service(), KoinComponent {
     private lateinit var notificationManager: NotificationManager
     private var changingConfiguration = false
     private lateinit var serviceHandler: Handler
+    private val notiText : String by lazy { getString(
+        R.string.noti_text_message, DateFormat.getDateTimeInstance().format(
+            Date()
+        )
+    ) }
 
     private var isActive = true
 
@@ -114,6 +124,8 @@ class LocationUpdatesService : Service(), KoinComponent {
             setRequestingLocationUpdates(false)
             stopSelf()
             notificationManager.cancelAll()
+            get<LiveClimbingCache>().clearCache()
+            get<YahoPreference>().clearSelectedMountain()
         } catch (unlikely: SecurityException) {
             setRequestingLocationUpdates(true)
             Log.e(
@@ -149,7 +161,6 @@ class LocationUpdatesService : Service(), KoinComponent {
     }
 
     private fun getNotification(): Notification? {
-        val text = myLocation?.getLocationText()
 
         // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
 
@@ -168,7 +179,7 @@ class LocationUpdatesService : Service(), KoinComponent {
             this, REQUEST_CODE,
             Intent(this, ClimbingActivity::class.java), 0
         )
-        val builder = NotificationCompat.Builder(this)
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .addAction(
                 R.drawable.ic_yaho, getString(R.string.launch_activity),
                 activityPendingIntent
@@ -177,12 +188,13 @@ class LocationUpdatesService : Service(), KoinComponent {
                 R.drawable.ic_back, getString(R.string.remove_location_updates),
                 servicePendingIntent
             )
-            .setContentText(text)
-            .setContentTitle(getLocationTitle())
+            .setContentText(notiText)
+            .setContentTitle(getLocationTitle(get<LiveClimbingCache>().getRecord().mountainName))
             .setOngoing(true)
-            .setPriority(Notification.PRIORITY_HIGH)
+            .setPriority(NotificationManagerCompat.IMPORTANCE_LOW)
+            .setVibrate(null)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setTicker(text)
+            .setTicker(notiText)
             .setWhen(System.currentTimeMillis())
 
         // Set the Channel ID for Android O.

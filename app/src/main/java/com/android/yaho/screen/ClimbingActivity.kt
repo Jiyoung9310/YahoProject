@@ -129,11 +129,17 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
         // Bind to the service. If the service is in foreground mode, this signals to the service
         // that since this activity is in the foreground, the service can exit foreground mode.
-
-        bindService(
-            Intent(this, LocationUpdatesService::class.java), serviceConnection,
-            BIND_AUTO_CREATE
-        )
+        if (get<YahoPreference>().selectedMountainId > 0) {
+            bindService(
+                Intent(this, LocationUpdatesService::class.java), serviceConnection,
+                BIND_AUTO_CREATE
+            )
+        } else {
+            startActivity(Intent(applicationContext, HomeActivity::class.java).apply{
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            })
+            finish()
+        }
     }
 
     override fun onResume() {
