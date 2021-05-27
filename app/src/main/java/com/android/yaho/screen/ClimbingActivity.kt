@@ -5,6 +5,7 @@ import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.PointF
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -65,7 +66,6 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
     private lateinit var mountainData: MountainData
     private var runningTime: Long = 0
     private var isActive = true
-    private var restingMarker : Marker? = null
 
     private val behavior by lazy { BottomSheetBehavior.from(binding.clBottom) }
 
@@ -285,19 +285,19 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     private fun sectionMarker(latlng: LatLng) {
         if(isActive) {
-            restingMarker?.map = null
+            naverMap?.locationOverlay?.subIcon = null
             Marker().apply {
+                zIndex = 0
                 position = latlng
                 icon =
                     OverlayImage.fromResource(R.drawable.img_marker_section)
                 map = naverMap
             }
         } else {
-            restingMarker = Marker().apply {
-                position = latlng
-                icon =
-                    OverlayImage.fromResource(R.drawable.img_marker_rest)
-                map = naverMap
+            naverMap?.locationOverlay?.apply {
+                anchor = PointF(0.5f, 0f)
+                subIcon = OverlayImage.fromResource(R.drawable.img_marker_rest)
+                subAnchor = PointF(0.5f, 1f)
             }
         }
     }
