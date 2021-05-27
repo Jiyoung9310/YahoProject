@@ -113,6 +113,7 @@ class LocationUpdatesService : Service(), KoinComponent {
             fusedLocationClient.removeLocationUpdates(locationCallback)
             setRequestingLocationUpdates(false)
             stopSelf()
+            notificationManager.cancelAll()
         } catch (unlikely: SecurityException) {
             setRequestingLocationUpdates(true)
             Log.e(

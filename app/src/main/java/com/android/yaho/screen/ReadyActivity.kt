@@ -14,12 +14,16 @@ import com.android.yaho.BuildConfig
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityReadyBinding
+import com.android.yaho.local.YahoPreference
+import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.viewmodel.ReadyViewModel
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinComponent
 
-class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding::inflate)  {
+class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding::inflate), KoinComponent  {
 
     private val TAG = this::class.simpleName
 
@@ -52,6 +56,9 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
         initView()
         initObserve()
         viewModel.moveScreen(SCREEN_NEAR_MOUNTAIN)
+        
+        get<LiveClimbingCache>().clearCache()
+        get<YahoPreference>().clearSelectedMountain()
     }
 
     override fun onStart() {
