@@ -44,6 +44,9 @@
     <string name="dialog_climbing_done_message">오늘 하루 건강을 위해\n%s 투자했어요!</string>
     <string name="dialog_climbing_done_cancel">아직 더 내려가야해요.</string>
 
+    <!--climbing done-->
+    <string name="climbing_save_done">야~~호~~</string>
+
     <!--climbing detail-->
     <string name="climbing_detail_toolbar_title">%s 상세 기록</string>
     <string name="climbing_detail_mountain_name">%s으로 %d번째 등산</string>

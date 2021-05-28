@@ -116,6 +116,8 @@ class LocationUpdatesService : Service(), KoinComponent {
         if (startedFromNotification) {
             removeLocationUpdates()
             stopSelf()
+            get<LiveClimbingCache>().clearCache()
+            get<YahoPreference>().clearSelectedMountain()
         }
         // Tells the system to not try to recreate the service after it has been killed.
         return START_NOT_STICKY
@@ -128,8 +130,6 @@ class LocationUpdatesService : Service(), KoinComponent {
             setRequestingLocationUpdates(false)
             stopSelf()
             notificationManager.cancelAll()
-            get<LiveClimbingCache>().clearCache()
-            get<YahoPreference>().clearSelectedMountain()
         } catch (unlikely: SecurityException) {
             setRequestingLocationUpdates(true)
             Log.e(
@@ -145,7 +145,6 @@ class LocationUpdatesService : Service(), KoinComponent {
 
     private fun onNewLocation(location: Location) {
         Log.i(TAG, "New location: $location")
-        myLocation = location
         if(isActive) {
             get<LiveClimbingCache>().put(location, myLocation?.distanceTo(location))
 //        get<ClimbingSaveHelper>().savePoint(location, myLocation?.distanceTo(location))
@@ -162,6 +161,7 @@ class LocationUpdatesService : Service(), KoinComponent {
             notificationManager.notify(NOTIFICATION_ID, getNotification())
 //        }
         }
+        myLocation = location
     }
 
     private fun getNotification(): Notification? {

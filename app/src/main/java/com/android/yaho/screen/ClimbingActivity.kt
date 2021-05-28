@@ -434,10 +434,10 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
                 intent.getParcelableExtra<Location>(LocationUpdatesService.EXTRA_LOCATION)
             if (location != null) {
                 viewModel.updateCurrentLocation()
-                Toast.makeText(
+                /*Toast.makeText(
                     context, location.getLocationResultText(),
                     Toast.LENGTH_SHORT
-                ).show()
+                ).show()*/
             }
         }
     }

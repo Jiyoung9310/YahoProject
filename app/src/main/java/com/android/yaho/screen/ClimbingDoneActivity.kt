@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityClimbingDoneBinding
 import com.android.yaho.repository.ClimbingResult
@@ -44,7 +45,7 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(Activi
 
     private fun initObserve() {
         viewModel.saveResult.observe(this) {
-            Toast.makeText(this, "등산 데이터 저장 완료!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.climbing_save_done), Toast.LENGTH_SHORT).show()
         }
 
         viewModel.goToDetail.observe(this) {
