@@ -31,8 +31,9 @@
     <string name="settings">Settings</string>
     <string name="launch_activity">화면에서 보기</string>
     <string name="remove_location_updates">등산 관두기</string>
-    <string name="location_updated">야호! %1$s 등산 중</string>
+    <string name="noti_title_climbing">야호! %1$s 등산 중</string>
     <string name="noti_text_message">%s부터 오르기 시작</string>
+    <string name="noti_title_resting">숨 고르는 중</string>
 
     <!--climbing-->
     <string name="live_climbing_distance_title">거리</string>

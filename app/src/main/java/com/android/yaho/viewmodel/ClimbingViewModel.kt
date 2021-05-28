@@ -47,9 +47,14 @@ class ClimbingViewModel(private val climbingCache: LiveClimbingCache) : ViewMode
     private val _clickDone = MutableLiveData<RecordEntity?>()
     val clickDone: LiveData<RecordEntity?> get() = _clickDone
 
-    fun setRunningTime(time: Long) {
-        activeCount = time
-        count = activeCount
+    fun setRunningTime(runningCount: Long, restingCount: Long, term: Long, isActive: Boolean) {
+        activeCount = runningCount
+        restCount = restingCount
+        count = if(isActive) {
+            activeCount + term
+        } else {
+            restCount + term
+        }
     }
 
     fun onSettingService(isBound: Boolean) {

@@ -52,6 +52,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
         const val KEY_MOUNTAIN_DATA = "KEY_MOUNTAIN_DATA"
         const val KEY_MOUNTAIN_VISIT_COUNT = "KEY_MOUNTAIN_VISIT_COUNT"
+        const val KEY_IS_ACTIVE = "KEY_IS_ACTIVE"
         private val KEY_TIME_STAMP = "KEY_TIME_STAMP"
         private val KEY_RUNNING_TIME = "KEY_RUNNING_TIME"
     }
@@ -91,6 +92,11 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             intent?.getParcelableExtra<MountainData>(KEY_MOUNTAIN_DATA)?.let {
                 mountainData = it
             }
+            /*intent?.getBooleanExtra(KEY_IS_ACTIVE, true)?.let {
+                isActive = it
+                showBottomView(isActive)
+                if(it) viewModel.updateCurrentLocation()
+            }*/
         }
     }
 
@@ -100,13 +106,19 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             get<MountainListCache>().get(get<YahoPreference>().selectedMountainId)?.let {
                 mountainData = it
             }
+            isActive = get<YahoPreference>().isActive
+            showBottomView(isActive)
+            if(isActive) viewModel.updateCurrentLocation()
+
             get<YahoPreference>().runningTimeStamp.let { timeStamp ->
                 if (timeStamp > 0) {
-                    viewModel.setRunningTime(
-                        get<YahoPreference>().runningTimeCount + (System.currentTimeMillis() / 1000 - timeStamp)
+                    val runningCount = get<YahoPreference>().runningTimeCount
+                    val restCount = get<YahoPreference>().restTimeCount
+                    viewModel.setRunningTime(runningCount, restCount,
+                        (System.currentTimeMillis() / 1000 - timeStamp),
+                        isActive
                     )
                 }
-
             }
         } else if(intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA) != null) {
             intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA)?.let {
@@ -168,7 +180,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         }
         get<YahoPreference>().apply {
             runningTimeStamp = System.currentTimeMillis() / 1000
-            runningTimeCount = runningTime
+            if(isActive) runningTimeCount = runningTime else restTimeCount = runningTime
         }
 
         Log.i(TAG, "디버깅!!! onStop()")
@@ -210,17 +222,17 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
         binding.btnPause.setOnClickListener {
             isActive = !isActive
-            binding.bottomActiveView.isVisible = isActive
-            binding.tvRestTitle.isVisible = !isActive
+            showBottomView(isActive)
             viewModel.onClickPause(isActive)
             if(isActive) {
-                binding.btnPause.setImageResource(R.drawable.ic_btn_pause)
+                viewModel.updateCurrentLocation()
                 locationUpdatesService?.restart()
+                get<YahoPreference>().restTimeCount = runningTime
             } else {
                 locationUpdatesService?.isPause()
-                binding.btnPause.setImageResource(R.drawable.ic_btn_play)
+                get<YahoPreference>().runningTimeCount = runningTime
             }
-
+            get<YahoPreference>().isActive = isActive
         }
 
         binding.btnClimbingDone.setOnClickListener {
@@ -231,6 +243,16 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
                     locationUpdatesService?.serviceStop()
                 }
             ).show()
+        }
+    }
+
+    private fun showBottomView(isActive: Boolean) {
+        binding.bottomActiveView.isVisible = isActive
+        binding.tvRestTitle.isVisible = !isActive
+        if(isActive) {
+            binding.btnPause.setImageResource(R.drawable.ic_btn_pause)
+        } else {
+            binding.btnPause.setImageResource(R.drawable.ic_btn_play)
         }
     }
 

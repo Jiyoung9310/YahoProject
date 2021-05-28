@@ -44,17 +44,6 @@ fun Location.getLocationResultText(): String {
     return sb.toString()
 }
 
-fun Location.getLocationText(): String {
-    return if (this == null) "Unknown location" else "($latitude, $longitude)"
-}
-
-fun Context.getLocationTitle(mountainName: String): String {
-    return getString(
-        R.string.location_updated,
-        mountainName
-    )
-}
-
 fun Context?.requestingLocationUpdates(): Boolean {
     return PreferenceManager.getDefaultSharedPreferences(this)
         .getBoolean(KEY_REQUESTING_LOCATION_UPDATES, true)

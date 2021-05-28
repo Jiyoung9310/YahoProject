@@ -11,10 +11,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.android.yaho.R
-import com.android.yaho.getLocationTitle
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.requestingLocationUpdates
 import com.android.yaho.screen.ClimbingActivity
+import com.android.yaho.screen.ClimbingActivity.Companion.KEY_IS_ACTIVE
 import com.android.yaho.setRequestingLocationUpdates
 import com.google.android.gms.location.*
 import org.koin.core.component.KoinComponent
@@ -166,6 +166,13 @@ class LocationUpdatesService : Service(), KoinComponent {
 
     private fun getNotification(): Notification? {
 
+        val notiTitle = if(isActive) {
+            getString(R.string.noti_title_climbing,
+                get<LiveClimbingCache>().getRecord().mountainName
+            )
+        } else {
+            getString(R.string.noti_title_resting)
+        }
         // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
 
 
@@ -193,7 +200,7 @@ class LocationUpdatesService : Service(), KoinComponent {
                 servicePendingIntent
             )
             .setContentText(notiText)
-            .setContentTitle(getLocationTitle(get<LiveClimbingCache>().getRecord().mountainName))
+            .setContentTitle(notiTitle)
             .setOngoing(true)
             .setPriority(NotificationManagerCompat.IMPORTANCE_LOW)
             .setVibrate(longArrayOf(0))
@@ -282,6 +289,7 @@ class LocationUpdatesService : Service(), KoinComponent {
 
     fun isPause() {
         isActive = false
+        notificationManager.notify(NOTIFICATION_ID, getNotification())
     }
 
     fun restart() {
