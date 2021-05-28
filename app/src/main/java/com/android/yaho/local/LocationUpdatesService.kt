@@ -204,7 +204,7 @@ class LocationUpdatesService : Service(), KoinComponent {
             .setOngoing(true)
             .setPriority(NotificationManagerCompat.IMPORTANCE_LOW)
             .setVibrate(longArrayOf(0))
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_yaho)
             .setTicker(notiText)
             .setWhen(System.currentTimeMillis())
 
