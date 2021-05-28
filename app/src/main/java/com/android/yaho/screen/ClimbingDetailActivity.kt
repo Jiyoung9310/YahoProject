@@ -174,8 +174,10 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
         }
 
         viewModel.deleteDone.observe(this) {
-            Toast.makeText(applicationContext, "등산 데이터가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-            finish()
+            if(it) {
+                Toast.makeText(applicationContext, getString(R.string.climbing_record_delete_done), Toast.LENGTH_SHORT).show()
+                finish()
+            }
         }
     }
 

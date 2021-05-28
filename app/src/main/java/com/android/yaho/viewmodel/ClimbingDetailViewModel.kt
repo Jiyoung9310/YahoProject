@@ -35,8 +35,8 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
     private val _sectionMark = MutableLiveData<List<LatLng>>()
     val sectionMark : LiveData<List<LatLng>> get() = _sectionMark
 
-    private val _deleteDone = MutableLiveData<Unit>()
-    val deleteDone : LiveData<Unit> get() = _deleteDone
+    private val _deleteDone = MutableLiveData<Boolean>()
+    val deleteDone : LiveData<Boolean> get() = _deleteDone
 
     private val _noData = MutableLiveData<Unit>()
     val noData: LiveData<Unit> get() = _noData
@@ -136,9 +136,11 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
     fun deleteRecord() {
         viewModelScope.launch {
             repo.deleteClimbingData(recordId)
-                .catch { e: Throwable -> _error.value = e }
+                .catch { e: Throwable ->
+                    _error.value = e
+                }
                 .collect {
-                    if(it == ClimbingResult.Success) _deleteDone.value = Unit
+                    _deleteDone.value = it == ClimbingResult.Success
                 }
         }
     }
