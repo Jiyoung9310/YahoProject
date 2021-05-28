@@ -262,7 +262,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         }
 
         viewModel.climbingData.observe(this) {
-            binding.tvDistance.text = getString(R.string.kilo_meter_unit, it.allDistance)
+            binding.tvDistance.text = it.allDistance.meter(this)
             binding.tvHeight.text = getString(R.string.meter_unit, it.height.toFloat())
         }
 
