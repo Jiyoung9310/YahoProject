@@ -45,6 +45,7 @@
     <string name="dialog_climbing_done_cancel">아직 더 내려가야해요.</string>
 
     <!--climbing done-->
+    <string name="dialog_save_need_connect_network">등산 기록을 저장합니다.\n네트워크 연결 상태를 확인해주세요</string>
     <string name="climbing_save_done">야~~호~~</string>
 
     <!--climbing detail-->
