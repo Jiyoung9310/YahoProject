@@ -1,6 +1,7 @@
 package com.android.yaho.screen
 
 import android.graphics.Color
+import android.graphics.PointF
 import android.os.Bundle
 import android.util.Log
 import com.android.yaho.R
@@ -33,8 +34,6 @@ class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(Activi
                     .backgroundResource(NaverMap.DEFAULT_BACKGROUND_DRWABLE_DARK)
                     .mapType(NaverMap.MapType.Terrain)
                     .enabledLayerGroups(NaverMap.LAYER_GROUP_MOUNTAIN)
-                    .minZoom(4.0)
-                    .maxZoom(15.0)
             ).also {
                 supportFragmentManager.beginTransaction().add(R.id.mapFragment, it).commit()
             }
@@ -58,7 +57,6 @@ class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(Activi
             mapType = NaverMap.MapType.Terrain
             setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, true)
             minZoom = 10.0
-            maxZoom = 13.0
             uiSettings.apply {
                 isZoomControlEnabled = false
                 isCompassEnabled = false
@@ -97,8 +95,10 @@ class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(Activi
         naverMap?.let {
             list.forEach {
                 Marker().apply {
+                    anchor = PointF(0.1f, 0.7f)
                     position = LatLng(it.latitude, it.longitude)
-                    icon = OverlayImage.fromResource(R.drawable.img_marker_section)
+                    icon = OverlayImage.fromResource(R.drawable.img_marker_dot)
+                    isForceShowIcon = true
                     map = naverMap
                 }
             }

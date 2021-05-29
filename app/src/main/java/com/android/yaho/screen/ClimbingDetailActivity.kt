@@ -3,6 +3,7 @@ package com.android.yaho.screen
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PointF
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -152,8 +153,10 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
             naverMap?.let {
                 list.forEach {
                     Marker().apply {
+                        anchor = PointF(0.1f, 0.7f)
                         position = LatLng(it.latitude, it.longitude)
-                        icon = OverlayImage.fromResource(R.drawable.img_marker_section)
+                        icon = OverlayImage.fromResource(R.drawable.img_marker_dot)
+                        isForceShowIcon = true
                         map = naverMap
                     }
                 }

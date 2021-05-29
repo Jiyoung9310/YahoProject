@@ -298,6 +298,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
         naverMap?.locationOverlay?.apply {
             isVisible = true
+            anchor = PointF(0.5f, 0.5f)
             position = LatLng(latitude, longitude)
             icon = OverlayImage.fromResource(R.drawable.img_marker_my_location)
         }
@@ -313,12 +314,17 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     private fun sectionMarker(latlng: LatLng) {
         if(isActive) {
-            naverMap?.locationOverlay?.subIcon = null
+            naverMap?.locationOverlay?.apply {
+                anchor = PointF(0.5f, 0.5f)
+                subIcon = null
+            }
             Marker().apply {
                 zIndex = 0
                 position = latlng
                 icon =
-                    OverlayImage.fromResource(R.drawable.img_marker_section)
+                    OverlayImage.fromResource(R.drawable.img_marker_dot)
+                anchor = PointF(0.1f, 0.7f)
+                isForceShowIcon = true
                 map = naverMap
             }
         } else {
