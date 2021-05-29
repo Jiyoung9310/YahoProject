@@ -5,6 +5,7 @@ import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.PointF
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -51,6 +52,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         private const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
         const val KEY_MOUNTAIN_DATA = "KEY_MOUNTAIN_DATA"
         const val KEY_MOUNTAIN_VISIT_COUNT = "KEY_MOUNTAIN_VISIT_COUNT"
+        const val KEY_IS_ACTIVE = "KEY_IS_ACTIVE"
         private val KEY_TIME_STAMP = "KEY_TIME_STAMP"
         private val KEY_RUNNING_TIME = "KEY_RUNNING_TIME"
     }
@@ -90,6 +92,11 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             intent?.getParcelableExtra<MountainData>(KEY_MOUNTAIN_DATA)?.let {
                 mountainData = it
             }
+            /*intent?.getBooleanExtra(KEY_IS_ACTIVE, true)?.let {
+                isActive = it
+                showBottomView(isActive)
+                if(it) viewModel.updateCurrentLocation()
+            }*/
         }
     }
 
@@ -99,13 +106,19 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             get<MountainListCache>().get(get<YahoPreference>().selectedMountainId)?.let {
                 mountainData = it
             }
+            isActive = get<YahoPreference>().isActive
+            showBottomView(isActive)
+            if(isActive) viewModel.updateCurrentLocation()
+
             get<YahoPreference>().runningTimeStamp.let { timeStamp ->
                 if (timeStamp > 0) {
-                    viewModel.setRunningTime(
-                        get<YahoPreference>().runningTimeCount + (System.currentTimeMillis() / 1000 - timeStamp)
+                    val runningCount = get<YahoPreference>().runningTimeCount
+                    val restCount = get<YahoPreference>().restTimeCount
+                    viewModel.setRunningTime(runningCount, restCount,
+                        (System.currentTimeMillis() / 1000 - timeStamp),
+                        isActive
                     )
                 }
-
             }
         } else if(intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA) != null) {
             intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA)?.let {
@@ -128,11 +141,17 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
         // Bind to the service. If the service is in foreground mode, this signals to the service
         // that since this activity is in the foreground, the service can exit foreground mode.
-
-        bindService(
-            Intent(this, LocationUpdatesService::class.java), serviceConnection,
-            BIND_AUTO_CREATE
-        )
+        if (get<YahoPreference>().selectedMountainId > 0) {
+            bindService(
+                Intent(this, LocationUpdatesService::class.java), serviceConnection,
+                BIND_AUTO_CREATE
+            )
+        } else {
+            startActivity(Intent(applicationContext, HomeActivity::class.java).apply{
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            })
+            finish()
+        }
     }
 
     override fun onResume() {
@@ -161,7 +180,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         }
         get<YahoPreference>().apply {
             runningTimeStamp = System.currentTimeMillis() / 1000
-            runningTimeCount = runningTime
+            if(isActive) runningTimeCount = runningTime else restTimeCount = runningTime
         }
 
         Log.i(TAG, "디버깅!!! onStop()")
@@ -203,17 +222,17 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
         binding.btnPause.setOnClickListener {
             isActive = !isActive
-            binding.bottomActiveView.isVisible = isActive
-            binding.tvRestTitle.isVisible = !isActive
+            showBottomView(isActive)
             viewModel.onClickPause(isActive)
             if(isActive) {
-                binding.btnPause.setImageResource(R.drawable.ic_btn_pause)
+                viewModel.updateCurrentLocation()
                 locationUpdatesService?.restart()
+                get<YahoPreference>().restTimeCount = runningTime
             } else {
                 locationUpdatesService?.isPause()
-                binding.btnPause.setImageResource(R.drawable.ic_btn_play)
+                get<YahoPreference>().runningTimeCount = runningTime
             }
-
+            get<YahoPreference>().isActive = isActive
         }
 
         binding.btnClimbingDone.setOnClickListener {
@@ -227,13 +246,23 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         }
     }
 
+    private fun showBottomView(isActive: Boolean) {
+        binding.bottomActiveView.isVisible = isActive
+        binding.tvRestTitle.isVisible = !isActive
+        if(isActive) {
+            binding.btnPause.setImageResource(R.drawable.ic_btn_pause)
+        } else {
+            binding.btnPause.setImageResource(R.drawable.ic_btn_play)
+        }
+    }
+
     private fun initObserve() {
         viewModel.boundService.observe(this) {
             if (it) locationUpdatesService?.requestLocationUpdates()
         }
 
         viewModel.climbingData.observe(this) {
-            binding.tvDistance.text = getString(R.string.kilo_meter_unit, it.allDistance)
+            binding.tvDistance.text = it.allDistance.meter(this)
             binding.tvHeight.text = getString(R.string.meter_unit, it.height.toFloat())
         }
 
@@ -259,19 +288,17 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
             finish()
         }
+
+        viewModel.stampMarker.observe(this) {
+            sectionMarker(it)
+        }
     }
 
     private fun updateMapMarker(latitude: Double, longitude: Double) {
-        val cameraUpdate = CameraUpdate.fitBounds(
-            LatLngBounds(
-                LatLng(latitude, longitude),
-                LatLng(mountainData.latitude, mountainData.longitude),
-            ), 150
-        )
-        naverMap?.moveCamera(cameraUpdate)
 
         naverMap?.locationOverlay?.apply {
             isVisible = true
+            anchor = PointF(0.5f, 0.5f)
             position = LatLng(latitude, longitude)
             icon = OverlayImage.fromResource(R.drawable.img_marker_my_location)
         }
@@ -281,6 +308,30 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             pathOverlay.apply {
                 coords = list
                 map = naverMap
+            }
+        }
+    }
+
+    private fun sectionMarker(latlng: LatLng) {
+        if(isActive) {
+            naverMap?.locationOverlay?.apply {
+                anchor = PointF(0.5f, 0.5f)
+                subIcon = null
+            }
+            Marker().apply {
+                zIndex = 0
+                position = latlng
+                icon =
+                    OverlayImage.fromResource(R.drawable.img_marker_dot)
+                anchor = PointF(0.1f, 0.7f)
+                isForceShowIcon = true
+                map = naverMap
+            }
+        } else {
+            naverMap?.locationOverlay?.apply {
+                anchor = PointF(0.5f, 0f)
+                subIcon = OverlayImage.fromResource(R.drawable.img_marker_rest)
+                subAnchor = PointF(0.5f, 1f)
             }
         }
     }
@@ -311,7 +362,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
         pathOverlay.also {
             it.width = resources.getDimensionPixelSize(R.dimen.path_overlay_width)
-            it.outlineWidth = 0
+            it.outlineWidth = resources.getDimensionPixelSize(R.dimen.path_overlay_outline_width)
             it.color = Color.BLACK
         }
 
@@ -323,6 +374,14 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
                         val lastLocation = task.result
                         naverMap.apply {
                             updateMapMarker(lastLocation.latitude, lastLocation.longitude)
+                            val cameraUpdate = CameraUpdate.fitBounds(
+                                LatLngBounds(
+                                    LatLng(lastLocation.latitude, lastLocation.longitude),
+                                    LatLng(mountainData.latitude, mountainData.longitude),
+                                ), 150
+                            )
+                            naverMap.moveCamera(cameraUpdate)
+                            sectionMarker(LatLng(lastLocation.latitude, lastLocation.longitude))
                         }
                     } else {
                         Log.w(TAG, "Failed to get location.")
@@ -381,10 +440,10 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
                 intent.getParcelableExtra<Location>(LocationUpdatesService.EXTRA_LOCATION)
             if (location != null) {
                 viewModel.updateCurrentLocation()
-                Toast.makeText(
+                /*Toast.makeText(
                     context, location.getLocationResultText(),
                     Toast.LENGTH_SHORT
-                ).show()
+                ).show()*/
             }
         }
     }

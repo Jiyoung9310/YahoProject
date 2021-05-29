@@ -3,6 +3,7 @@ package com.android.yaho.screen
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PointF
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -152,8 +153,10 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
             naverMap?.let {
                 list.forEach {
                     Marker().apply {
+                        anchor = PointF(0.1f, 0.7f)
                         position = LatLng(it.latitude, it.longitude)
-                        icon = OverlayImage.fromResource(R.drawable.img_marker_section)
+                        icon = OverlayImage.fromResource(R.drawable.img_marker_dot)
+                        isForceShowIcon = true
                         map = naverMap
                     }
                 }
@@ -174,8 +177,10 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
         }
 
         viewModel.deleteDone.observe(this) {
-            Toast.makeText(applicationContext, "등산 데이터가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-            finish()
+            if(it) {
+                Toast.makeText(applicationContext, getString(R.string.climbing_record_delete_done), Toast.LENGTH_SHORT).show()
+                finish()
+            }
         }
     }
 
@@ -199,7 +204,7 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
 
         pathOverlay.also {
             it.width = resources.getDimensionPixelSize(R.dimen.path_overlay_width)
-            it.outlineWidth = 0
+            it.outlineWidth = resources.getDimensionPixelSize(R.dimen.path_overlay_outline_width)
             it.color = Color.BLACK
         }
 

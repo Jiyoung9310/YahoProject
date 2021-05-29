@@ -206,7 +206,7 @@ class ClimbingRepositoryImpl(
             .document(recordId)
             .delete()
             .addOnSuccessListener { documentReference ->
-                Log.w("ClimbingRepository", "climbing data delete : ${documentReference.toString()}")
+                Log.w("ClimbingRepository", "climbing data delete : $documentReference")
                 offer(ClimbingResult.Success)
             }
             .addOnFailureListener { e ->

@@ -91,7 +91,6 @@ class HomeMenuViewHolder(parent: ViewGroup) : BindingViewHolder<ItemHomeMenuBind
                 binding.tvMenuTitle.setText(R.string.home_menu_remove_ads)
                 binding.btnMenu.setText(R.string.home_menu_btn_remove_ads_done)
                 binding.btnMenu.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0)
-                binding.btnMenu.compoundDrawablePadding = 9.dp
                 binding.btnMenu.isVisible = true
                 binding.btnImage.isVisible = false
             }

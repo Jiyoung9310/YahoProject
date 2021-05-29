@@ -4,7 +4,6 @@ import android.location.Location
 import android.util.Log
 import com.android.yaho.convertFullFormatDate
 import com.android.yaho.data.MountainData
-import com.android.yaho.local.db.LatLng
 import com.android.yaho.local.db.PathSectionEntity
 import com.android.yaho.local.db.PointEntity
 import com.android.yaho.local.db.RecordEntity

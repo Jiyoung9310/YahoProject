@@ -3,9 +3,11 @@ package com.android.yaho.screen
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.yaho.R
 import com.android.yaho.base.BindingFragment
 import com.android.yaho.databinding.FragmentNearMountainBinding
 import com.android.yaho.dp
@@ -69,7 +71,11 @@ class NearMountainFragment: BindingFragment<FragmentNearMountainBinding>(Fragmen
         }
 
         viewModel.nearByList.observe(viewLifecycleOwner) {
-            nearMountainAdapter.mountainList = it
+            if(it.isNullOrEmpty()) {
+                Toast.makeText(context, getString(R.string.ready_near_mountain_not_found), Toast.LENGTH_SHORT).show()
+            } else {
+                nearMountainAdapter.mountainList = it
+            }
         }
 
         viewModel.clickMountain.observe(viewLifecycleOwner) {

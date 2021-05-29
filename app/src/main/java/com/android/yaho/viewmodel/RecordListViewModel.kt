@@ -49,7 +49,7 @@ class RecordListViewModel(private val contextDelegate: ContextDelegate,
                                 recordDate = data.recordId.convertRecordDateFormat(),
                                 mountainName = data.mountainName,
                                 runningTime = data.allRunningTime.millisecondsToHourTimeFormat(),
-                                distance = (data.totalDistance / 1000).km(contextDelegate.getContext()),
+                                distance = (data.totalDistance / 1000).meter(contextDelegate.getContext()),
                             )
                         }.apply {
                             groupBy { item -> item.headerDate }

@@ -8,14 +8,19 @@ import android.location.Location
 import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.android.yaho.*
 import com.android.yaho.R
 import com.android.yaho.local.cache.LiveClimbingCache
+import com.android.yaho.requestingLocationUpdates
 import com.android.yaho.screen.ClimbingActivity
+import com.android.yaho.screen.ClimbingActivity.Companion.KEY_IS_ACTIVE
+import com.android.yaho.setRequestingLocationUpdates
 import com.google.android.gms.location.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import java.text.DateFormat
+import java.util.*
 
 
 class LocationUpdatesService : Service(), KoinComponent {
@@ -44,6 +49,11 @@ class LocationUpdatesService : Service(), KoinComponent {
     private lateinit var notificationManager: NotificationManager
     private var changingConfiguration = false
     private lateinit var serviceHandler: Handler
+    private val notiText : String by lazy { getString(
+        R.string.noti_text_message, DateFormat.getDateTimeInstance().format(
+            Date()
+        )
+    ) }
 
     private var isActive = true
 
@@ -71,8 +81,12 @@ class LocationUpdatesService : Service(), KoinComponent {
             NotificationChannel(
                 CHANNEL_ID,
                 getString(R.string.app_name),
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                setShowBadge(true)
+                vibrationPattern = longArrayOf(0) // 진동 끄기
+                enableVibration(true) // 진동 끄기
+            }
         )
     }
 
@@ -102,6 +116,8 @@ class LocationUpdatesService : Service(), KoinComponent {
         if (startedFromNotification) {
             removeLocationUpdates()
             stopSelf()
+            get<LiveClimbingCache>().clearCache()
+            get<YahoPreference>().clearSelectedMountain()
         }
         // Tells the system to not try to recreate the service after it has been killed.
         return START_NOT_STICKY
@@ -113,6 +129,7 @@ class LocationUpdatesService : Service(), KoinComponent {
             fusedLocationClient.removeLocationUpdates(locationCallback)
             setRequestingLocationUpdates(false)
             stopSelf()
+            notificationManager.cancelAll()
         } catch (unlikely: SecurityException) {
             setRequestingLocationUpdates(true)
             Log.e(
@@ -128,7 +145,6 @@ class LocationUpdatesService : Service(), KoinComponent {
 
     private fun onNewLocation(location: Location) {
         Log.i(TAG, "New location: $location")
-        myLocation = location
         if(isActive) {
             get<LiveClimbingCache>().put(location, myLocation?.distanceTo(location))
 //        get<ClimbingSaveHelper>().savePoint(location, myLocation?.distanceTo(location))
@@ -145,11 +161,18 @@ class LocationUpdatesService : Service(), KoinComponent {
             notificationManager.notify(NOTIFICATION_ID, getNotification())
 //        }
         }
+        myLocation = location
     }
 
     private fun getNotification(): Notification? {
-        val text = myLocation?.getLocationText()
 
+        val notiTitle = if(isActive) {
+            getString(R.string.noti_title_climbing,
+                get<LiveClimbingCache>().getRecord().mountainName
+            )
+        } else {
+            getString(R.string.noti_title_resting)
+        }
         // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
 
 
@@ -167,7 +190,7 @@ class LocationUpdatesService : Service(), KoinComponent {
             this, REQUEST_CODE,
             Intent(this, ClimbingActivity::class.java), 0
         )
-        val builder = NotificationCompat.Builder(this)
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .addAction(
                 R.drawable.ic_yaho, getString(R.string.launch_activity),
                 activityPendingIntent
@@ -176,12 +199,13 @@ class LocationUpdatesService : Service(), KoinComponent {
                 R.drawable.ic_back, getString(R.string.remove_location_updates),
                 servicePendingIntent
             )
-            .setContentText(text)
-            .setContentTitle(getLocationTitle())
+            .setContentText(notiText)
+            .setContentTitle(notiTitle)
             .setOngoing(true)
-            .setPriority(Notification.PRIORITY_HIGH)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setTicker(text)
+            .setPriority(NotificationManagerCompat.IMPORTANCE_LOW)
+            .setVibrate(longArrayOf(0))
+            .setSmallIcon(R.drawable.ic_yaho)
+            .setTicker(notiText)
             .setWhen(System.currentTimeMillis())
 
         // Set the Channel ID for Android O.
@@ -265,6 +289,7 @@ class LocationUpdatesService : Service(), KoinComponent {
 
     fun isPause() {
         isActive = false
+        notificationManager.notify(NOTIFICATION_ID, getNotification())
     }
 
     fun restart() {

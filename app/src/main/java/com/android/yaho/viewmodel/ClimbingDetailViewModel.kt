@@ -9,6 +9,7 @@ import com.android.yaho.convertHourTimeFormat
 import com.android.yaho.di.ContextDelegate
 import com.android.yaho.local.cache.MountainListCache
 import com.android.yaho.local.db.RecordEntity
+import com.android.yaho.meter
 import com.android.yaho.millisecondsToHourTimeFormat
 import com.android.yaho.repository.ClimbingRepository
 import com.android.yaho.repository.ClimbingResult
@@ -34,8 +35,8 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
     private val _sectionMark = MutableLiveData<List<LatLng>>()
     val sectionMark : LiveData<List<LatLng>> get() = _sectionMark
 
-    private val _deleteDone = MutableLiveData<Unit>()
-    val deleteDone : LiveData<Unit> get() = _deleteDone
+    private val _deleteDone = MutableLiveData<Boolean>()
+    val deleteDone : LiveData<Boolean> get() = _deleteDone
 
     private val _noData = MutableLiveData<Unit>()
     val noData: LiveData<Unit> get() = _noData
@@ -83,7 +84,7 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
                                     },
                                     sectionData = ClimbingSectionData(
                                         climbingTime = sections[i].runningTime.millisecondsToHourTimeFormat(),
-                                        distance =  contextDelegate.getString(R.string.kilo_meter_unit, sections[i].distance),
+                                        distance =  sections[i].distance.meter(contextDelegate.getContext()),
                                         calories = contextDelegate.getString(R.string.kcal_unit, sections[i].calories)
                                     )
                                 ))
@@ -94,7 +95,7 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
                                 sectionPeriod = record.points?.last()?.timestamp?.let { convertHourTimeFormat(it) } ?: "",
                                 sectionData = ClimbingSectionData(
                                     climbingTime = sections.last().runningTime.millisecondsToHourTimeFormat(),
-                                    distance =  contextDelegate.getString(R.string.kilo_meter_unit, sections.last().distance),
+                                    distance =  sections.last().distance.meter(contextDelegate.getContext()),
                                     calories = contextDelegate.getString(R.string.kcal_unit, sections.last().calories)
                                 )
                             ))
@@ -125,7 +126,7 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
             allRunningTime = allRunningTime.millisecondsToHourTimeFormat(),
             totalClimbingTime = totalClimbingTime.millisecondsToHourTimeFormat(),
             restTime = (allRunningTime - totalClimbingTime).millisecondsToHourTimeFormat(),
-            totalDistance = contextDelegate.getString(R.string.kilo_meter_unit, totalDistance / 1000),
+            totalDistance = totalDistance.meter(contextDelegate.getContext()),
             averageSpeed = contextDelegate.getString(R.string.speed_unit, averageSpeed.toFloat()),
             maxSpeed = contextDelegate.getString(R.string.speed_unit, maxSpeed),
             startHeight = contextDelegate.getString(R.string.meter_unit, startHeight),
@@ -135,9 +136,11 @@ class ClimbingDetailViewModel(private val contextDelegate: ContextDelegate,
     fun deleteRecord() {
         viewModelScope.launch {
             repo.deleteClimbingData(recordId)
-                .catch { e: Throwable -> _error.value = e }
+                .catch { e: Throwable ->
+                    _error.value = e
+                }
                 .collect {
-                    if(it == ClimbingResult.Success) _deleteDone.value = Unit
+                    _deleteDone.value = it == ClimbingResult.Success
                 }
         }
     }
