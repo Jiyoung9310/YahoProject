@@ -45,9 +45,10 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinComponent
 
 class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbingBinding::inflate),
-    OnMapReadyCallback, OnSharedPreferenceChangeListener {
+    OnMapReadyCallback, OnSharedPreferenceChangeListener, KoinComponent {
 
     private val TAG = this::class.java.simpleName
 
@@ -248,10 +249,13 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             ).show()
         }
 
-        loadAdmob()
+        loadAdmob(get<YahoPreference>().isSubscribing)
     }
 
-    private fun loadAdmob() {
+    private fun loadAdmob(isSubscribing: Boolean) {
+        binding.adContainer.isVisible = !isSubscribing
+        if(isSubscribing) return
+
         MobileAds.initialize(this) { }
 
         val adView = AdView(this)

@@ -20,6 +20,7 @@ import com.climbing.yaho.billing.BillingModule
 import com.climbing.yaho.billing.Sku
 import com.climbing.yaho.databinding.ActivityHomeBinding
 import com.climbing.yaho.dp
+import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.meter
 import com.climbing.yaho.ui.HomeMenuAdapter
 import com.climbing.yaho.viewmodel.HomeViewModel
@@ -28,9 +29,11 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import androidx.core.view.isVisible
 
-
-class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate) {
+class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate), KoinComponent {
 
     private val viewModel by viewModel<HomeViewModel>()
     private lateinit var menuAdapter: HomeMenuAdapter
@@ -80,13 +83,13 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
             override fun onFailure(errorCode: Int) {
                 when (errorCode) {
                     BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
-                        Toast.makeText(applicationContext, "이미 구입한 상품입니다.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@HomeActivity, "이미 구입한 상품입니다.", Toast.LENGTH_LONG).show()
                     }
                     BillingClient.BillingResponseCode.USER_CANCELED -> {
-                        Toast.makeText(applicationContext, "구매를 취소하셨습니다.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@HomeActivity, "구매를 취소하셨습니다.", Toast.LENGTH_LONG).show()
                     }
                     else -> {
-                        Toast.makeText(applicationContext, "error: $errorCode", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@HomeActivity, "error: $errorCode", Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -101,7 +104,6 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
             builder.append("<${skuDetail.title}> : ")
             builder.append(skuDetail.price)
         }
-        Toast.makeText(this, builder, Toast.LENGTH_SHORT).show()
     }
 
     private fun updateSubscriptionState() {
@@ -112,6 +114,7 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
                 HomeMenuAdapter.VIEW_TYPE_MY_CLIMBS,
                 HomeMenuAdapter.VIEW_TYPE_REMOVE_ADS_DONE
             )
+            get<YahoPreference>().isSubscribing = true
         } ?: also {
 //            binding.tvSubscription.text = "구독안함"
             menuAdapter.menuList = mutableListOf(
@@ -119,11 +122,14 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
                 HomeMenuAdapter.VIEW_TYPE_MY_CLIMBS,
                 HomeMenuAdapter.VIEW_TYPE_REMOVE_ADS
             )
+            get<YahoPreference>().isSubscribing = false
         }
+
+        binding.adContainer.isVisible = !(get<YahoPreference>().isSubscribing)
     }
 
     private fun initView() {
-        loadAdmob()
+        loadAdmob(get<YahoPreference>().isSubscribing)
         menuAdapter = HomeMenuAdapter(
             startClimbingClickAction = {
                 // 등산 기록하기 화면으로 이동
@@ -187,7 +193,10 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
 
     }
 
-    private fun loadAdmob() {
+    private fun loadAdmob(isSubscribing: Boolean) {
+        binding.adContainer.isVisible = !isSubscribing
+        if(isSubscribing) return
+
         MobileAds.initialize(this) { }
 
         val adView = AdView(this)

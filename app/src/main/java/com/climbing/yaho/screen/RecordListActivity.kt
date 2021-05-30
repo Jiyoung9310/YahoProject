@@ -9,6 +9,7 @@ import com.climbing.yaho.databinding.ActivityRecordListBinding
 import com.climbing.yaho.BuildConfig
 import com.climbing.yaho.R
 import com.climbing.yaho.base.BindingActivity
+import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.screen.ClimbingDetailActivity.Companion.startClimbingDetailActivity
 import com.climbing.yaho.ui.RecordListAdapter
 import com.climbing.yaho.viewmodel.RecordListViewModel
@@ -16,9 +17,12 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinComponent
+import androidx.core.view.isVisible
 
-class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRecordListBinding::inflate) {
+class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRecordListBinding::inflate), KoinComponent {
 
     private val viewModel by viewModel<RecordListViewModel>()
     private lateinit var recordListAdapter : RecordListAdapter
@@ -33,7 +37,7 @@ class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRe
     }
 
     private fun initView() {
-        loadAdmob()
+        loadAdmob(get<YahoPreference>().isSubscribing)
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }
@@ -72,7 +76,10 @@ class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRe
         }
     }
 
-    private fun loadAdmob() {
+    private fun loadAdmob(isSubscribing: Boolean) {
+        binding.adContainer.isVisible = !isSubscribing
+        if(isSubscribing) return
+
         MobileAds.initialize(this) { }
 
         val adView = AdView(this)

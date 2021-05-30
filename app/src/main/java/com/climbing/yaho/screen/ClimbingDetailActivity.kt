@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.climbing.yaho.BuildConfig
 import com.climbing.yaho.R
+import com.climbing.yaho.YahoApplication
 import com.climbing.yaho.base.BindingActivity
 import com.climbing.yaho.databinding.ActivityClimbingDetailBinding
+import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.screen.ClimbingPathActivity.Companion.KEY_PATH_LIST
 import com.climbing.yaho.screen.ClimbingPathActivity.Companion.KEY_SECTION_MARK_LIST
 import com.climbing.yaho.ui.ClimbingDetailSectionAdapter
@@ -30,9 +32,11 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
 class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(ActivityClimbingDetailBinding::inflate),
-    OnMapReadyCallback {
+    OnMapReadyCallback, KoinComponent {
     private val TAG = this::class.java.simpleName
     companion object {
         const val KEY_CLIMBING_DATA_ID = "KEY_CLIMBING_DATA_ID"
@@ -66,7 +70,7 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     }
 
     private fun initView() {
-        loadAdmob()
+        loadAdmob(get<YahoPreference>().isSubscribing)
         intent.hasExtra(KEY_SHOW_MOUNTAIN_NAME).let {
             binding.toolbarTitle.isVisible = it
             binding.btnDelete.isVisible = it
@@ -118,7 +122,10 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
 
     }
 
-    private fun loadAdmob() {
+    private fun loadAdmob(isSubscribing: Boolean) {
+        binding.adContainer.isVisible = !isSubscribing
+        if(isSubscribing) return
+
         MobileAds.initialize(this) { }
 
         val adView = AdView(this)

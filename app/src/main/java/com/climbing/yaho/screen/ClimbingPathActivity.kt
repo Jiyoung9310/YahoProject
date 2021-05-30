@@ -7,6 +7,7 @@ import android.util.DisplayMetrics
 import com.climbing.yaho.R
 import com.climbing.yaho.databinding.ActivityClimbingPathBinding
 import com.climbing.yaho.base.BindingActivity
+import com.climbing.yaho.local.YahoPreference
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -17,9 +18,12 @@ import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import androidx.core.view.isVisible
 
 class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(ActivityClimbingPathBinding::inflate),
-    OnMapReadyCallback {
+    OnMapReadyCallback, KoinComponent {
 
     companion object {
         const val KEY_PATH_LIST = "KEY_PATH_LIST"
@@ -47,7 +51,7 @@ class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(Activi
     }
 
     private fun initView() {
-        loadAdmob()
+        loadAdmob(get<YahoPreference>().isSubscribing)
         binding.btnClose.setOnClickListener {
             finish()
         }
@@ -114,7 +118,10 @@ class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(Activi
         }
     }
 
-    private fun loadAdmob() {
+    private fun loadAdmob(isSubscribing: Boolean) {
+        binding.adContainer.isVisible = !isSubscribing
+        if(isSubscribing) return
+
         MobileAds.initialize(this) { }
 
         val adView = AdView(this)

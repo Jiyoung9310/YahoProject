@@ -140,7 +140,7 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
     }
 
     private fun initView() {
-        loadAdmob()
+        loadAdmob(get<YahoPreference>().isSubscribing)
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }
@@ -199,7 +199,10 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
         }
     }
 
-    private fun loadAdmob() {
+    private fun loadAdmob(isSubscribing: Boolean) {
+        binding.adContainer.isVisible = !isSubscribing
+        if(isSubscribing) return
+
         MobileAds.initialize(this) { }
 
         val adView = AdView(this)

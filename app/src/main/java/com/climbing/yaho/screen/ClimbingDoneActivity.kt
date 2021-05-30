@@ -11,6 +11,7 @@ import com.climbing.yaho.BuildConfig
 import com.climbing.yaho.R
 import com.climbing.yaho.base.BindingActivity
 import com.climbing.yaho.databinding.ActivityClimbingDoneBinding
+import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.ui.ClimbingSaveDialog
 import com.climbing.yaho.viewmodel.ClimbingDoneViewModel
 import com.google.android.gms.ads.AdRequest
@@ -18,10 +19,13 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import androidx.core.view.isVisible
 
 class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
     ActivityClimbingDoneBinding::inflate
-) {
+), KoinComponent {
     private val TAG = this::class.java.simpleName
 
     private val viewModel by viewModel<ClimbingDoneViewModel>()
@@ -39,7 +43,7 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
         initObserve()
     }
     private fun initView() {
-        loadAdmob()
+        loadAdmob(get<YahoPreference>().isSubscribing)
         connectivityManager.registerDefaultNetworkCallback(object :
             ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
@@ -69,7 +73,10 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
         })
     }
 
-    private fun loadAdmob() {
+    private fun loadAdmob(isSubscribing: Boolean) {
+        binding.adContainer.isVisible = !isSubscribing
+        if(isSubscribing) return
+
         MobileAds.initialize(this) { }
 
         val adView = AdView(this)
