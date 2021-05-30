@@ -14,6 +14,8 @@ import com.android.yaho.dp
 import com.android.yaho.meter
 import com.android.yaho.ui.HomeMenuAdapter
 import com.android.yaho.viewmodel.HomeViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -23,6 +25,9 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MobileAds.initialize(this) { }
+        binding.adView.loadAd(AdRequest.Builder().build())
 
         initView()
         initObserve()

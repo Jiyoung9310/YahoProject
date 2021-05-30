@@ -17,6 +17,8 @@ import com.android.yaho.databinding.ActivityReadyBinding
 import com.android.yaho.local.YahoPreference
 import com.android.yaho.local.cache.LiveClimbingCache
 import com.android.yaho.viewmodel.ReadyViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.get
@@ -59,6 +61,10 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
         
         get<LiveClimbingCache>().clearCache()
         get<YahoPreference>().clearSelectedMountain()
+
+
+        MobileAds.initialize(this) { }
+        binding.adView.loadAd(AdRequest.Builder().build())
     }
 
     override fun onStart() {
@@ -141,7 +147,6 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
 
     private fun initObserve() {
         viewModel.moveScreen.observe(this) { (screen, bundle) ->
-            binding.toolbar.isVisible = true
 
             if(screen == SCREEN_GO_CLIMBING) {
                 startActivity(Intent(this, ClimbingActivity::class.java).apply {
@@ -150,6 +155,7 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
                 finish()
                 return@observe
             }
+            binding.toolbar.isVisible = true
 
             val fragment = when(screen) {
                 SCREEN_NEAR_MOUNTAIN -> NearMountainFragment()
