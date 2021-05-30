@@ -1,8 +1,9 @@
-package com.android.yaho
+package com.climbing.yaho
 
 import android.app.Application
-import com.android.yaho.di.appModule
-import com.android.yaho.local.cache.MountainListCache
+import com.climbing.yaho.BuildConfig
+import com.climbing.yaho.di.appModule
+import com.climbing.yaho.local.cache.MountainListCache
 import com.facebook.stetho.Stetho
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.koin.android.ext.koin.androidContext

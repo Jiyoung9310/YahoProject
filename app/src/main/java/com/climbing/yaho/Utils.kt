@@ -1,9 +1,10 @@
-package com.android.yaho
+package com.climbing.yaho
 
 import android.content.Context
 import android.content.res.Resources
 import android.location.Location
 import android.preference.PreferenceManager
+import com.climbing.yaho.R
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat

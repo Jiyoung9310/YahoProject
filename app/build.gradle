@@ -11,7 +11,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.android.yaho"
+        applicationId "com.climbing.yaho"
         minSdkVersion 28
         targetSdkVersion 30
         versionCode 1

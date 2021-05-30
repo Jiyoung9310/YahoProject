@@ -1,4 +1,4 @@
-package com.android.yaho
+package com.climbing.yaho
 
 import org.junit.Test
 
