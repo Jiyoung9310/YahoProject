@@ -5,11 +5,13 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.yaho.BuildConfig
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityClimbingDetailBinding
@@ -17,6 +19,10 @@ import com.android.yaho.screen.ClimbingPathActivity.Companion.KEY_PATH_LIST
 import com.android.yaho.screen.ClimbingPathActivity.Companion.KEY_SECTION_MARK_LIST
 import com.android.yaho.ui.ClimbingDetailSectionAdapter
 import com.android.yaho.viewmodel.ClimbingDetailViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
@@ -60,6 +66,7 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     }
 
     private fun initView() {
+        loadAdmob()
         intent.hasExtra(KEY_SHOW_MOUNTAIN_NAME).let {
             binding.toolbarTitle.isVisible = it
             binding.btnDelete.isVisible = it
@@ -109,6 +116,36 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
             adapter = climbingDetailSectionAdapter
         }
 
+    }
+
+    private fun loadAdmob() {
+        MobileAds.initialize(this) { }
+
+        val adView = AdView(this)
+        binding.adContainer.addView(adView)
+
+        val display = windowManager.defaultDisplay
+        val outMetrics = DisplayMetrics()
+        display.getMetrics(outMetrics)
+
+        val density = outMetrics.density
+
+        var adWidthPixels = binding.adContainer.width.toFloat()
+        if (adWidthPixels == 0f) {
+            adWidthPixels = outMetrics.widthPixels.toFloat()
+        }
+
+        val adWidth = (adWidthPixels / density).toInt()
+
+        adView.adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+        adView.adUnitId = getString(if(BuildConfig.DEBUG) R.string.admob_banner_unit_id_test else R.string.admob_banner_unit_id)
+
+
+        // Create an ad request.
+        val adRequest = AdRequest.Builder().build()
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest)
     }
 
     private fun initObserve() {

@@ -85,8 +85,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_arrow"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvMountainName"
+        app:layout_constraintBottom_toBottomOf="@id/tvRunningTime"
         app:layout_constraintEnd_toEndOf="parent"
         />
 

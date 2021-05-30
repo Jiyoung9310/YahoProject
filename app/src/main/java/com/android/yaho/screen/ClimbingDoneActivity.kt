@@ -4,13 +4,19 @@ import android.animation.Animator
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
+import com.android.yaho.BuildConfig
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityClimbingDoneBinding
 import com.android.yaho.ui.ClimbingSaveDialog
 import com.android.yaho.viewmodel.ClimbingDoneViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
@@ -33,7 +39,7 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
         initObserve()
     }
     private fun initView() {
-
+        loadAdmob()
         connectivityManager.registerDefaultNetworkCallback(object :
             ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
@@ -61,6 +67,36 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
 
             }
         })
+    }
+
+    private fun loadAdmob() {
+        MobileAds.initialize(this) { }
+
+        val adView = AdView(this)
+        binding.adContainer.addView(adView)
+
+        val display = windowManager.defaultDisplay
+        val outMetrics = DisplayMetrics()
+        display.getMetrics(outMetrics)
+
+        val density = outMetrics.density
+
+        var adWidthPixels = binding.adContainer.width.toFloat()
+        if (adWidthPixels == 0f) {
+            adWidthPixels = outMetrics.widthPixels.toFloat()
+        }
+
+        val adWidth = (adWidthPixels / density).toInt()
+
+        adView.adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+        adView.adUnitId = getString(if(BuildConfig.DEBUG) R.string.admob_banner_unit_id_test else R.string.admob_banner_unit_id)
+
+
+        // Create an ad request.
+        val adRequest = AdRequest.Builder().build()
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest)
     }
 
     private fun initObserve() {

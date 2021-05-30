@@ -3,11 +3,17 @@ package com.android.yaho.screen
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
+import com.android.yaho.BuildConfig
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityClimbingPathBinding
 import com.android.yaho.dp
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
@@ -44,6 +50,7 @@ class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(Activi
     }
 
     private fun initView() {
+        loadAdmob()
         binding.btnClose.setOnClickListener {
             finish()
         }
@@ -108,5 +115,35 @@ class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(Activi
             )
             naverMap?.moveCamera(cameraUpdate)
         }
+    }
+
+    private fun loadAdmob() {
+        MobileAds.initialize(this) { }
+
+        val adView = AdView(this)
+        binding.adContainer.addView(adView)
+
+        val display = windowManager.defaultDisplay
+        val outMetrics = DisplayMetrics()
+        display.getMetrics(outMetrics)
+
+        val density = outMetrics.density
+
+        var adWidthPixels = binding.adContainer.width.toFloat()
+        if (adWidthPixels == 0f) {
+            adWidthPixels = outMetrics.widthPixels.toFloat()
+        }
+
+        val adWidth = (adWidthPixels / density).toInt()
+
+        adView.adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+        adView.adUnitId = getString(if(BuildConfig.DEBUG) R.string.admob_banner_unit_id_test else R.string.admob_banner_unit_id)
+
+
+        // Create an ad request.
+        val adRequest = AdRequest.Builder().build()
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest)
     }
 }

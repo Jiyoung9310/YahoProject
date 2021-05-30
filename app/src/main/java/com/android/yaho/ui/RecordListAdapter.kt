@@ -1,6 +1,7 @@
 package com.android.yaho.ui
 
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -107,6 +108,6 @@ class RecordItemViewHolder(parent: ViewGroup, private val clickItem : (String, S
         binding.tvMountainName.text = data.mountainName
         binding.tvRunningTime.text = data.runningTime
         binding.tvDistance.text = data.distance
-        binding.divider.isVisible = showDivider
+        binding.divider.isInvisible = !showDivider
     }
 }
