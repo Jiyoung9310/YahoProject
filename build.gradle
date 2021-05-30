@@ -5,6 +5,7 @@ buildscript {
         koin_version= "3.0.1"
         lifecycleVersion = '2.3.1'
         room_version = "2.3.0"
+        billing_version = "4.0.0"
     }
     repositories {
         google()

@@ -11,7 +11,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.android.yaho"
+        applicationId "com.climbing.yaho"
         minSdkVersion 28
         targetSdkVersion 30
         versionCode 1
@@ -55,6 +55,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.android.gms:play-services-ads:20.1.0'
 
     // Koin for Kotlin Multiplatform
     implementation "io.insert-koin:koin-core:$koin_version"
@@ -76,6 +77,10 @@ dependencies {
 
     implementation 'com.naver.maps:map-sdk:3.11.0'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
+
+    implementation "com.android.billingclient:billing:$billing_version"
+    implementation "com.android.billingclient:billing-ktx:$billing_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
 
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'

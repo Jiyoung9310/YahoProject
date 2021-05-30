@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Yaho</string>
     <string name="naver_maps_client_id">7abca5361m</string>
+    <string name="admob_app_id">ca-app-pub-6775338233067833~2342517066</string>
+    <string name="admob_banner_unit_id">ca-app-pub-6775338233067833/4529696705</string>
+    <string name="admob_app_id_test">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="admob_banner_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
 
     <!--unit-->
     <string name="kilo_meter_unit">%.2fkm</string>
@@ -8,6 +12,14 @@
     <string name="count_unit">%d회</string>
     <string name="speed_unit">%.2fm/s</string>
     <string name="kcal_unit">%.2fkcal</string>
+
+    <!--login-->
+    <string name="login_title">번호 인증</string>
+    <string name="login_sub_title">추후 데이터 저장을 위해\n번호를 인증해주세요.</string>
+    <string name="login_phone_number">휴대전화번호</string>
+    <string name="login_phone_code_btn">인증번호 받기</string>
+    <string name="login_phone_code">인증번호</string>
+    <string name="login_code_check">인증번호를 다시 확인해주세요.</string>
 
     <!--home-->
     <string name="home_all_height_title">내가 오른 높이</string>

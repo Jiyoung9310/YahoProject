@@ -78,6 +78,16 @@
         android:orientation="horizontal"
         android:clipToPadding="false"
         android:clipChildren="false"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@id/adContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/adContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
