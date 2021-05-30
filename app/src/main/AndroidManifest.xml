@@ -28,7 +28,7 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id"/>
 
-        <activity android:name=".screen.LoginActivity"
+        <activity android:name=".screen.IntroActivity"
             android:windowSoftInputMode="stateVisible"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -37,6 +37,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".screen.LoginActivity"
+            android:screenOrientation="portrait"
+            />
 
         <activity android:name=".screen.HomeActivity"
             android:screenOrientation="portrait"/>
