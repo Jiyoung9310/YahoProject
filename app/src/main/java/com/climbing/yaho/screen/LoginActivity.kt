@@ -1,9 +1,15 @@
 package com.climbing.yaho.screen
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import com.climbing.yaho.base.BindingActivity
 import com.climbing.yaho.databinding.ActivityLoginBinding
 import com.climbing.yaho.viewmodel.LoginViewModel
@@ -29,6 +35,25 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
     }
 
     private fun initView() {
+        binding.etPhoneNumber.requestFocus()
+        binding.etPhoneNumber.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewModel.getPhoneNumber(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+        })
+
+        binding.etCode.addTextChangedListener {
+            viewModel.getCodeNumber(it.toString())
+        }
+
         binding.etPhoneNumber.setText("+1 650-555-3535")
         binding.btnGetCode.setOnClickListener {
             startVerifyCode(binding.etPhoneNumber.text.toString())
@@ -36,6 +61,9 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
         binding.btnCheckCode.setOnClickListener {
             viewModel.onClickCheckCode(binding.etCode.text.toString())
         }
+
+        //키보드 보이게 하는 부분
+        (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 
     private fun initObserve() {
@@ -45,10 +73,13 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
             finish()
         }
 
+        viewModel.enablePhoneNumber.observe(this) {
+            binding.btnGetCode.isEnabled = it
+        }
+
         viewModel.enableVerifyEdit.observe(this) {
-            binding.etCode.isEnabled = it
             binding.btnCheckCode.isEnabled = it
-            binding.etCode.setText("654321")
+//            binding.etCode.setText("654321")
         }
 
         viewModel.checkVerifyCode.observe(this) { (verificationId, code) ->
@@ -97,6 +128,10 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
                     token: PhoneAuthProvider.ForceResendingToken
                 ) {
                     Log.d(TAG, "onCodeSent:$verificationId")
+                    binding.etCode.apply {
+                        isEnabled = true
+                        requestFocus()
+                    }
                     viewModel.getVerifyNumber(verificationId)
                 }
             })
@@ -107,21 +142,18 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
+                binding.tvCodeCheck.isVisible = !task.isSuccessful
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
 
-                    Toast.makeText(this@LoginActivity, "Success : ${task.result?.user?.uid}", Toast.LENGTH_SHORT).show()
                     viewModel.saveUserId(task.result?.user?.uid)
                 } else {
                     // Sign in failed, display a message and update the UI
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         // The verification code entered was invalid
-                        Toast.makeText(this@LoginActivity, "verification code invalid : ${task.exception}", Toast.LENGTH_SHORT).show()
                     }
-                    // Update UI
-                    Toast.makeText(this@LoginActivity, "Error", Toast.LENGTH_SHORT).show()
                 }
             }
     }

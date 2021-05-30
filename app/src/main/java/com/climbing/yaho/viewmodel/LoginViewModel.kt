@@ -16,6 +16,9 @@ class LoginViewModel(private val repo : LoginRepository) : ViewModel() {
     private val _goToHome = MutableLiveData<Unit>()
     val goToHome: LiveData<Unit> get() = _goToHome
 
+    private val _enablePhoneNumber = MutableLiveData<Boolean>()
+    val enablePhoneNumber: LiveData<Boolean> get() = _enablePhoneNumber
+
     private val _enableVerifyEdit = MutableLiveData<Boolean>()
     val enableVerifyEdit: LiveData<Boolean> get() = _enableVerifyEdit
 
@@ -31,9 +34,16 @@ class LoginViewModel(private val repo : LoginRepository) : ViewModel() {
         if(repo.getUserID() != null) _goToHome.value = Unit
     }
 
+    fun getPhoneNumber(phoneNum : String) {
+        _enablePhoneNumber.value = phoneNum.count() > 3
+    }
+
+    fun getCodeNumber(codeNum : String) {
+        _enableVerifyEdit.value = codeNum.isNotEmpty()
+    }
+
     fun getVerifyNumber(verificationId: String) {
         this.verificationId = verificationId
-        _enableVerifyEdit.value = true
     }
 
     fun onClickCheckCode(code: String) {
