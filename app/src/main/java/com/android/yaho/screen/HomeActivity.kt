@@ -3,10 +3,12 @@ package com.android.yaho.screen
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.android.yaho.BuildConfig
 import com.android.yaho.R
 import com.android.yaho.base.BindingActivity
 import com.android.yaho.databinding.ActivityHomeBinding
@@ -15,6 +17,8 @@ import com.android.yaho.meter
 import com.android.yaho.ui.HomeMenuAdapter
 import com.android.yaho.viewmodel.HomeViewModel
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -26,15 +30,13 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MobileAds.initialize(this) { }
-        binding.adView.loadAd(AdRequest.Builder().build())
-
         initView()
         initObserve()
         viewModel.getUserData()
     }
 
     private fun initView() {
+        loadAdmob()
         binding.rvMenu.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             adapter = HomeMenuAdapter(
@@ -89,6 +91,36 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
         }
 
 
+    }
+
+    private fun loadAdmob() {
+        MobileAds.initialize(this) { }
+
+        val adView = AdView(this)
+        binding.adContainer.addView(adView)
+
+        val display = windowManager.defaultDisplay
+        val outMetrics = DisplayMetrics()
+        display.getMetrics(outMetrics)
+
+        val density = outMetrics.density
+
+        var adWidthPixels = binding.adContainer.width.toFloat()
+        if (adWidthPixels == 0f) {
+            adWidthPixels = outMetrics.widthPixels.toFloat()
+        }
+
+        val adWidth = (adWidthPixels / density).toInt()
+
+        adView.adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+        adView.adUnitId = getString(if(BuildConfig.DEBUG) R.string.admob_banner_unit_id_test else R.string.admob_banner_unit_id)
+
+
+        // Create an ad request.
+        val adRequest = AdRequest.Builder().build()
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest)
     }
 
     private fun initObserve() {
