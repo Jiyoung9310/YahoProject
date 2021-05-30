@@ -1,13 +1,12 @@
-package com.android.yaho.di
+package com.climbing.yaho.di
 
 import android.content.Context
-import com.android.yaho.local.YahoPreference
-import com.android.yaho.local.YahoPreferenceImpl
-import com.android.yaho.local.cache.LiveClimbingCache
-import com.android.yaho.local.cache.MountainListCache
-
-import com.android.yaho.repository.*
-import com.android.yaho.viewmodel.*
+import com.climbing.yaho.local.YahoPreference
+import com.climbing.yaho.local.YahoPreferenceImpl
+import com.climbing.yaho.local.cache.LiveClimbingCache
+import com.climbing.yaho.local.cache.MountainListCache
+import com.climbing.yaho.repository.*
+import com.climbing.yaho.viewmodel.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.ExperimentalCoroutinesApi

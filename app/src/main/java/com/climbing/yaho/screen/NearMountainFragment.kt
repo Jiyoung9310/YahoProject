@@ -1,4 +1,4 @@
-package com.android.yaho.screen
+package com.climbing.yaho.screen
 
 import android.graphics.Rect
 import android.os.Bundle
@@ -7,14 +7,14 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.yaho.R
-import com.android.yaho.base.BindingFragment
-import com.android.yaho.databinding.FragmentNearMountainBinding
-import com.android.yaho.dp
-import com.android.yaho.screen.ReadyActivity.Companion.KEY_SELECT_MOUNTAIN
-import com.android.yaho.screen.ReadyActivity.Companion.SCREEN_SELECT_MOUNTAIN
-import com.android.yaho.ui.NearMountainAdapter
-import com.android.yaho.viewmodel.ReadyViewModel
+import com.climbing.yaho.R
+import com.climbing.yaho.base.BindingFragment
+import com.climbing.yaho.databinding.FragmentNearMountainBinding
+import com.climbing.yaho.dp
+import com.climbing.yaho.screen.ReadyActivity.Companion.KEY_SELECT_MOUNTAIN
+import com.climbing.yaho.screen.ReadyActivity.Companion.SCREEN_SELECT_MOUNTAIN
+import com.climbing.yaho.ui.NearMountainAdapter
+import com.climbing.yaho.viewmodel.ReadyViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class NearMountainFragment: BindingFragment<FragmentNearMountainBinding>(FragmentNearMountainBinding::inflate) {

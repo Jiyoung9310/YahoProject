@@ -1,4 +1,4 @@
-package com.android.yaho.billing
+package com.climbing.yaho.billing
 
 import android.app.Activity
 import android.util.Log

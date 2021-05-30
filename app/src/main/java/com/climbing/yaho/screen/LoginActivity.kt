@@ -1,12 +1,12 @@
-package com.android.yaho.screen
+package com.climbing.yaho.screen
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.android.yaho.base.BindingActivity
-import com.android.yaho.databinding.ActivityLoginBinding
-import com.android.yaho.viewmodel.LoginViewModel
+import com.climbing.yaho.base.BindingActivity
+import com.climbing.yaho.databinding.ActivityLoginBinding
+import com.climbing.yaho.viewmodel.LoginViewModel
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*

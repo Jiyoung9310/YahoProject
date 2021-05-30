@@ -1,12 +1,12 @@
-package com.android.yaho.screen
+package com.climbing.yaho.screen
 
 import android.os.Bundle
 import android.view.View
-import com.android.yaho.R
-import com.android.yaho.base.BindingFragment
-import com.android.yaho.data.MountainData
-import com.android.yaho.databinding.FragmentCountdownBinding
-import com.android.yaho.viewmodel.ReadyViewModel
+import com.climbing.yaho.R
+import com.climbing.yaho.base.BindingFragment
+import com.climbing.yaho.data.MountainData
+import com.climbing.yaho.databinding.FragmentCountdownBinding
+import com.climbing.yaho.viewmodel.ReadyViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class CountDownFragment : BindingFragment<FragmentCountdownBinding>(FragmentCountdownBinding::inflate) {

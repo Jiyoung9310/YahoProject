@@ -1,4 +1,4 @@
-package com.android.yaho.ui
+package com.climbing.yaho.ui
 
 import android.content.Context
 import android.graphics.Color
@@ -10,8 +10,8 @@ import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDialog
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.android.yaho.R
-import com.android.yaho.dp
+import com.climbing.yaho.R
+import com.climbing.yaho.dp
 
 class ClimbingDoneDialog(context: Context,
                          private val climbingTimeText: String,

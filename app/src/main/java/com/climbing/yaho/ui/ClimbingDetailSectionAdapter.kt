@@ -1,11 +1,11 @@
-package com.android.yaho.ui
+package com.climbing.yaho.ui
 
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.android.yaho.base.BindingViewHolder
-import com.android.yaho.databinding.ItemClimbingDetailSectionBinding
-import com.android.yaho.viewmodel.ClimbingDetailSectionUseCase
+import com.climbing.yaho.base.BindingViewHolder
+import com.climbing.yaho.databinding.ItemClimbingDetailSectionBinding
+import com.climbing.yaho.viewmodel.ClimbingDetailSectionUseCase
 
 class ClimbingDetailSectionAdapter: RecyclerView.Adapter<SectionInfoViewHolder>() {
     private val _sectionList = mutableListOf<ClimbingDetailSectionUseCase>()

@@ -1,4 +1,4 @@
-package com.android.yaho.local
+package com.climbing.yaho.local
 
 import android.app.*
 import android.content.Context
@@ -10,12 +10,12 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.android.yaho.R
-import com.android.yaho.local.cache.LiveClimbingCache
-import com.android.yaho.requestingLocationUpdates
-import com.android.yaho.screen.ClimbingActivity
-import com.android.yaho.screen.ClimbingActivity.Companion.KEY_IS_ACTIVE
-import com.android.yaho.setRequestingLocationUpdates
+import com.climbing.yaho.R
+import com.climbing.yaho.local.cache.LiveClimbingCache
+import com.climbing.yaho.requestingLocationUpdates
+import com.climbing.yaho.screen.ClimbingActivity
+import com.climbing.yaho.screen.ClimbingActivity.Companion.KEY_IS_ACTIVE
+import com.climbing.yaho.setRequestingLocationUpdates
 import com.google.android.gms.location.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get

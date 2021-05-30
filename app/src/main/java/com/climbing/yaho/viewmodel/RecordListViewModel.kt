@@ -1,15 +1,16 @@
-package com.android.yaho.viewmodel
+package com.climbing.yaho.viewmodel
 
 import android.icu.text.AlphabeticIndex
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.yaho.*
-import com.android.yaho.di.ContextDelegate
-import com.android.yaho.repository.ClimbingRepository
-import com.android.yaho.ui.RecordListAdapter
-import com.android.yaho.ui.UIItem
+import com.climbing.yaho.R
+import com.climbing.yaho.*
+import com.climbing.yaho.di.ContextDelegate
+import com.climbing.yaho.repository.ClimbingRepository
+import com.climbing.yaho.ui.RecordListAdapter
+import com.climbing.yaho.ui.UIItem
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

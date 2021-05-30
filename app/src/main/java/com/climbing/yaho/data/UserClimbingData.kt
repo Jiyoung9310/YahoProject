@@ -1,4 +1,4 @@
-package com.android.yaho.data
+package com.climbing.yaho.data
 
 
 data class UserClimbingData(

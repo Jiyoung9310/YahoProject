@@ -1,11 +1,11 @@
-package com.android.yaho.viewmodel
+package com.climbing.yaho.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.yaho.data.UserClimbingData
-import com.android.yaho.repository.UserDataRepository
+import com.climbing.yaho.data.UserClimbingData
+import com.climbing.yaho.repository.UserDataRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

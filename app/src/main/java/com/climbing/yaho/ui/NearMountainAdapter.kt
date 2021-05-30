@@ -1,11 +1,11 @@
-package com.android.yaho.ui
+package com.climbing.yaho.ui
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.android.yaho.R
-import com.android.yaho.base.BindingViewHolder
-import com.android.yaho.data.MountainData
-import com.android.yaho.databinding.ItemNearMountainBinding
+import com.climbing.yaho.R
+import com.climbing.yaho.databinding.ItemNearMountainBinding
+import com.climbing.yaho.base.BindingViewHolder
+import com.climbing.yaho.data.MountainData
 
 class NearMountainAdapter(private val itemClickAction: (MountainData) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
 

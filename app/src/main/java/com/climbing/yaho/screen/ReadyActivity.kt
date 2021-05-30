@@ -1,4 +1,4 @@
-package com.android.yaho.screen
+package com.climbing.yaho.screen
 
 import android.Manifest
 import android.content.Intent
@@ -11,13 +11,13 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
-import com.android.yaho.BuildConfig
-import com.android.yaho.R
-import com.android.yaho.base.BindingActivity
-import com.android.yaho.databinding.ActivityReadyBinding
-import com.android.yaho.local.YahoPreference
-import com.android.yaho.local.cache.LiveClimbingCache
-import com.android.yaho.viewmodel.ReadyViewModel
+import com.climbing.yaho.BuildConfig
+import com.climbing.yaho.R
+import com.climbing.yaho.base.BindingActivity
+import com.climbing.yaho.databinding.ActivityReadyBinding
+import com.climbing.yaho.local.YahoPreference
+import com.climbing.yaho.local.cache.LiveClimbingCache
+import com.climbing.yaho.viewmodel.ReadyViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView

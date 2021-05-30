@@ -1,13 +1,13 @@
-package com.android.yaho.viewmodel
+package com.climbing.yaho.viewmodel
 
 import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.yaho.local.cache.LiveClimbingCache
-import com.android.yaho.local.db.PointEntity
-import com.android.yaho.local.db.RecordEntity
+import com.climbing.yaho.local.cache.LiveClimbingCache
+import com.climbing.yaho.local.db.PointEntity
+import com.climbing.yaho.local.db.RecordEntity
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.collect

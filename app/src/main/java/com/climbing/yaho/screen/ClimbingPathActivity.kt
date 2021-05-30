@@ -1,15 +1,12 @@
-package com.android.yaho.screen
+package com.climbing.yaho.screen
 
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
-import com.android.yaho.BuildConfig
-import com.android.yaho.R
-import com.android.yaho.base.BindingActivity
-import com.android.yaho.databinding.ActivityClimbingPathBinding
-import com.android.yaho.dp
+import com.climbing.yaho.R
+import com.climbing.yaho.databinding.ActivityClimbingPathBinding
+import com.climbing.yaho.base.BindingActivity
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -78,11 +75,11 @@ class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(Activi
             it.color = Color.BLACK
         }
 
-        intent.extras?.getParcelableArrayList<com.android.yaho.local.db.LatLng>(KEY_PATH_LIST)?.let {
+        intent.extras?.getParcelableArrayList<com.climbing.yaho.local.db.LatLng>(KEY_PATH_LIST)?.let {
             drawPath(it.map { LatLng(it.latitude, it.longitude) })
         }
 
-        intent.extras?.getParcelableArrayList<com.android.yaho.local.db.LatLng>(KEY_SECTION_MARK_LIST)?.let {
+        intent.extras?.getParcelableArrayList<com.climbing.yaho.local.db.LatLng>(KEY_SECTION_MARK_LIST)?.let {
             drawMarker(it.map { LatLng(it.latitude, it.longitude) })
         }
     }

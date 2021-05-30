@@ -1,15 +1,15 @@
-package com.android.yaho.screen
+package com.climbing.yaho.screen
 
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.View
-import com.android.yaho.R
-import com.android.yaho.base.BindingFragment
-import com.android.yaho.data.MountainData
-import com.android.yaho.databinding.FragmentReadyToStartBinding
-import com.android.yaho.screen.ReadyActivity.Companion.KEY_SELECT_MOUNTAIN
-import com.android.yaho.screen.ReadyActivity.Companion.SCREEN_NEAR_MOUNTAIN
-import com.android.yaho.viewmodel.ReadyViewModel
+import com.climbing.yaho.R
+import com.climbing.yaho.base.BindingFragment
+import com.climbing.yaho.data.MountainData
+import com.climbing.yaho.databinding.FragmentReadyToStartBinding
+import com.climbing.yaho.screen.ReadyActivity.Companion.KEY_SELECT_MOUNTAIN
+import com.climbing.yaho.screen.ReadyActivity.Companion.SCREEN_NEAR_MOUNTAIN
+import com.climbing.yaho.viewmodel.ReadyViewModel
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraUpdate

@@ -1,8 +1,8 @@
-package com.android.yaho.repository
+package com.climbing.yaho.repository
 
 import android.util.Log
-import com.android.yaho.data.UserClimbingData
-import com.android.yaho.local.YahoPreference
+import com.climbing.yaho.data.UserClimbingData
+import com.climbing.yaho.local.YahoPreference
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi

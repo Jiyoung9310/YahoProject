@@ -1,4 +1,4 @@
-package com.android.yaho.viewmodel
+package com.climbing.yaho.viewmodel
 
 import android.location.Location
 import android.os.Bundle
@@ -9,12 +9,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.yaho.data.MountainData
-import com.android.yaho.di.ContextDelegate
-import com.android.yaho.local.cache.MountainListCache
-import com.android.yaho.repository.ClimbingRepository
-import com.android.yaho.screen.ClimbingActivity
-import com.android.yaho.screen.ReadyActivity
+import com.climbing.yaho.data.MountainData
+import com.climbing.yaho.di.ContextDelegate
+import com.climbing.yaho.local.cache.MountainListCache
+import com.climbing.yaho.repository.ClimbingRepository
+import com.climbing.yaho.screen.ClimbingActivity
+import com.climbing.yaho.screen.ReadyActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect

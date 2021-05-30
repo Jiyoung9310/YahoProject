@@ -1,4 +1,4 @@
-package com.android.yaho.screen
+package com.climbing.yaho.screen
 
 import android.animation.Animator
 import android.net.ConnectivityManager
@@ -7,12 +7,12 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
-import com.android.yaho.BuildConfig
-import com.android.yaho.R
-import com.android.yaho.base.BindingActivity
-import com.android.yaho.databinding.ActivityClimbingDoneBinding
-import com.android.yaho.ui.ClimbingSaveDialog
-import com.android.yaho.viewmodel.ClimbingDoneViewModel
+import com.climbing.yaho.BuildConfig
+import com.climbing.yaho.R
+import com.climbing.yaho.base.BindingActivity
+import com.climbing.yaho.databinding.ActivityClimbingDoneBinding
+import com.climbing.yaho.ui.ClimbingSaveDialog
+import com.climbing.yaho.viewmodel.ClimbingDoneViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView

@@ -1,10 +1,10 @@
-package com.android.yaho.viewmodel
+package com.climbing.yaho.viewmodel
 
 
 import android.location.Location
 import android.util.Log
-import com.android.yaho.local.db.PathSectionEntity
-import com.android.yaho.local.db.PointEntity
+import com.climbing.yaho.local.db.PathSectionEntity
+import com.climbing.yaho.local.db.PointEntity
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -1,4 +1,4 @@
-package com.android.yaho.local
+package com.climbing.yaho.local
 
 import android.content.SharedPreferences
 import androidx.core.content.edit

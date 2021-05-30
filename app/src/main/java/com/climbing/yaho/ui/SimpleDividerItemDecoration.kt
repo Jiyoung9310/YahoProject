@@ -1,4 +1,4 @@
-package com.android.yaho.ui
+package com.climbing.yaho.ui
 
 import android.content.Context
 import android.graphics.Canvas

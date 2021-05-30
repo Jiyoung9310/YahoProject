@@ -1,4 +1,4 @@
-package com.android.yaho.screen
+package com.climbing.yaho.screen
 
 import android.content.Intent
 import android.graphics.Rect
@@ -13,16 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
-import com.android.yaho.BuildConfig
-import com.android.yaho.R
-import com.android.yaho.base.BindingActivity
-import com.android.yaho.billing.BillingModule
-import com.android.yaho.billing.Sku
-import com.android.yaho.databinding.ActivityHomeBinding
-import com.android.yaho.dp
-import com.android.yaho.meter
-import com.android.yaho.ui.HomeMenuAdapter
-import com.android.yaho.viewmodel.HomeViewModel
+import com.climbing.yaho.BuildConfig
+import com.climbing.yaho.R
+import com.climbing.yaho.base.BindingActivity
+import com.climbing.yaho.billing.BillingModule
+import com.climbing.yaho.billing.Sku
+import com.climbing.yaho.databinding.ActivityHomeBinding
+import com.climbing.yaho.dp
+import com.climbing.yaho.meter
+import com.climbing.yaho.ui.HomeMenuAdapter
+import com.climbing.yaho.viewmodel.HomeViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView

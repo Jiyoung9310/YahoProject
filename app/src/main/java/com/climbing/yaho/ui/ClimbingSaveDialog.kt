@@ -1,4 +1,4 @@
-package com.android.yaho.ui
+package com.climbing.yaho.ui
 
 import android.content.Context
 import android.graphics.Color
@@ -7,12 +7,9 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatDialog
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.android.yaho.R
-import com.android.yaho.dp
-import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.climbing.yaho.R
+import com.climbing.yaho.dp
 
 class ClimbingSaveDialog(context: Context) : AppCompatDialog(context) {
 

@@ -1,4 +1,4 @@
-package com.android.yaho.local.db
+package com.climbing.yaho.local.db
 
 import android.content.Context
 import androidx.room.Database

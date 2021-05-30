@@ -1,16 +1,16 @@
-package com.android.yaho.ui
+package com.climbing.yaho.ui
 
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.android.yaho.R
-import com.android.yaho.base.BindingViewHolder
-import com.android.yaho.databinding.ItemHomeMenuBinding
-import com.android.yaho.dp
-import com.android.yaho.ui.HomeMenuAdapter.Companion.VIEW_TYPE_MY_CLIMBS
-import com.android.yaho.ui.HomeMenuAdapter.Companion.VIEW_TYPE_REMOVE_ADS
-import com.android.yaho.ui.HomeMenuAdapter.Companion.VIEW_TYPE_REMOVE_ADS_DONE
-import com.android.yaho.ui.HomeMenuAdapter.Companion.VIEW_TYPE_START_CLIMBING
+import com.climbing.yaho.R
+import com.climbing.yaho.base.BindingViewHolder
+import com.climbing.yaho.databinding.ItemHomeMenuBinding
+import com.climbing.yaho.dp
+import com.climbing.yaho.ui.HomeMenuAdapter.Companion.VIEW_TYPE_MY_CLIMBS
+import com.climbing.yaho.ui.HomeMenuAdapter.Companion.VIEW_TYPE_REMOVE_ADS
+import com.climbing.yaho.ui.HomeMenuAdapter.Companion.VIEW_TYPE_REMOVE_ADS_DONE
+import com.climbing.yaho.ui.HomeMenuAdapter.Companion.VIEW_TYPE_START_CLIMBING
 
 class HomeMenuAdapter(
     private val startClimbingClickAction: () -> Unit,

@@ -1,17 +1,16 @@
-package com.android.yaho.ui
+package com.climbing.yaho.ui
 
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.android.yaho.R
-import com.android.yaho.base.BindingViewHolder
-import com.android.yaho.databinding.ItemRecordHeaderBinding
-import com.android.yaho.databinding.ItemRecordListBinding
-import com.android.yaho.databinding.ItemRecordTitleBinding
-import com.android.yaho.viewmodel.RecordItem
+import com.climbing.yaho.R
+import com.climbing.yaho.databinding.ItemRecordHeaderBinding
+import com.climbing.yaho.databinding.ItemRecordListBinding
+import com.climbing.yaho.databinding.ItemRecordTitleBinding
+import com.climbing.yaho.base.BindingViewHolder
+import com.climbing.yaho.viewmodel.RecordItem
 
 data class UIItem(
     var id: Any? = null,
