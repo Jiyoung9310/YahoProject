@@ -17,6 +17,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivYaho"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="133dp"
+        android:layout_marginStart="38dp"
+        android:src="@drawable/img_yaho_text"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+    
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/adContainer"
         android:layout_width="0dp"
