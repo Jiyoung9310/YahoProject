@@ -54,9 +54,8 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
             viewModel.getCodeNumber(it.toString())
         }
 
-        binding.etPhoneNumber.setText("+1 650-555-3535")
         binding.btnGetCode.setOnClickListener {
-            startVerifyCode(binding.etPhoneNumber.text.toString())
+            startVerifyCode("+82" + binding.etPhoneNumber.text.toString().substring(1))
         }
         binding.btnCheckCode.setOnClickListener {
             viewModel.onClickCheckCode(binding.etCode.text.toString())
@@ -79,7 +78,6 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
 
         viewModel.enableVerifyEdit.observe(this) {
             binding.btnCheckCode.isEnabled = it
-//            binding.etCode.setText("654321")
         }
 
         viewModel.checkVerifyCode.observe(this) { (verificationId, code) ->
