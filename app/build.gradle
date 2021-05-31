@@ -6,15 +6,40 @@ plugins {
     id 'kotlin-kapt'
 }
 
+def releaseFile = null
+try {
+    releaseFile = new FileInputStream(rootProject.file("private/release.properties"))
+} catch (Exception e) {
+    e.printStackTrace()
+}
+
+def isLoadedPrivate = releaseFile != null
+
+def props = new Properties()
+if (isLoadedPrivate) {
+    props.load(releaseFile)
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
+
+    if (isLoadedPrivate) {
+        signingConfigs {
+            config {
+                keyAlias props.keyAlias
+                keyPassword props.keyPassword
+                storeFile rootProject.file(props.storeFile)
+                storePassword props.storePassword
+            }
+        }
+    }
 
     defaultConfig {
         applicationId "com.climbing.yaho"
         minSdkVersion 28
         targetSdkVersion 30
-        versionCode 1
+        versionCode 2
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
