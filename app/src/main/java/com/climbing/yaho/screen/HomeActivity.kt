@@ -130,10 +130,6 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     }
 
     private fun initView() {
-        if(!get<YahoPreference>().isConfirm) {
-            LocationPermissionDialog(this) { get<YahoPreference>().isConfirm = true }.show()
-        }
-
         loadAdmob(get<YahoPreference>().isSubscribing)
         menuAdapter = HomeMenuAdapter(
             startClimbingClickAction = {

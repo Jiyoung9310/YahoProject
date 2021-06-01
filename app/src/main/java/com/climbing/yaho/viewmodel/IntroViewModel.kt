@@ -17,7 +17,7 @@ class IntroViewModel(private val repo : LoginRepository) : ViewModel() {
     private val _goToLogin = MutableLiveData<Unit>()
     val goToLogin: LiveData<Unit> get() = _goToLogin
 
-    init {
+    fun startIDCheck() {
         viewModelScope.launch {
             val totalSeconds = TimeUnit.SECONDS.toSeconds(3)
             for (second in totalSeconds downTo 1) {
@@ -30,6 +30,5 @@ class IntroViewModel(private val repo : LoginRepository) : ViewModel() {
             }
         }
     }
-
 
 }
