@@ -7,16 +7,23 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDialog
 import com.climbing.yaho.R
 import com.climbing.yaho.dp
 
-class LocationPermissionDialog(context: Context) : AppCompatDialog(context) {
+class LocationPermissionDialog(context: Context, private val onClickConfirm: () -> Unit) : AppCompatDialog(context) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_location_permission)
 
+        findViewById<TextView>(R.id.tvConfirm)?.let {
+            it.setOnClickListener {
+                onClickConfirm.invoke()
+                dismiss()
+            }
+        }
     }
 
     override fun onStart() {

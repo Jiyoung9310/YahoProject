@@ -11,6 +11,7 @@ interface YahoPreference {
     var restTimeCount: Long
     var isActive: Boolean
     var isSubscribing: Boolean
+    var isConfirm: Boolean
     fun clearSelectedMountain()
 }
 
@@ -25,6 +26,7 @@ class YahoPreferenceImpl(
         private const val KEY_REST_TIME_COUNT = "rest_time_count"
         private const val KEY_IS_ACTIVE = "is_active"
         private const val KEY_IS_SUBSCRIBING = "is_subscribing"
+        private const val KEY_IS_CONFIRM = "is_confirm"
     }
 
     override var userId: String?
@@ -49,6 +51,9 @@ class YahoPreferenceImpl(
     override var isSubscribing: Boolean
         get() = preferences.getBoolean(KEY_IS_SUBSCRIBING, false)
         set(value) { preferences.edit{ putBoolean(KEY_IS_SUBSCRIBING, value) }}
+    override var isConfirm: Boolean
+        get() = preferences.getBoolean(KEY_IS_CONFIRM, false)
+        set(value) { preferences.edit { putBoolean(KEY_IS_CONFIRM, value) }}
 
     override fun clearSelectedMountain() {
         selectedMountainId = 0

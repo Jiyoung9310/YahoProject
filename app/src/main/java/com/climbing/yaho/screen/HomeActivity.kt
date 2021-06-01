@@ -32,6 +32,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import androidx.core.view.isVisible
+import com.climbing.yaho.ui.LocationPermissionDialog
 
 class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate), KoinComponent {
 
@@ -129,6 +130,10 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     }
 
     private fun initView() {
+        if(!get<YahoPreference>().isConfirm) {
+            LocationPermissionDialog(this) { get<YahoPreference>().isConfirm = true }.show()
+        }
+
         loadAdmob(get<YahoPreference>().isSubscribing)
         menuAdapter = HomeMenuAdapter(
             startClimbingClickAction = {
