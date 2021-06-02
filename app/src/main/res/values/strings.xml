@@ -24,8 +24,8 @@
     <!--home-->
     <string name="home_all_height_title">내가 오른 높이</string>
     <string name="home_all_climb_count">나의 등산</string>
-    <string name="dialog_app_location_confirm">\'야호\' 앱은\n등산 위치 확인 및 등산 기록 기능을 활성화하기 위해 위치 데이터를 수집합니다.
-        \n실시간 등산 기록 기능이 켜져있을 경우,\n앱이 닫혀있어도 위치 정보를 수집합니다.\n수집된 위치 정보는 오로지 등산 기록을 표시하기 위해서만 사용됩니다.</string>
+    <string name="dialog_app_location_confirm">\'야호\' 앱은\n아래 기능 활성화를 위해 사용자의 위치 데이터를 수집합니다.\n-주변 산 조회\n-등산할 산 선택 화면\n-실시간 등산 기록
+        \n\n실시간 등산 기록 기능이 활성화된 경우,\n앱이 닫혀있어도 백그라운드에서 사용자의 위치 정보를 수집합니다.\n수집된 위치 정보는 오직 등산 기록을 표시하기 위해서만 사용됩니다.</string>
     <string name="dialog_app_location_confirm_btn">동의하고 시작하기</string>
 
     <string name="home_menu_start_climbing">오늘의 등산</string>
