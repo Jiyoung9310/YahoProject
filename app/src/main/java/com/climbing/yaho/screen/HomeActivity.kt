@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -31,8 +32,6 @@ import com.google.android.gms.ads.MobileAds
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import androidx.core.view.isVisible
-import com.climbing.yaho.ui.LocationPermissionDialog
 
 class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate), KoinComponent {
 

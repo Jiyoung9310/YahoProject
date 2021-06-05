@@ -38,7 +38,7 @@ val appModule = module {
     factory <UserDataRepository> { UserDataRepositoryImpl(get()) }
     factory <ClimbingRepository> { ClimbingRepositoryImpl(get()) }
 
-    viewModel { IntroViewModel(get()) }
+    viewModel { IntroViewModel(get(), get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { HomeViewModel(get()) }
     viewModel { ReadyViewModel(get(), get(), get()) }
