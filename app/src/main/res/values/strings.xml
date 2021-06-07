@@ -20,6 +20,7 @@
     <string name="login_phone_code_btn">인증번호 받기</string>
     <string name="login_phone_code">인증번호</string>
     <string name="login_code_check">인증번호를 다시 확인해주세요.</string>
+    <string name="login_private_policy">번호인증 완료 시, \n<u>개인정보처리방침</u>에 동의한 것으로 간주합니다.</string>
 
     <!--home-->
     <string name="home_all_height_title">내가 오른 높이</string>

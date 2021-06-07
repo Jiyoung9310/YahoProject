@@ -63,6 +63,9 @@
         <activity android:name=".screen.RecordListActivity"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".screen.PrivatePolicyActivity"
+            android:screenOrientation="portrait" />
+
         <service
             android:name=".local.LocationUpdatesService"
             android:enabled="true"

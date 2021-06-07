@@ -63,6 +63,10 @@ class LoginActivity : BindingActivity<ActivityLoginBinding>(ActivityLoginBinding
 
         //키보드 보이게 하는 부분
         (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+
+        binding.tvPrivacyPolicy.setOnClickListener {
+            startActivity(Intent(this, PrivatePolicyActivity::class.java))
+        }
     }
 
     private fun initObserve() {

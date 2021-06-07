@@ -148,17 +148,30 @@
         tools:text="@string/login_code_check"
         />
 
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPrivacyPolicy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/login_private_policy"
+        android:textSize="14sp"
+        android:textColor="@color/gray_600"
+        app:layout_constraintTop_toBottomOf="@id/tvCodeCheck"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/btnCheckCode"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:enabled="false"
         android:scaleType="fitXY"
         android:background="@drawable/selector_bg_code_check"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivUnderLine2"
+        app:layout_constraintTop_toBottomOf="@id/tvPrivacyPolicy"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
