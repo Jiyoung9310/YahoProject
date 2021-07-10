@@ -4,6 +4,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
+    id 'com.google.firebase.crashlytics'
 }
 
 def releaseFile = null
@@ -81,6 +82,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.android.gms:play-services-ads:20.1.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
     // Koin for Kotlin Multiplatform
     implementation "io.insert-koin:koin-core:$koin_version"
