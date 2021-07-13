@@ -117,7 +117,7 @@
                 android:background="@android:color/transparent"
                 android:enabled="false"
                 android:hint="@string/login_phone_code"
-                android:inputType="textUri"
+                android:inputType="number"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@id/tvCodeNumber"
                 app:layout_constraintEnd_toEndOf="parent"
