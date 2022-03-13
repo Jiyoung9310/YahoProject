@@ -12,12 +12,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import javax.inject.Inject
 
 interface UserDataRepository {
     fun getUserData(): Flow<UserClimbingData>
 }
 
-class UserDataRepositoryImpl(private val firestoreDB: FirebaseFirestore) : UserDataRepository, KoinComponent {
+class UserDataRepositoryImpl @Inject constructor(
+    private val firestoreDB: FirebaseFirestore
+) : UserDataRepository, KoinComponent {
     @ExperimentalCoroutinesApi
     override fun getUserData(): Flow<UserClimbingData> = callbackFlow {
         val uid = get<YahoPreference>().userId

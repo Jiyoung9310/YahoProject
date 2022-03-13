@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import javax.inject.Inject
 
 interface ClimbingRepository {
     suspend fun postClimbingData(recordId: String) : Flow<ClimbingResult>
@@ -25,7 +26,7 @@ interface ClimbingRepository {
 }
 
 @ExperimentalCoroutinesApi
-class ClimbingRepositoryImpl(
+class ClimbingRepositoryImpl @Inject constructor(
     private val firestoreDB: FirebaseFirestore,
 ) : ClimbingRepository, KoinComponent {
     override suspend fun postClimbingData(recordId: String): Flow<ClimbingResult> = callbackFlow {

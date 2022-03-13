@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import javax.inject.Inject
 
 interface LoginRepository {
     fun getUserID(): String?
@@ -18,8 +19,9 @@ interface LoginRepository {
 }
 
 @ExperimentalCoroutinesApi
-class LoginRepositoryImpl(private val auth: FirebaseAuth,
-                          private val firestoreDB: FirebaseFirestore
+class LoginRepositoryImpl @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val firestoreDB: FirebaseFirestore
 ): LoginRepository, KoinComponent {
     override fun getUserID(): String? = get<YahoPreference>().userId ?: auth.uid
 
