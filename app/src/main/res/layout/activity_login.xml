@@ -1,177 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingStart="20dp"
-    android:paddingEnd="20dp">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/ivLogo"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_yaho"
-        android:layout_marginTop="80dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/login_title"
-        android:textSize="24sp"
-        android:textColor="@color/gray_900"
-        android:layout_marginTop="56dp"
-        app:layout_constraintTop_toBottomOf="@id/ivLogo"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvSubTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/login_sub_title"
-        android:layout_marginTop="8dp"
-        android:textSize="14sp"
-        android:textColor="@color/gray_600"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvPhoneNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="@string/login_phone_number"
-        android:textSize="14sp"
-        android:textColor="@color/gray_900"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/tvSubTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-
-    <EditText
-        android:id="@+id/etPhoneNumber"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:background="@android:color/transparent"
-        android:hint="@string/login_phone_number"
-        android:textSize="14sp"
-        android:inputType="phone"
-        app:layout_constraintTop_toTopOf="@id/tvPhoneNumber"
-        app:layout_constraintBottom_toBottomOf="@id/tvPhoneNumber"
-        app:layout_constraintStart_toEndOf="@id/tvPhoneNumber"
-        app:layout_constraintEnd_toStartOf="@id/btnGetCode"
-        />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/btnGetCode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/selector_bg_code_btn"
-        android:enabled="false"
-        app:layout_constraintStart_toEndOf="@id/etPhoneNumber"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/etPhoneNumber"
-        app:layout_constraintBottom_toBottomOf="@id/etPhoneNumber"
-        />
-
-    <ImageView
-        android:id="@+id/ivUnderLine1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_under_line_1"
-        android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvPhoneNumber"
-        />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvCodeNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/login_phone_code"
-        android:textSize="14sp"
-        android:textColor="@color/gray_900"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/ivUnderLine1"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
 
-    <EditText
-        android:id="@+id/etCode"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:hint="@string/login_phone_code"
-        android:textSize="14sp"
-        android:enabled="false"
-        android:inputType="textUri"
-        app:layout_constraintTop_toTopOf="@id/tvCodeNumber"
-        app:layout_constraintBottom_toBottomOf="@id/tvCodeNumber"
-        app:layout_constraintStart_toStartOf="@id/etPhoneNumber"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:src="@drawable/ic_yaho"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivUnderLine2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_unber_line_2"
-        android:scaleType="fitXY"
-        app:layout_constraintTop_toBottomOf="@id/tvCodeNumber"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="56dp"
+                android:text="@string/login_title"
+                android:textColor="@color/gray_900"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivLogo" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvCodeCheck"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/login_code_check"
-        android:textSize="12sp"
-        android:textColor="#EB5757"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/ivUnderLine2"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="@string/login_code_check"
-        />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvSubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/login_sub_title"
+                android:textColor="@color/gray_600"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPhoneNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="@string/login_phone_number"
+                android:textColor="@color/gray_900"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSubTitle" />
+
+            <EditText
+                android:id="@+id/etPhoneNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:background="@android:color/transparent"
+                android:hint="@string/login_phone_number"
+                android:inputType="phone"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvPhoneNumber"
+                app:layout_constraintEnd_toStartOf="@id/btnGetCode"
+                app:layout_constraintStart_toEndOf="@id/tvPhoneNumber"
+                app:layout_constraintTop_toTopOf="@id/tvPhoneNumber" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btnGetCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_bg_code_btn"
+                android:enabled="false"
+                app:layout_constraintBottom_toBottomOf="@id/etPhoneNumber"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/etPhoneNumber"
+                app:layout_constraintTop_toTopOf="@id/etPhoneNumber" />
+
+            <ImageView
+                android:id="@+id/ivUnderLine1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_under_line_1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvPhoneNumber" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvCodeNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/login_phone_code"
+                android:textColor="@color/gray_900"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivUnderLine1" />
+
+            <EditText
+                android:id="@+id/etCode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:enabled="false"
+                android:hint="@string/login_phone_code"
+                android:inputType="number"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/tvCodeNumber"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/etPhoneNumber"
+                app:layout_constraintTop_toTopOf="@id/tvCodeNumber" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivUnderLine2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_unber_line_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvCodeNumber" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvCodeCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/login_code_check"
+                android:textColor="#EB5757"
+                android:textSize="12sp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivUnderLine2"
+                tools:text="@string/login_code_check" />
 
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvPrivacyPolicy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:text="@string/login_private_policy"
-        android:textSize="14sp"
-        android:textColor="@color/gray_600"
-        app:layout_constraintTop_toBottomOf="@id/tvCodeCheck"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvPrivacyPolicy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="@string/login_private_policy"
+                android:textColor="@color/gray_600"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvCodeCheck" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/btnCheckCode"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:enabled="false"
-        android:scaleType="fitXY"
-        android:background="@drawable/selector_bg_code_check"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvPrivacyPolicy"
-        />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btnCheckCode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/selector_bg_code_check"
+                android:enabled="false"
+                android:scaleType="fitXY"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvPrivacyPolicy" />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
+    id 'com.google.firebase.crashlytics'
 }
 
 def releaseFile = null
@@ -39,8 +40,8 @@ android {
         applicationId "com.climbing.yaho"
         minSdkVersion 28
         targetSdkVersion 30
-        versionCode 7
-        versionName "1.0"
+        versionCode 8
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -81,6 +82,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.android.gms:play-services-ads:20.1.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
     // Koin for Kotlin Multiplatform
     implementation "io.insert-koin:koin-core:$koin_version"
