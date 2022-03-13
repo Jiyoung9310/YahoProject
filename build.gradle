@@ -2,7 +2,7 @@
 buildscript {
     ext{
         kotlin_version = "1.4.32"
-        ktx_version = "1.7.0"
+        ktx_version = "1.6.0"
         koin_version= "3.0.1"
         lifecycleVersion = '2.3.1'
         room_version = "2.3.0"
