@@ -45,7 +45,7 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import dagger.hilt.android.AndroidEntryPoint
-import org.koin.android.ext.android.get
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbingBinding::inflate),
@@ -62,6 +62,12 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         private val KEY_RUNNING_TIME = "KEY_RUNNING_TIME"
     }
 
+    @Inject
+    lateinit var yahoPreference: YahoPreference
+    @Inject
+    lateinit var mountainListCache: MountainListCache
+    @Inject
+    lateinit var liveClimbingCache: LiveClimbingCache
     private val viewModel by viewModels<ClimbingViewModel>()
     private var naverMap: NaverMap? = null
     private val pathOverlay: PathOverlay by lazy { PathOverlay() }
@@ -107,18 +113,18 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (get<YahoPreference>().selectedMountainId > 0) {
-            get<MountainListCache>().get(get<YahoPreference>().selectedMountainId)?.let {
+        if (yahoPreference.selectedMountainId > 0) {
+            mountainListCache.get(yahoPreference.selectedMountainId)?.let {
                 mountainData = it
             }
-            isActive = get<YahoPreference>().isActive
+            isActive = yahoPreference.isActive
             showBottomView(isActive)
             if(isActive) viewModel.updateCurrentLocation()
 
-            get<YahoPreference>().runningTimeStamp.let { timeStamp ->
+            yahoPreference.runningTimeStamp.let { timeStamp ->
                 if (timeStamp > 0) {
-                    val runningCount = get<YahoPreference>().runningTimeCount
-                    val restCount = get<YahoPreference>().restTimeCount
+                    val runningCount = yahoPreference.runningTimeCount
+                    val restCount = yahoPreference.restTimeCount
                     viewModel.setRunningTime(runningCount, restCount,
                         (System.currentTimeMillis() / 1000 - timeStamp),
                         isActive
@@ -128,12 +134,12 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         } else if(intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA) != null) {
             intent.extras?.getParcelable<MountainData>(KEY_MOUNTAIN_DATA)?.let {
                 mountainData = it
-                get<YahoPreference>().selectedMountainId = mountainData.id
+                yahoPreference.selectedMountainId = mountainData.id
             }
         } else {
             finish()
         }
-        get<LiveClimbingCache>().initialize(mountainData, intent.getIntExtra(KEY_MOUNTAIN_VISIT_COUNT, 0))
+        liveClimbingCache.initialize(mountainData, intent.getIntExtra(KEY_MOUNTAIN_VISIT_COUNT, 0))
 
         initView()
         initObserve()
@@ -146,7 +152,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
 
         // Bind to the service. If the service is in foreground mode, this signals to the service
         // that since this activity is in the foreground, the service can exit foreground mode.
-        if (get<YahoPreference>().selectedMountainId > 0) {
+        if (yahoPreference.selectedMountainId > 0) {
             bindService(
                 Intent(this, LocationUpdatesService::class.java), serviceConnection,
                 BIND_AUTO_CREATE
@@ -183,7 +189,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             unbindService(serviceConnection)
             isBound = false
         }
-        get<YahoPreference>().apply {
+        yahoPreference.apply {
             runningTimeStamp = System.currentTimeMillis() / 1000
             if(isActive) runningTimeCount = runningTime else restTimeCount = runningTime
         }
@@ -232,12 +238,12 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             if(isActive) {
                 viewModel.updateCurrentLocation()
                 locationUpdatesService?.restart()
-                get<YahoPreference>().restTimeCount = runningTime
+                yahoPreference.restTimeCount = runningTime
             } else {
                 locationUpdatesService?.isPause()
-                get<YahoPreference>().runningTimeCount = runningTime
+                yahoPreference.runningTimeCount = runningTime
             }
-            get<YahoPreference>().isActive = isActive
+            yahoPreference.isActive = isActive
         }
 
         binding.btnClimbingDone.setOnClickListener {
@@ -250,7 +256,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             ).show()
         }
 
-        loadAdmob(get<YahoPreference>().isSubscribing)
+        loadAdmob(yahoPreference.isSubscribing)
     }
 
     private fun loadAdmob(isSubscribing: Boolean) {
@@ -343,7 +349,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
             icon = OverlayImage.fromResource(R.drawable.img_marker_my_location)
         }
 
-        get<LiveClimbingCache>().latlngPaths.let { list ->
+        liveClimbingCache.latlngPaths.let { list ->
             if (list.size < 2) return@let
             pathOverlay.apply {
                 coords = list
