@@ -6,7 +6,7 @@ buildscript {
         lifecycleVersion = '2.3.1'
         room_version = "2.3.0"
         billing_version = "4.0.0"
-        hilt_version = '2.28-alpha'
+        hilt_version = '2.40.5'
     }
     repositories {
         google()
