@@ -4,13 +4,13 @@ import android.util.Log
 import com.climbing.yaho.data.UserClimbingData
 import com.climbing.yaho.local.YahoPreference
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import javax.inject.Inject
 
 interface LoginRepository {
@@ -21,12 +21,13 @@ interface LoginRepository {
 @ExperimentalCoroutinesApi
 class LoginRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val firestoreDB: FirebaseFirestore
-): LoginRepository, KoinComponent {
-    override fun getUserID(): String? = get<YahoPreference>().userId ?: auth.uid
+    private val firestoreDB: FirebaseFirestore,
+    private val yahoPreference: YahoPreference,
+): LoginRepository {
+    override fun getUserID(): String? = yahoPreference.userId ?: auth.uid
 
     override suspend fun saveUserID(uid: String): Flow<LoginResult> = callbackFlow {
-        get<YahoPreference>().userId = uid
+        yahoPreference.userId = uid
 
         var eventsCollection: DocumentReference? = null
         try {

@@ -12,8 +12,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import javax.inject.Inject
 
 interface ClimbingRepository {
@@ -28,12 +26,14 @@ interface ClimbingRepository {
 @ExperimentalCoroutinesApi
 class ClimbingRepositoryImpl @Inject constructor(
     private val firestoreDB: FirebaseFirestore,
-) : ClimbingRepository, KoinComponent {
+    private val yahoPreference: YahoPreference,
+    private val liveClimbingCache: LiveClimbingCache,
+) : ClimbingRepository {
     override suspend fun postClimbingData(recordId: String): Flow<ClimbingResult> = callbackFlow {
-        val uid = get<YahoPreference>().userId
+        val uid = yahoPreference.userId
         if(uid.isNullOrEmpty()) offer(ClimbingResult.Fail(Throwable("userId 접근 불가")))
 
-        val recordCache = get<LiveClimbingCache>().getRecord()
+        val recordCache = liveClimbingCache.getRecord()
         recordCache.apply {
             this.recordId = recordId
         }
@@ -84,10 +84,10 @@ class ClimbingRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateVisitMountain(): Flow<ClimbingResult> = callbackFlow {
-        val uid = get<YahoPreference>().userId
+        val uid = yahoPreference.userId
         if(uid.isNullOrEmpty()) offer(ClimbingResult.Fail(Throwable("userId 접근 불가")))
 
-        val climbCache = get<LiveClimbingCache>().getRecord()
+        val climbCache = liveClimbingCache.getRecord()
         val fieldMap = mapOf(
             "mountainId" to climbCache.mountainId,
             "visitCount" to climbCache.mountainVisitCount
@@ -111,7 +111,7 @@ class ClimbingRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getClimbingData(recordId: String): Flow<RecordEntity?> = callbackFlow {
-        val uid = get<YahoPreference>().userId
+        val uid = yahoPreference.userId
         if(uid.isNullOrEmpty()) offer(null)
 
         val subscription = firestoreDB.collection("users")
@@ -138,7 +138,7 @@ class ClimbingRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getVisitMountain(mountainId: Int): Flow<Int> = callbackFlow {
-        val uid = get<YahoPreference>().userId
+        val uid = yahoPreference.userId
         if(uid.isNullOrEmpty()) offer(0)
 
         val subscription = firestoreDB.collection("users")
@@ -164,7 +164,7 @@ class ClimbingRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getClimbingRecordList(): Flow<List<RecordEntity>> = callbackFlow {
-        val uid = get<YahoPreference>().userId
+        val uid = yahoPreference.userId
         if(uid.isNullOrEmpty()) offer(emptyList<RecordEntity>())
 
         var eventCollection: CollectionReference? = null
@@ -197,7 +197,7 @@ class ClimbingRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteClimbingData(recordId: String): Flow<ClimbingResult> = callbackFlow {
-        val uid = get<YahoPreference>().userId
+        val uid = yahoPreference.userId
         if(uid.isNullOrEmpty()) offer(ClimbingResult.Fail(Throwable("userId 접근 불가")))
 
         Log.w("ClimbingRepository", "ready to delete climbing data : $recordId")

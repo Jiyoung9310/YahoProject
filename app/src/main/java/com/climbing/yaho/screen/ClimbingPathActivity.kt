@@ -4,9 +4,10 @@ import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
 import android.util.DisplayMetrics
+import androidx.core.view.isVisible
 import com.climbing.yaho.R
-import com.climbing.yaho.databinding.ActivityClimbingPathBinding
 import com.climbing.yaho.base.BindingActivity
+import com.climbing.yaho.databinding.ActivityClimbingPathBinding
 import com.climbing.yaho.local.YahoPreference
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -18,9 +19,6 @@ import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

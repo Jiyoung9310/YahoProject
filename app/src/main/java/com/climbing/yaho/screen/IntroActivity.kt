@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
@@ -18,9 +17,6 @@ import com.climbing.yaho.ui.LocationPermissionDialog
 import com.climbing.yaho.viewmodel.IntroViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import javax.inject.Inject
 
 @AndroidEntryPoint

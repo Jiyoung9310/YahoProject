@@ -8,13 +8,12 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
 import javax.inject.Inject
 
 
 class MountainListCache @Inject constructor(
     private val mountainRepository: MountainRepository,
-) : KoinComponent {
+) {
 
     private val _data = mutableMapOf<Int, MountainData>()
     val data: Map<Int, MountainData>
