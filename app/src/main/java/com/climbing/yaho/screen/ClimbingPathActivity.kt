@@ -21,15 +21,19 @@ import com.naver.maps.map.overlay.PathOverlay
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import androidx.core.view.isVisible
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(ActivityClimbingPathBinding::inflate),
-    OnMapReadyCallback, KoinComponent {
+    OnMapReadyCallback {
 
     companion object {
         const val KEY_PATH_LIST = "KEY_PATH_LIST"
         const val KEY_SECTION_MARK_LIST = "KEY_SECTION_MARK_LIST"
     }
-
+    @Inject
+    lateinit var yahoPreference: YahoPreference
     private var naverMap: NaverMap? = null
     private val pathOverlay: PathOverlay by lazy { PathOverlay() }
 
@@ -51,7 +55,7 @@ class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(Activi
     }
 
     private fun initView() {
-        loadAdmob(get<YahoPreference>().isSubscribing)
+        loadAdmob(yahoPreference.isSubscribing)
         binding.btnClose.setOnClickListener {
             finish()
         }

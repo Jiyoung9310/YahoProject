@@ -29,7 +29,7 @@ val appModule = module {
     }
 //    single { YahoRoomDatabase.getInstance(androidApplication()) }
     single<YahoPreference> { YahoPreferenceImpl(get()) }
-    single { MountainListCache() }
+//    single { MountainListCache() }
     single { LiveClimbingCache() }
 //    single { ClimbingSaveHelper(get()) }
 

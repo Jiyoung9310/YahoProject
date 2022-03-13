@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.climbing.yaho.BuildConfig
 import com.climbing.yaho.R
 import com.climbing.yaho.base.BindingActivity
@@ -18,17 +20,18 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import androidx.core.view.isVisible
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
     ActivityClimbingDoneBinding::inflate
-), KoinComponent {
+) {
     private val TAG = this::class.java.simpleName
 
-    private val viewModel by viewModel<ClimbingDoneViewModel>()
+    @Inject
+    lateinit var yahoPreference: YahoPreference
+    private val viewModel by viewModels<ClimbingDoneViewModel>()
     private lateinit var connectivityManager : ConnectivityManager
     private var dialog : ClimbingSaveDialog? = null
 
@@ -43,7 +46,7 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
         initObserve()
     }
     private fun initView() {
-        loadAdmob(get<YahoPreference>().isSubscribing)
+        loadAdmob(yahoPreference.isSubscribing)
         connectivityManager.registerDefaultNetworkCallback(object :
             ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {

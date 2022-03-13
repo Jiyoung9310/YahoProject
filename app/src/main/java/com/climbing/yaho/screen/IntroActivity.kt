@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import com.climbing.yaho.BuildConfig
 import com.climbing.yaho.R
@@ -16,20 +17,25 @@ import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.ui.LocationPermissionDialog
 import com.climbing.yaho.viewmodel.IntroViewModel
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import javax.inject.Inject
 
-class IntroActivity : BindingActivity<ActivityIntroBinding>(ActivityIntroBinding::inflate), KoinComponent {
+@AndroidEntryPoint
+class IntroActivity : BindingActivity<ActivityIntroBinding>(ActivityIntroBinding::inflate) {
 
-    private val viewModel by viewModel<IntroViewModel>()
+    @Inject
+    lateinit var yahoPreference: YahoPreference
+    private val viewModel by viewModels<IntroViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(!get<YahoPreference>().isConfirm) {
+        if(!yahoPreference.isConfirm) {
             LocationPermissionDialog(this) {
-                get<YahoPreference>().isConfirm = true
+                yahoPreference.isConfirm = true
                 viewModel.checkPermissions()
             }.show()
         } else {

@@ -15,15 +15,16 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.climbing.yaho.*
 import com.climbing.yaho.BuildConfig
 import com.climbing.yaho.R
-import com.climbing.yaho.databinding.ActivityClimbingBinding
-import com.climbing.yaho.*
 import com.climbing.yaho.base.BindingActivity
 import com.climbing.yaho.data.MountainData
+import com.climbing.yaho.databinding.ActivityClimbingBinding
 import com.climbing.yaho.local.LocationUpdatesService
 import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.local.cache.LiveClimbingCache
@@ -43,12 +44,12 @@ import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
+import dagger.hilt.android.AndroidEntryPoint
 import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinComponent
 
+@AndroidEntryPoint
 class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbingBinding::inflate),
-    OnMapReadyCallback, OnSharedPreferenceChangeListener, KoinComponent {
+    OnMapReadyCallback, OnSharedPreferenceChangeListener {
 
     private val TAG = this::class.java.simpleName
 
@@ -61,7 +62,7 @@ class ClimbingActivity : BindingActivity<ActivityClimbingBinding>(ActivityClimbi
         private val KEY_RUNNING_TIME = "KEY_RUNNING_TIME"
     }
 
-    private val viewModel by viewModel<ClimbingViewModel>()
+    private val viewModel by viewModels<ClimbingViewModel>()
     private var naverMap: NaverMap? = null
     private val pathOverlay: PathOverlay by lazy { PathOverlay() }
 
