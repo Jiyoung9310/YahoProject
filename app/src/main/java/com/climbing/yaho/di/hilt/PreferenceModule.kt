@@ -1,0 +1,15 @@
+package com.climbing.yaho.di.hilt
+
+import com.climbing.yaho.local.YahoPreference
+import com.climbing.yaho.local.YahoPreferenceImpl
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+
+@InstallIn(ApplicationComponent::class)
+@Module
+abstract class PreferenceModule {
+    @Binds
+    abstract fun bindPreference(impl: YahoPreferenceImpl): YahoPreference
+}
