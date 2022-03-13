@@ -95,18 +95,6 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
 
-    // Koin
-    // for Kotlin Multiplatform
-    implementation "io.insert-koin:koin-core:$koin_version"
-    // Koin Test for Kotlin Multiplatform
-    testImplementation "io.insert-koin:koin-test:$koin_version"
-    // Koin main features for Android (Scope,ViewModel ...)
-    implementation "io.insert-koin:koin-android:$koin_version"
-    // Koin Android - experimental builder extensions
-    implementation "io.insert-koin:koin-android-ext:$koin_version"
-    // Koin for Jetpack WorkManager
-    implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
-
     // room
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
