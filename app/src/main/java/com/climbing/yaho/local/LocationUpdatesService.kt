@@ -14,16 +14,15 @@ import com.climbing.yaho.R
 import com.climbing.yaho.local.cache.LiveClimbingCache
 import com.climbing.yaho.requestingLocationUpdates
 import com.climbing.yaho.screen.ClimbingActivity
-import com.climbing.yaho.screen.ClimbingActivity.Companion.KEY_IS_ACTIVE
 import com.climbing.yaho.setRequestingLocationUpdates
 import com.google.android.gms.location.*
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.DateFormat
 import java.util.*
+import javax.inject.Inject
 
-
-class LocationUpdatesService : Service(), KoinComponent {
+@AndroidEntryPoint
+class LocationUpdatesService : Service() {
     private val TAG = LocationUpdatesService::class.java.simpleName
 
     companion object {
@@ -41,6 +40,10 @@ class LocationUpdatesService : Service(), KoinComponent {
         const val REQUEST_CODE = 1000
     }
 
+    @Inject
+    lateinit var yahoPreference: YahoPreference
+    @Inject
+    lateinit var liveClimbingCache: LiveClimbingCache
 
     private val binder: IBinder = LocalBinder()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -116,8 +119,8 @@ class LocationUpdatesService : Service(), KoinComponent {
         if (startedFromNotification) {
             removeLocationUpdates()
             stopSelf()
-            get<LiveClimbingCache>().clearCache()
-            get<YahoPreference>().clearSelectedMountain()
+            liveClimbingCache.clearCache()
+            yahoPreference.clearSelectedMountain()
         }
         // Tells the system to not try to recreate the service after it has been killed.
         return START_NOT_STICKY
@@ -146,7 +149,7 @@ class LocationUpdatesService : Service(), KoinComponent {
     private fun onNewLocation(location: Location) {
         Log.i(TAG, "New location: $location")
         if(isActive) {
-            get<LiveClimbingCache>().put(location, myLocation?.distanceTo(location))
+            liveClimbingCache.put(location, myLocation?.distanceTo(location))
 //        get<ClimbingSaveHelper>().savePoint(location, myLocation?.distanceTo(location))
 
             // Notify anyone listening for broadcasts about the new location.
@@ -168,7 +171,7 @@ class LocationUpdatesService : Service(), KoinComponent {
 
         val notiTitle = if(isActive) {
             getString(R.string.noti_title_climbing,
-                get<LiveClimbingCache>().getRecord().mountainName
+                liveClimbingCache.getRecord().mountainName
             )
         } else {
             getString(R.string.noti_title_resting)
