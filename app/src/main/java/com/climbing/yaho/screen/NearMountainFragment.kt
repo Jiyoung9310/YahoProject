@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.climbing.yaho.R
@@ -15,11 +16,12 @@ import com.climbing.yaho.screen.ReadyActivity.Companion.KEY_SELECT_MOUNTAIN
 import com.climbing.yaho.screen.ReadyActivity.Companion.SCREEN_SELECT_MOUNTAIN
 import com.climbing.yaho.ui.NearMountainAdapter
 import com.climbing.yaho.viewmodel.ReadyViewModel
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NearMountainFragment: BindingFragment<FragmentNearMountainBinding>(FragmentNearMountainBinding::inflate) {
 
-    private val viewModel : ReadyViewModel by sharedViewModel()
+    private val viewModel : ReadyViewModel by activityViewModels()
     private lateinit var nearMountainAdapter: NearMountainAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

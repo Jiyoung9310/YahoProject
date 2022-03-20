@@ -3,6 +3,7 @@ package com.climbing.yaho.screen
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import com.climbing.yaho.R
 import com.climbing.yaho.base.BindingFragment
 import com.climbing.yaho.data.MountainData
@@ -17,12 +18,13 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ReadyToStartFragment: BindingFragment<FragmentReadyToStartBinding>(FragmentReadyToStartBinding::inflate),
     OnMapReadyCallback {
 
-    private val viewModel: ReadyViewModel by sharedViewModel()
+    private val viewModel: ReadyViewModel by activityViewModels()
     private lateinit var mountainData : MountainData
     private var naverMap: NaverMap? = null
 

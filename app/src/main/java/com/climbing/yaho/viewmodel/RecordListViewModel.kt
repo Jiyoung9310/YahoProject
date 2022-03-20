@@ -1,28 +1,29 @@
 package com.climbing.yaho.viewmodel
 
-import android.icu.text.AlphabeticIndex
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.climbing.yaho.R
 import com.climbing.yaho.*
 import com.climbing.yaho.di.ContextDelegate
 import com.climbing.yaho.repository.ClimbingRepository
-import com.climbing.yaho.ui.RecordListAdapter
-import com.climbing.yaho.ui.UIItem
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RecordListViewModel(private val contextDelegate: ContextDelegate,
-                          private val repo: ClimbingRepository) : ViewModel() {
+@HiltViewModel
+class RecordListViewModel @Inject constructor(
+    private val contextDelegate: ContextDelegate,
+    private val repo: ClimbingRepository
+) : ViewModel() {
 
     private val _recordList = MutableLiveData<List<RecordItem>>()
-    val recordList : LiveData<List<RecordItem>> get() = _recordList
+    val recordList: LiveData<List<RecordItem>> get() = _recordList
 
     private val _recordHeaderDateList = MutableLiveData<Array<String>>()
-    val recordHeaderDateList : LiveData<Array<String>> get() = _recordHeaderDateList
+    val recordHeaderDateList: LiveData<Array<String>> get() = _recordHeaderDateList
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
@@ -94,11 +95,11 @@ sealed class RecordItem(open val headerDate: String) {
     ) : RecordItem(headerDate)
 
     data class RecordUseCase(
-        val recordId : String,
-        override val headerDate : String,
-        val recordDate : String,
-        val mountainName : String,
-        val runningTime : String,
-        val distance : String,
+        val recordId: String,
+        override val headerDate: String,
+        val recordDate: String,
+        val mountainName: String,
+        val runningTime: String,
+        val distance: String,
     ) : RecordItem(headerDate)
 }

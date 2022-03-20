@@ -2,16 +2,18 @@ package com.climbing.yaho.screen
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import com.climbing.yaho.R
 import com.climbing.yaho.base.BindingFragment
 import com.climbing.yaho.data.MountainData
 import com.climbing.yaho.databinding.FragmentCountdownBinding
 import com.climbing.yaho.viewmodel.ReadyViewModel
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CountDownFragment : BindingFragment<FragmentCountdownBinding>(FragmentCountdownBinding::inflate) {
 
-    private val viewModel: ReadyViewModel by sharedViewModel()
+    private val viewModel: ReadyViewModel by activityViewModels()
     private lateinit var mountainData : MountainData
     private val countRes = arrayOf(R.drawable.ic_one, R.drawable.ic_two, R.drawable.ic_three)
 

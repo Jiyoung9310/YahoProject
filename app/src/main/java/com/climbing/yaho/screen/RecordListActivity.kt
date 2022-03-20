@@ -2,13 +2,15 @@ package com.climbing.yaho.screen
 
 import android.os.Bundle
 import android.util.DisplayMetrics
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.climbing.yaho.databinding.ActivityRecordListBinding
 import com.climbing.yaho.BuildConfig
 import com.climbing.yaho.R
 import com.climbing.yaho.base.BindingActivity
+import com.climbing.yaho.databinding.ActivityRecordListBinding
 import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.screen.ClimbingDetailActivity.Companion.startClimbingDetailActivity
 import com.climbing.yaho.ui.RecordListAdapter
@@ -17,14 +19,15 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinComponent
-import androidx.core.view.isVisible
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRecordListBinding::inflate), KoinComponent {
+@AndroidEntryPoint
+class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRecordListBinding::inflate) {
 
-    private val viewModel by viewModel<RecordListViewModel>()
+    @Inject
+    lateinit var yahoPreference: YahoPreference
+    private val viewModel by viewModels<RecordListViewModel>()
     private lateinit var recordListAdapter : RecordListAdapter
     private var recordHeaderList : Array<String>? = null
     private var selectedDate : Int = 0
@@ -37,7 +40,7 @@ class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRe
     }
 
     private fun initView() {
-        loadAdmob(get<YahoPreference>().isSubscribing)
+        loadAdmob(yahoPreference.isSubscribing)
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }

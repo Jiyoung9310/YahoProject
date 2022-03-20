@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,13 +30,15 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate), KoinComponent {
+@AndroidEntryPoint
+class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate) {
 
-    private val viewModel by viewModel<HomeViewModel>()
+    @Inject
+    lateinit var yahoPreference: YahoPreference
+    private val viewModel by viewModels<HomeViewModel>()
     private lateinit var menuAdapter: HomeMenuAdapter
     private lateinit var bm: BillingModule
     private var skuDetails = listOf<SkuDetails>()
@@ -114,7 +117,7 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
                 HomeMenuAdapter.VIEW_TYPE_MY_CLIMBS,
                 HomeMenuAdapter.VIEW_TYPE_REMOVE_ADS_DONE
             )
-            get<YahoPreference>().isSubscribing = true
+            yahoPreference.isSubscribing = true
         } ?: also {
 //            binding.tvSubscription.text = "구독안함"
             menuAdapter.menuList = mutableListOf(
@@ -122,14 +125,14 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
                 HomeMenuAdapter.VIEW_TYPE_MY_CLIMBS,
                 HomeMenuAdapter.VIEW_TYPE_REMOVE_ADS
             )
-            get<YahoPreference>().isSubscribing = false
+            yahoPreference.isSubscribing = false
         }
 
-        binding.adContainer.isVisible = !(get<YahoPreference>().isSubscribing)
+        binding.adContainer.isVisible = !(yahoPreference.isSubscribing)
     }
 
     private fun initView() {
-        loadAdmob(get<YahoPreference>().isSubscribing)
+        loadAdmob(yahoPreference.isSubscribing)
         menuAdapter = HomeMenuAdapter(
             startClimbingClickAction = {
                 // 등산 기록하기 화면으로 이동
