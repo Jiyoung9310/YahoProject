@@ -1,16 +1,11 @@
 package com.climbing.yaho.screen
 
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
@@ -20,10 +15,8 @@ import com.climbing.yaho.base.BindingActivity
 import com.climbing.yaho.billing.BillingModule
 import com.climbing.yaho.billing.Sku
 import com.climbing.yaho.databinding.ActivityHomeBinding
-import com.climbing.yaho.dp
 import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.meter
-import com.climbing.yaho.ui.HomeMenuAdapter
 import com.climbing.yaho.viewmodel.HomeViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -36,7 +29,7 @@ import org.koin.core.component.get
 class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate), KoinComponent {
 
     private val viewModel by viewModel<HomeViewModel>()
-    private lateinit var menuAdapter: HomeMenuAdapter
+
     private lateinit var bm: BillingModule
     private var skuDetails = listOf<SkuDetails>()
         set(value) {
@@ -109,19 +102,9 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     private fun updateSubscriptionState() {
         currentSubscription?.let {
 //            binding.tvSubscription.text = "구독중: ${it.sku} | 자동갱신: ${it.isAutoRenewing}"
-            menuAdapter.menuList = mutableListOf(
-                HomeMenuAdapter.VIEW_TYPE_START_CLIMBING,
-                HomeMenuAdapter.VIEW_TYPE_MY_CLIMBS,
-                HomeMenuAdapter.VIEW_TYPE_REMOVE_ADS_DONE
-            )
             get<YahoPreference>().isSubscribing = true
         } ?: also {
 //            binding.tvSubscription.text = "구독안함"
-            menuAdapter.menuList = mutableListOf(
-                HomeMenuAdapter.VIEW_TYPE_START_CLIMBING,
-                HomeMenuAdapter.VIEW_TYPE_MY_CLIMBS,
-                HomeMenuAdapter.VIEW_TYPE_REMOVE_ADS
-            )
             get<YahoPreference>().isSubscribing = false
         }
 
