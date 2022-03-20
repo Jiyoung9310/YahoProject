@@ -19,14 +19,39 @@
         app:layout_constraintStart_toStartOf="parent"
         />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvNearMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="2dp"
+        android:text="@string/ready_near_mountain_message"
+        android:textColor="@color/gray_800"
+        android:textSize="12sp"
+        app:layout_constraintTop_toBottomOf="@id/tvNearTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btnNearMountainLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dp"
         android:src="@drawable/ic_location_btn"
-        app:layout_constraintBottom_toBottomOf="@id/tvNearTitle"
+        app:layout_constraintTop_toTopOf="@id/tvNearMessage"
+        app:layout_constraintBottom_toBottomOf="@id/tvNearMessage"
         app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivOutline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_outline_location"
+        app:layout_constraintTop_toTopOf="@id/btnNearMountainLocation"
+        app:layout_constraintStart_toStartOf="@id/btnNearMountainLocation"
+        app:layout_constraintEnd_toEndOf="@id/btnNearMountainLocation"
+        app:layout_constraintBottom_toBottomOf="@id/btnNearMountainLocation"
         />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
