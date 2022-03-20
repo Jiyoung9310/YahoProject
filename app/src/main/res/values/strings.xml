@@ -29,9 +29,9 @@
         \n\n실시간 등산 기록 기능이 활성화된 경우,\n앱이 닫혀있어도 백그라운드에서 사용자의 위치 정보를 수집합니다.\n수집된 위치 정보는 오직 등산 기록을 표시하기 위해서만 사용됩니다.</string>
     <string name="dialog_app_location_confirm_btn">동의하고 시작하기</string>
 
-    <string name="home_menu_start_climbing">오늘의 등산</string>
+    <string name="home_menu_start_climbing">바로 등산하기</string>
     <string name="home_menu_my_climbs">나의 등산 기록</string>
-    <string name="home_menu_remove_ads">거슬리는 광고</string>
+    <string name="home_menu_remove_ads"><u>계속 뜨는 광고가 거슬리시나요?</u></string>
     <string name="home_menu_btn_go_my_climbs">보러가기</string>
     <string name="home_menu_btn_remove_ads">제거하기</string>
     <string name="home_menu_btn_remove_ads_done">제거완료</string>
