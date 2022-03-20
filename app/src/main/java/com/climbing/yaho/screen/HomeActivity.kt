@@ -1,17 +1,12 @@
 package com.climbing.yaho.screen
 
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
@@ -21,10 +16,8 @@ import com.climbing.yaho.base.BindingActivity
 import com.climbing.yaho.billing.BillingModule
 import com.climbing.yaho.billing.Sku
 import com.climbing.yaho.databinding.ActivityHomeBinding
-import com.climbing.yaho.dp
 import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.meter
-import com.climbing.yaho.ui.HomeMenuAdapter
 import com.climbing.yaho.viewmodel.HomeViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -39,7 +32,6 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     @Inject
     lateinit var yahoPreference: YahoPreference
     private val viewModel by viewModels<HomeViewModel>()
-    private lateinit var menuAdapter: HomeMenuAdapter
     private lateinit var bm: BillingModule
     private var skuDetails = listOf<SkuDetails>()
         set(value) {
@@ -112,19 +104,9 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     private fun updateSubscriptionState() {
         currentSubscription?.let {
 //            binding.tvSubscription.text = "구독중: ${it.sku} | 자동갱신: ${it.isAutoRenewing}"
-            menuAdapter.menuList = mutableListOf(
-                HomeMenuAdapter.VIEW_TYPE_START_CLIMBING,
-                HomeMenuAdapter.VIEW_TYPE_MY_CLIMBS,
-                HomeMenuAdapter.VIEW_TYPE_REMOVE_ADS_DONE
-            )
             yahoPreference.isSubscribing = true
         } ?: also {
 //            binding.tvSubscription.text = "구독안함"
-            menuAdapter.menuList = mutableListOf(
-                HomeMenuAdapter.VIEW_TYPE_START_CLIMBING,
-                HomeMenuAdapter.VIEW_TYPE_MY_CLIMBS,
-                HomeMenuAdapter.VIEW_TYPE_REMOVE_ADS
-            )
             yahoPreference.isSubscribing = false
         }
 
@@ -133,64 +115,21 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
 
     private fun initView() {
         loadAdmob(yahoPreference.isSubscribing)
-        menuAdapter = HomeMenuAdapter(
-            startClimbingClickAction = {
-                // 등산 기록하기 화면으로 이동
-                startActivity(Intent(this@HomeActivity, ReadyActivity::class.java))
-            },
-            myClimbsClickAction = {
-                // 등산 기록 확인하기 화면으로 이동
-//                    startClimbingDetailActivity(this@HomeActivity, "1621395171715")
+
+        binding.apply {
+            btnRecords.setOnClickListener {
                 startActivity(Intent(this@HomeActivity, RecordListActivity::class.java))
-            },
-            removeAdsClickAction = {
-                // 광고 제거 결제 화면으로 이동
+            }
+            btnStart.setOnClickListener {
+                startActivity(Intent(this@HomeActivity, ReadyActivity::class.java))
+            }
+            btnRemoveAds.setOnClickListener {
                 skuDetails.find { it.sku == Sku.REMOVE_ADS }?.let { skuDetail ->
                     bm.purchase(skuDetail, currentSubscription)
                 } ?: also {
                     Toast.makeText(applicationContext, "상품을 찾을 수 없습니다.", Toast.LENGTH_LONG).show()
                 }
             }
-        )
-
-        binding.rvMenu.apply {
-            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            adapter = menuAdapter
-            addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    super.getItemOffsets(outRect, view, parent, state)
-                    outRect.left = 12.dp
-                    outRect.right = 12.dp
-
-                    view.layoutParams.width = (parent.width * 0.8).toInt()
-                }
-            })
-            addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    super.getItemOffsets(outRect, view, parent, state)
-
-                    val offset = 20.dp
-                    val itemCount = state.itemCount
-                    val childPosition = parent.getChildAdapterPosition(view)
-                    if(childPosition == 0) {
-                        outRect.left = offset
-                    } else if (childPosition == itemCount - 1) {
-                        outRect.right = offset
-                    }
-                }
-            })
-
-            if (onFlingListener == null) PagerSnapHelper().attachToRecyclerView(this)
         }
 
 

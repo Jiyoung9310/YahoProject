@@ -29,3 +29,5 @@ private/release.properties
 upload-keystore.jks
 
 upload_certificate.pem
+
+.idea/

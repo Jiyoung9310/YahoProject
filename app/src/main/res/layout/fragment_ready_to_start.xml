@@ -28,6 +28,17 @@
         app:layout_constraintBottom_toBottomOf="@id/tvNearTitle"
         app:layout_constraintEnd_toEndOf="parent"
         />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivOutline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_outline_location"
+        app:layout_constraintTop_toTopOf="@id/btnMyLocation"
+        app:layout_constraintStart_toStartOf="@id/btnMyLocation"
+        app:layout_constraintEnd_toEndOf="@id/btnMyLocation"
+        app:layout_constraintBottom_toBottomOf="@id/btnMyLocation"
+        />
     
     <com.naver.maps.map.MapView
         android:id="@+id/mapView"
@@ -66,4 +77,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivOutline2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_outline_start_yaho"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="@id/btnGo"
+        app:layout_constraintBottom_toBottomOf="@id/btnGo"
+        app:layout_constraintStart_toStartOf="@id/btnGo"
+        app:layout_constraintEnd_toEndOf="@id/btnGo"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

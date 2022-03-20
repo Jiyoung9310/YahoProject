@@ -111,7 +111,7 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
 
     private fun initObserve() {
         viewModel.saveResult.observe(this) {
-            Toast.makeText(this, getString(R.string.climbing_save_done), Toast.LENGTH_LONG).show()
+//            Toast.makeText(this, getString(R.string.climbing_save_done), Toast.LENGTH_LONG).show()
         }
 
         viewModel.goToDetail.observe(this) {

@@ -29,20 +29,23 @@
         \n\n실시간 등산 기록 기능이 활성화된 경우,\n앱이 닫혀있어도 백그라운드에서 사용자의 위치 정보를 수집합니다.\n수집된 위치 정보는 오직 등산 기록을 표시하기 위해서만 사용됩니다.</string>
     <string name="dialog_app_location_confirm_btn">동의하고 시작하기</string>
 
-    <string name="home_menu_start_climbing">오늘의 등산</string>
+    <string name="home_menu_start_climbing">바로 등산하기</string>
     <string name="home_menu_my_climbs">나의 등산 기록</string>
-    <string name="home_menu_remove_ads">거슬리는 광고</string>
+    <string name="home_menu_remove_ads"><u>계속 뜨는 광고가 거슬리시나요?</u></string>
     <string name="home_menu_btn_go_my_climbs">보러가기</string>
     <string name="home_menu_btn_remove_ads">제거하기</string>
     <string name="home_menu_btn_remove_ads_done">제거완료</string>
 
     <!--ready-->
     <string name="ready_near_mountain_title">지금 어떤 산을\n오르시나요?</string>
+    <string name="ready_near_mountain_message">주변에 이런 산들이 있어요.</string>
     <string name="ready_near_mountain_height">정상까지 높이</string>
     <string name="ready_near_level">난이도</string>
     <string name="ready_to_start_title">%s 정복을\n시작합니다!</string>
     <string name="ready_near_mountain_not_found">근처에 오를 산이 없어요ㅠㅠ</string>
-
+    <string name="count_down_mountain_name">오늘 정복할 산은</string>
+    <string name="count_down_mountain_visit_count">나의 도전</string>
+    <string name="count_down_warning_message">앱을 강제 종료하면 기록이 날아가요.</string>
     <string name="permission_denied_explanation">권한이 거부되었지만 핵심 기능에 필요합니다.</string>
     <string name="settings">Settings</string>
     <string name="launch_activity">화면에서 보기</string>
@@ -58,7 +61,7 @@
     <string name="live_climbing_rest_title">동안 쉬는 중</string>
     <string name="dialog_climbing_done_title">즐거운 등산 되셨나요?</string>
     <string name="dialog_climbing_done_message">오늘 하루 건강을 위해\n%s 투자했어요!</string>
-    <string name="dialog_climbing_done_cancel">아직 더 내려가야해요.</string>
+    <string name="dialog_climbing_done_cancel"><u>아직 더 내려가야해요.</u></string>
 
     <!--climbing done-->
     <string name="dialog_save_need_connect_network">등산 기록을 저장합니다.\n네트워크 연결 상태를 확인해주세요</string>

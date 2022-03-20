@@ -56,6 +56,18 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivOutline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_outline_goal"
+            android:scaleType="fitXY"
+            app:layout_constraintTop_toTopOf="@id/btnGoal"
+            app:layout_constraintStart_toStartOf="@id/btnGoal"
+            app:layout_constraintEnd_toEndOf="@id/btnGoal"
+            app:layout_constraintBottom_toBottomOf="@id/btnGoal"
+            />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btnCancel"
             android:layout_width="wrap_content"
