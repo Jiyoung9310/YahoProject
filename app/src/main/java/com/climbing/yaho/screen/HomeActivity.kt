@@ -130,64 +130,21 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
 
     private fun initView() {
         loadAdmob(get<YahoPreference>().isSubscribing)
-        menuAdapter = HomeMenuAdapter(
-            startClimbingClickAction = {
-                // 등산 기록하기 화면으로 이동
-                startActivity(Intent(this@HomeActivity, ReadyActivity::class.java))
-            },
-            myClimbsClickAction = {
-                // 등산 기록 확인하기 화면으로 이동
-//                    startClimbingDetailActivity(this@HomeActivity, "1621395171715")
+
+        binding.apply {
+            btnRecords.setOnClickListener {
                 startActivity(Intent(this@HomeActivity, RecordListActivity::class.java))
-            },
-            removeAdsClickAction = {
-                // 광고 제거 결제 화면으로 이동
+            }
+            btnStart.setOnClickListener {
+                startActivity(Intent(this@HomeActivity, ReadyActivity::class.java))
+            }
+            btnRemoveAds.setOnClickListener {
                 skuDetails.find { it.sku == Sku.REMOVE_ADS }?.let { skuDetail ->
                     bm.purchase(skuDetail, currentSubscription)
                 } ?: also {
                     Toast.makeText(applicationContext, "상품을 찾을 수 없습니다.", Toast.LENGTH_LONG).show()
                 }
             }
-        )
-
-        binding.rvMenu.apply {
-            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            adapter = menuAdapter
-            addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    super.getItemOffsets(outRect, view, parent, state)
-                    outRect.left = 12.dp
-                    outRect.right = 12.dp
-
-                    view.layoutParams.width = (parent.width * 0.8).toInt()
-                }
-            })
-            addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    super.getItemOffsets(outRect, view, parent, state)
-
-                    val offset = 20.dp
-                    val itemCount = state.itemCount
-                    val childPosition = parent.getChildAdapterPosition(view)
-                    if(childPosition == 0) {
-                        outRect.left = offset
-                    } else if (childPosition == itemCount - 1) {
-                        outRect.right = offset
-                    }
-                }
-            })
-
-            if (onFlingListener == null) PagerSnapHelper().attachToRecyclerView(this)
         }
 
 
