@@ -36,7 +36,6 @@ class ClimbingDoneViewModel(private val repo: ClimbingRepository,
     private val climbingId = System.currentTimeMillis().toString()
 
     fun saveClimbData() {
-        // TODO : network 연결 아닌 상태인 케이스 처리 추가 필요
         viewModelScope.launch {
             repo.postClimbingData(climbingId)
                 .catch { e:Throwable -> _error.value = e }

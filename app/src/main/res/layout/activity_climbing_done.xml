@@ -27,6 +27,34 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
+
+    <ProgressBar
+        android:id="@+id/progressCircular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:indeterminateTint="@color/main_green_500"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvWarningMessage"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvWarningMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="35dp"
+        android:paddingEnd="35dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:layout_marginBottom="24dp"
+        android:text="@string/count_down_warning_message"
+        android:textColor="@color/gray_900"
+        android:background="@drawable/bg_count_down_warning_message"
+        app:layout_constraintBottom_toTopOf="@id/adContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
     
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/adContainer"
