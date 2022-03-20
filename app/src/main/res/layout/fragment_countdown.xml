@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="90dp"
-        android:text="@string/home_all_height_title"
+        android:text="@string/count_down_mountain_name"
         android:textSize="14sp"
         android:textColor="@color/gray_900"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +29,7 @@
         android:textColor="@color/gray_900"
         app:layout_constraintTop_toBottomOf="@id/tvTodayMountain"
         app:layout_constraintStart_toStartOf="@id/tvTodayMountain"
-        tools:text="2023km"
+        tools:text="광교산"
         />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="27dp"
-        android:text="@string/home_all_climb_count"
+        android:text="@string/count_down_mountain_visit_count"
         android:textSize="14sp"
         android:textColor="@color/gray_900"
         app:layout_constraintTop_toBottomOf="@id/tvMountainName"
@@ -65,6 +65,23 @@
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="132dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvWarningMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="35dp"
+        android:paddingEnd="35dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:layout_marginBottom="24dp"
+        android:text="@string/count_down_warning_message"
+        android:textColor="@color/gray_900"
+        android:background="@drawable/bg_count_down_warning_message"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
