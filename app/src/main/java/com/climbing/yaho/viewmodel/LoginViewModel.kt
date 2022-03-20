@@ -6,12 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.climbing.yaho.repository.LoginRepository
 import com.climbing.yaho.repository.LoginResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel(private val repo : LoginRepository) : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val repo : LoginRepository
+) : ViewModel() {
 
     private val _goToHome = MutableLiveData<Unit>()
     val goToHome: LiveData<Unit> get() = _goToHome

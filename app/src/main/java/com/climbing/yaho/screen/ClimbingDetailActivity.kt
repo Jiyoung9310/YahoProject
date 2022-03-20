@@ -8,12 +8,12 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.climbing.yaho.BuildConfig
 import com.climbing.yaho.R
-import com.climbing.yaho.YahoApplication
 import com.climbing.yaho.base.BindingActivity
 import com.climbing.yaho.databinding.ActivityClimbingDetailBinding
 import com.climbing.yaho.local.YahoPreference
@@ -31,12 +31,12 @@ import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(ActivityClimbingDetailBinding::inflate),
-    OnMapReadyCallback, KoinComponent {
+    OnMapReadyCallback {
     private val TAG = this::class.java.simpleName
     companion object {
         const val KEY_CLIMBING_DATA_ID = "KEY_CLIMBING_DATA_ID"
@@ -54,7 +54,9 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
         }
     }
 
-    private val viewModel by viewModel<ClimbingDetailViewModel>()
+    @Inject
+    lateinit var yahoPreference: YahoPreference
+    private val viewModel by viewModels<ClimbingDetailViewModel>()
     private var naverMap : NaverMap? = null
     private lateinit var climbingDetailSectionAdapter : ClimbingDetailSectionAdapter
     private val pathOverlay: PathOverlay by lazy { PathOverlay() }
@@ -70,7 +72,7 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
     }
 
     private fun initView() {
-        loadAdmob(get<YahoPreference>().isSubscribing)
+        loadAdmob(yahoPreference.isSubscribing)
         intent.hasExtra(KEY_SHOW_MOUNTAIN_NAME).let {
             binding.toolbarTitle.isVisible = it
             binding.btnDelete.isVisible = it

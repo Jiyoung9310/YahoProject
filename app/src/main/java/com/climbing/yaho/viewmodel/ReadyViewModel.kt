@@ -15,14 +15,17 @@ import com.climbing.yaho.local.cache.MountainListCache
 import com.climbing.yaho.repository.ClimbingRepository
 import com.climbing.yaho.screen.ClimbingActivity
 import com.climbing.yaho.screen.ReadyActivity
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlin.math.abs
 
-class ReadyViewModel(
+@HiltViewModel
+class ReadyViewModel @Inject constructor(
     private val contextDelegate: ContextDelegate,
     private val mountainCache: MountainListCache,
     private val repo: ClimbingRepository,

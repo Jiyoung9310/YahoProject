@@ -8,13 +8,16 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import javax.inject.Inject
 
 
 interface MountainRepository {
     fun getMountainList() : Flow<List<MountainData>>
 }
 
-class MountainRepositoryImpl(private val firestoreDB: FirebaseFirestore) : MountainRepository {
+class MountainRepositoryImpl @Inject constructor(
+    private val firestoreDB: FirebaseFirestore
+) : MountainRepository {
     @ExperimentalCoroutinesApi
     override fun getMountainList(): Flow<List<MountainData>> = callbackFlow {
         var eventCollection: CollectionReference? = null

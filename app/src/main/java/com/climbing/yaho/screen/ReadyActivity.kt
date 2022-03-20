@@ -9,6 +9,7 @@ import android.provider.Settings
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.climbing.yaho.BuildConfig
@@ -24,11 +25,11 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
-import org.koin.android.ext.android.get
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinComponent
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding::inflate), KoinComponent  {
+@AndroidEntryPoint
+class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding::inflate)  {
 
     private val TAG = this::class.simpleName
 
@@ -47,7 +48,12 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
         )
     }
 
-    private val viewModel by viewModel<ReadyViewModel>()
+    @Inject
+    lateinit var liveClimbingCache: LiveClimbingCache
+    @Inject
+    lateinit var yahoPreference: YahoPreference
+
+    private val viewModel by viewModels<ReadyViewModel>()
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(this)
     }
@@ -61,9 +67,9 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
         initView()
         initObserve()
         viewModel.moveScreen(SCREEN_NEAR_MOUNTAIN)
-        
-        get<LiveClimbingCache>().clearCache()
-        get<YahoPreference>().clearSelectedMountain()
+
+        liveClimbingCache.clearCache()
+        yahoPreference.clearSelectedMountain()
 
     }
 
@@ -140,7 +146,7 @@ class ReadyActivity: BindingActivity<ActivityReadyBinding>(ActivityReadyBinding:
     }
 
     private fun initView() {
-        loadAdmob(get<YahoPreference>().isSubscribing)
+        loadAdmob(yahoPreference.isSubscribing)
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }

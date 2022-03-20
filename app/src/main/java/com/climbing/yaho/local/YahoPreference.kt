@@ -2,6 +2,7 @@ package com.climbing.yaho.local
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import javax.inject.Inject
 
 interface YahoPreference {
     var userId: String?
@@ -15,7 +16,7 @@ interface YahoPreference {
     fun clearSelectedMountain()
 }
 
-class YahoPreferenceImpl(
+class YahoPreferenceImpl @Inject constructor(
     private val preferences: SharedPreferences
 ) : YahoPreference {
     companion object {

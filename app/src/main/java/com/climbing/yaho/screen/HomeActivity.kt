@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.android.billingclient.api.BillingClient
@@ -22,14 +23,15 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate), KoinComponent {
+@AndroidEntryPoint
+class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate) {
 
-    private val viewModel by viewModel<HomeViewModel>()
-
+    @Inject
+    lateinit var yahoPreference: YahoPreference
+    private val viewModel by viewModels<HomeViewModel>()
     private lateinit var bm: BillingModule
     private var skuDetails = listOf<SkuDetails>()
         set(value) {
@@ -102,17 +104,17 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     private fun updateSubscriptionState() {
         currentSubscription?.let {
 //            binding.tvSubscription.text = "구독중: ${it.sku} | 자동갱신: ${it.isAutoRenewing}"
-            get<YahoPreference>().isSubscribing = true
+            yahoPreference.isSubscribing = true
         } ?: also {
 //            binding.tvSubscription.text = "구독안함"
-            get<YahoPreference>().isSubscribing = false
+            yahoPreference.isSubscribing = false
         }
 
-        binding.adContainer.isVisible = !(get<YahoPreference>().isSubscribing)
+        binding.adContainer.isVisible = !(yahoPreference.isSubscribing)
     }
 
     private fun initView() {
-        loadAdmob(get<YahoPreference>().isSubscribing)
+        loadAdmob(yahoPreference.isSubscribing)
 
         binding.apply {
             btnRecords.setOnClickListener {

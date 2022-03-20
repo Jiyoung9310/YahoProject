@@ -1,6 +1,5 @@
 package com.climbing.yaho.viewmodel
 
-import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,12 +8,17 @@ import com.climbing.yaho.local.cache.LiveClimbingCache
 import com.climbing.yaho.local.db.PointEntity
 import com.climbing.yaho.local.db.RecordEntity
 import com.naver.maps.geometry.LatLng
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ClimbingViewModel(private val climbingCache: LiveClimbingCache) : ViewModel() {
+@HiltViewModel
+class ClimbingViewModel @Inject constructor(
+    private val climbingCache: LiveClimbingCache
+) : ViewModel() {
 
     private var activeCount: Long = 0
     private var restCount: Long = 0
