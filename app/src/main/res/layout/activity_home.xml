@@ -13,6 +13,7 @@
         app:lottie_fileName="lottie_climbing_done.json"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
+        app:lottie_repeatMode="reverse"
         app:lottie_imageAssetsFolder="images"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
