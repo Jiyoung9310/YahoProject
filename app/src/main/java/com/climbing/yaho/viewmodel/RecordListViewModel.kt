@@ -25,6 +25,9 @@ class RecordListViewModel @Inject constructor(
     private val _recordHeaderDateList = MutableLiveData<Array<String>>()
     val recordHeaderDateList: LiveData<Array<String>> get() = _recordHeaderDateList
 
+    private val _goToRecordDetail = MutableLiveData<Pair<String, String>>()
+    val goToRecordDetail : LiveData<Pair<String, String>> get() = _goToRecordDetail
+
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
@@ -82,6 +85,10 @@ class RecordListViewModel @Inject constructor(
             }
             _recordList.value = newList
         }
+    }
+
+    fun onClickRecordDetail(id: String, name: String) {
+        _goToRecordDetail.value = id to name
     }
 }
 
