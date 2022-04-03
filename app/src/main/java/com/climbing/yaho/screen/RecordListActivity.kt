@@ -138,6 +138,7 @@ class RecordListActivity : BindingActivity<ActivityRecordListBinding>(ActivityRe
                 // don't show the ad a second time.
                 mInterstitialAd = null
                 afterAd.invoke()
+                loadAdmob(yahoPreference.isSubscribing)
             }
 
             override fun onAdFailedToShowFullScreenContent(adError: AdError?) {

@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +18,7 @@ import com.climbing.yaho.billing.BillingModule
 import com.climbing.yaho.billing.Sku
 import com.climbing.yaho.databinding.ActivityHomeBinding
 import com.climbing.yaho.meter
+import com.climbing.yaho.ui.AdRemovePopup
 import com.climbing.yaho.viewmodel.HomeViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -27,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate) {
 
     private val viewModel by viewModels<HomeViewModel>()
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private lateinit var bm: BillingModule
     private var skuDetails = listOf<SkuDetails>()
         set(value) {
@@ -46,7 +50,6 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
         initBilling()
         initView()
         initObserve()
-        viewModel.getUserData()
     }
 
     override fun onResume() {
@@ -101,13 +104,22 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     }
 
     private fun initView() {
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            AdRemovePopup {
+                skuDetails.find { it.sku == Sku.REMOVE_ADS }?.let { skuDetail ->
+                    bm.purchase(skuDetail, currentSubscription)
+                } ?: also {
+                    Toast.makeText(applicationContext, "상품을 찾을 수 없습니다.", Toast.LENGTH_LONG).show()
+                }
+            }.show(supportFragmentManager, null)
+        }
 
         binding.apply {
             btnRecords.setOnClickListener {
-                startActivity(Intent(this@HomeActivity, RecordListActivity::class.java))
+                resultLauncher.launch(Intent(this@HomeActivity, RecordListActivity::class.java))
             }
             btnStart.setOnClickListener {
-                startActivity(Intent(this@HomeActivity, ReadyActivity::class.java))
+                resultLauncher.launch(Intent(this@HomeActivity, ReadyActivity::class.java))
             }
             btnRemoveAds.setOnClickListener {
                 skuDetails.find { it.sku == Sku.REMOVE_ADS }?.let { skuDetail ->
@@ -117,7 +129,6 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
                 }
             }
         }
-
 
     }
 
