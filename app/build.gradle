@@ -23,9 +23,6 @@ if (isLoadedPrivate) {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
-
     if (isLoadedPrivate) {
         signingConfigs {
             config {
@@ -36,6 +33,9 @@ android {
             }
         }
     }
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
 
     defaultConfig {
         applicationId "com.climbing.yaho"
@@ -50,6 +50,9 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            if (isLoadedPrivate) {
+                signingConfig signingConfigs.config
+            }
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
