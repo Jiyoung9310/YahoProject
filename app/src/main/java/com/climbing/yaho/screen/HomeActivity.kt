@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
-import com.climbing.yaho.BuildConfig
 import com.climbing.yaho.R
 import com.climbing.yaho.base.BindingActivity
 import com.climbing.yaho.billing.BillingModule
@@ -158,7 +157,7 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
         val adWidth = (adWidthPixels / density).toInt()
 
         adView.adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
-        adView.adUnitId = getString(if(BuildConfig.DEBUG) R.string.admob_banner_unit_id_test else R.string.admob_banner_unit_id)
+        adView.adUnitId = getString(R.string.admob_banner_unit_id)
 
 
         // Create an ad request.

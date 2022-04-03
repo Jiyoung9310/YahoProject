@@ -12,7 +12,6 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.climbing.yaho.BuildConfig
 import com.climbing.yaho.R
 import com.climbing.yaho.base.BindingActivity
 import com.climbing.yaho.databinding.ActivityClimbingDetailBinding
@@ -147,7 +146,7 @@ class ClimbingDetailActivity : BindingActivity<ActivityClimbingDetailBinding>(Ac
         val adWidth = (adWidthPixels / density).toInt()
 
         adView.adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
-        adView.adUnitId = getString(if(BuildConfig.DEBUG) R.string.admob_banner_unit_id_test else R.string.admob_banner_unit_id)
+        adView.adUnitId = getString(R.string.admob_banner_unit_id)
 
 
         // Create an ad request.

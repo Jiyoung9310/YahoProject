@@ -3,8 +3,7 @@
     <string name="naver_maps_client_id">7abca5361m</string>
     <string name="admob_app_id">ca-app-pub-6775338233067833~2342517066</string>
     <string name="admob_banner_unit_id">ca-app-pub-6775338233067833/4529696705</string>
-    <string name="admob_app_id_test">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="admob_banner_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="admob_full_screen_unit_id">ca-app-pub-6775338233067833/7735791694</string>
 
     <!--unit-->
     <string name="kilo_meter_unit">%.2fkm</string>
