@@ -2,6 +2,7 @@ package com.climbing.yaho.repository
 
 import android.util.Log
 import com.climbing.yaho.data.UserClimbingData
+import com.climbing.yaho.data.UserData
 import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.local.cache.LiveClimbingCache
 import com.climbing.yaho.local.db.RecordEntity
@@ -61,12 +62,19 @@ class ClimbingRepositoryImpl @Inject constructor(
                                     }
                                 }
                             }
-                            accessUsers.collection("total").document(uid).set(newTotalData)
+                            val newUserData = UserData(
+                                allHeight = newTotalData.allHeight,
+                                allDistance = newTotalData.allDistance,
+                                allTime = newTotalData.allTime,
+                                totalCount = newTotalData.totalCount,
+                                noAds = yahoPreference.isSubscribing
+                            )
+                            accessUsers.collection("total").document(uid).set(newUserData)
                                 .addOnSuccessListener {
-                                    Log.w("ClimbingRepository", "climbing data add : $documentReference")
+                                    Log.d("ClimbingRepository", "climbing data add : $documentReference")
                                     offer(ClimbingResult.Success)
                                 }.addOnFailureListener { e ->
-                                    Log.w("ClimbingRepository", "Error adding document", e)
+                                    Log.d("ClimbingRepository", "Error adding document", e)
                                     offer(ClimbingResult.Fail(e))
                                 }
                         }
