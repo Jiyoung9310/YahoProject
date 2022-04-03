@@ -25,6 +25,9 @@ class HomeViewModel @Inject constructor(
     private val _updateSubscriptionInfo = MutableLiveData<Boolean>()
     val updateSubscriptionInfo : LiveData<Boolean> get() = _updateSubscriptionInfo
 
+    private val _billingRemoveAds = MutableLiveData<Unit>()
+    val billingRemoveAds : LiveData<Unit> get() = _billingRemoveAds
+
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
@@ -41,6 +44,10 @@ class HomeViewModel @Inject constructor(
                     _userData.value = data
                 }
         }
+    }
+
+    fun onClickRemoveAds() {
+        _billingRemoveAds.value = Unit
     }
 
     fun updateSubscriptionState(noAds: Boolean) {

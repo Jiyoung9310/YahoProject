@@ -106,11 +106,7 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     private fun initView() {
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             AdRemovePopup {
-                skuDetails.find { it.sku == Sku.REMOVE_ADS }?.let { skuDetail ->
-                    bm.purchase(skuDetail, currentSubscription)
-                } ?: also {
-                    Toast.makeText(applicationContext, "상품을 찾을 수 없습니다.", Toast.LENGTH_LONG).show()
-                }
+                viewModel.onClickRemoveAds()
             }.show(supportFragmentManager, null)
         }
 
@@ -122,11 +118,7 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
                 resultLauncher.launch(Intent(this@HomeActivity, ReadyActivity::class.java))
             }
             btnRemoveAds.setOnClickListener {
-                skuDetails.find { it.sku == Sku.REMOVE_ADS }?.let { skuDetail ->
-                    bm.purchase(skuDetail, currentSubscription)
-                } ?: also {
-                    Toast.makeText(applicationContext, "상품을 찾을 수 없습니다.", Toast.LENGTH_LONG).show()
-                }
+                viewModel.onClickRemoveAds()
             }
         }
 
@@ -177,6 +169,14 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
 
         viewModel.updateSubscriptionInfo.observe(this) { noAds ->
             loadAdmob(noAds)
+        }
+
+        viewModel.billingRemoveAds.observe(this) {
+            skuDetails.find { it.sku == Sku.REMOVE_ADS }?.let { skuDetail ->
+                bm.purchase(skuDetail, currentSubscription)
+            } ?: also {
+                Toast.makeText(applicationContext, "상품을 찾을 수 없습니다.", Toast.LENGTH_LONG).show()
+            }
         }
     }
 }
