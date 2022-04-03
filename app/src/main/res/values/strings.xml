@@ -34,6 +34,10 @@
     <string name="home_menu_btn_go_my_climbs">보러가기</string>
     <string name="home_menu_btn_remove_ads">제거하기</string>
     <string name="home_menu_btn_remove_ads_done">제거완료</string>
+    <string name="remove_ads_popup_title">계속 뜨는 광고가\n불편하신가요?</string>
+    <string name="remove_ads_popup_sub_title">광고를 제거하고 편하게 등산하세요!</string>
+    <string name="remove_ads_popup_button">광고 제거하기</string>
+    <string name="remove_ads_popup_no_more_today"><u>오늘 더 이상 보지 않기</u></string>
 
     <!--ready-->
     <string name="ready_near_mountain_title">지금 어떤 산을\n오르시나요?</string>
