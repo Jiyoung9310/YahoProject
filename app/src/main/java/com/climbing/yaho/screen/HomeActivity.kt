@@ -101,19 +101,10 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     }
 
     private fun updateSubscriptionState() {
-        currentSubscription?.let {
-//            binding.tvSubscription.text = "구독중: ${it.sku} | 자동갱신: ${it.isAutoRenewing}"
-            yahoPreference.isSubscribing = true
-        } ?: also {
-//            binding.tvSubscription.text = "구독안함"
-            yahoPreference.isSubscribing = false
-        }
-
-        binding.adContainer.isVisible = !(yahoPreference.isSubscribing)
+        viewModel.updateSubscriptionState(currentSubscription != null)
     }
 
     private fun initView() {
-        loadAdmob(yahoPreference.isSubscribing)
 
         binding.apply {
             btnRecords.setOnClickListener {
@@ -136,6 +127,7 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
 
     private fun loadAdmob(isSubscribing: Boolean) {
         binding.adContainer.isVisible = !isSubscribing
+        binding.btnRemoveAds.isVisible = !isSubscribing
         if(isSubscribing) return
 
         MobileAds.initialize(this) { }
@@ -169,8 +161,15 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
 
     private fun initObserve() {
         viewModel.userData.observe(this) {
-            binding.tvAllHeight.text = it.allHeight.meter(this)
-            binding.tvClimbNumber.text = getString(R.string.count_unit, it.totalCount)
+            binding.apply {
+                tvAllHeight.text = it.allHeight.meter(this@HomeActivity)
+                tvClimbNumber.text = getString(R.string.count_unit, it.totalCount)
+                loadAdmob(it.noAds)
+            }
+        }
+
+        viewModel.updateSubscriptionInfo.observe(this) { noAds ->
+            loadAdmob(noAds)
         }
     }
 }
