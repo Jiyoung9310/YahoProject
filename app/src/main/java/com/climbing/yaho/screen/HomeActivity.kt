@@ -15,7 +15,6 @@ import com.climbing.yaho.base.BindingActivity
 import com.climbing.yaho.billing.BillingModule
 import com.climbing.yaho.billing.Sku
 import com.climbing.yaho.databinding.ActivityHomeBinding
-import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.meter
 import com.climbing.yaho.viewmodel.HomeViewModel
 import com.google.android.gms.ads.AdRequest
@@ -23,13 +22,10 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate) {
 
-    @Inject
-    lateinit var yahoPreference: YahoPreference
     private val viewModel by viewModels<HomeViewModel>()
     private lateinit var bm: BillingModule
     private var skuDetails = listOf<SkuDetails>()

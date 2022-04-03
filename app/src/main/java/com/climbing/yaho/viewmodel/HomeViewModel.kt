@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.climbing.yaho.data.UserData
 import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.repository.UserDataRepository
-import com.naver.maps.map.e
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -34,7 +33,7 @@ class HomeViewModel @Inject constructor(
             repo.getUserData()
                 .catch { e:Throwable -> _error.value = e }
                 .collect { data ->
-                    println("디버깅ㅇㅇㅇㅇㅇㅇㅇㅇㅇ $data")
+                    preference.isSubscribing = data.noAds
                     _userData.value = data
                 }
         }
