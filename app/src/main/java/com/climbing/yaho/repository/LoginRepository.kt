@@ -1,16 +1,17 @@
 package com.climbing.yaho.repository
 
 import android.util.Log
-import com.climbing.yaho.data.UserClimbingData
+import com.climbing.yaho.data.UserData
 import com.climbing.yaho.local.YahoPreference
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import javax.inject.Inject
 
 interface LoginRepository {
     fun getUserID(): String?
@@ -18,13 +19,19 @@ interface LoginRepository {
 }
 
 @ExperimentalCoroutinesApi
-class LoginRepositoryImpl(private val auth: FirebaseAuth,
-                          private val firestoreDB: FirebaseFirestore
-): LoginRepository, KoinComponent {
-    override fun getUserID(): String? = get<YahoPreference>().userId ?: auth.uid
+class LoginRepositoryImpl @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val firestoreDB: FirebaseFirestore,
+    private val yahoPreference: YahoPreference,
+): LoginRepository {
+    override fun getUserID(): String? {
+        val uid = yahoPreference.userId ?: auth.uid
+        Log.d("LoginRepository", "getUserID $uid")
+        return uid
+    }
 
     override suspend fun saveUserID(uid: String): Flow<LoginResult> = callbackFlow {
-        get<YahoPreference>().userId = uid
+        yahoPreference.userId = uid
 
         var eventsCollection: DocumentReference? = null
         try {
@@ -40,62 +47,23 @@ class LoginRepositoryImpl(private val auth: FirebaseAuth,
             ?.addOnSuccessListener {
                 if(it.exists()) {
                     offer(LoginResult.LoginSuccess)
-                    Log.w("LoginRepository", "LoginSuccess")
+                    Log.d("LoginRepository", "LoginSuccess")
                 } else {
-                    eventsCollection.set(UserClimbingData())
+                    eventsCollection.set(UserData())
                         .addOnSuccessListener {
                             offer(LoginResult.NewUserSignUp)
-                            Log.w("LoginRepository", "OnSuccess NewUserSignUp")
+                            Log.d("LoginRepository", "OnSuccess NewUserSignUp")
                         }
                 }
             }?.addOnFailureListener { e : Throwable ->
                 offer(LoginResult.SignUpFail(e))
                 Log.w("LoginRepository", "saveUserID error : ${e.message}")
             }
-/*
-        val subscription = eventsCollection?.collection("total")?.addSnapshotListener { snapshot, _ ->
-            if(snapshot?.documents.isNullOrEmpty()) {
-                offer(LoginResult.NoLoginData)
-                return@addSnapshotListener
-            } else {
-                offer(LoginResult.LoginSuccess)
-                Log.w("LoginRepository", "LoginSuccess")
-            }
-            try {
-                offer(LoginResult.LoginSuccess)
-                Log.w("LoginRepository", "LoginSuccess")
-            } catch (e: Throwable) {
-                offer(LoginResult.SignUpFail(e))
-                Log.w("LoginRepository", "saveUserID error : ${e.message}")
-            }
-        }*/
 
         awaitClose { (subscription as ListenerRegistration).remove() }
 
     }
 
-    /*override suspend fun updateNewUser(): Flow<LoginResult> = callbackFlow {
-        val uid = get<YahoPreference>().userId
-        if(!uid.isNullOrEmpty()) {
-            val script = firestoreDB.collection("users")
-                .document(uid)
-                .collection("total")
-                .add(UserClimbingData())
-                .addOnSuccessListener { documentReference ->
-                    Log.w("LoginRepository", "DocumentSnapshot added with ID: $documentReference")
-                    if(documentReference != null) {
-                        offer(LoginResult.NewUserSignUp)
-                    } else {
-                        offer(LoginResult.SignUpFail(Throwable("유저 Document 생성 실패")))
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Log.w("LoginRepository", "Error adding document", e)
-                    offer(LoginResult.SignUpFail(e))
-                }
-            awaitClose { (script as ListenerRegistration).remove() }
-        }
-    }*/
 }
 
 sealed class LoginResult {

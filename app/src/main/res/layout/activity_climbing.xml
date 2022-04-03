@@ -127,6 +127,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivOutline1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_outline_diary"
+            app:layout_constraintTop_toTopOf="@id/btnPause"
+            app:layout_constraintStart_toStartOf="@id/btnPause"
+            app:layout_constraintEnd_toEndOf="@id/btnPause"
+            app:layout_constraintBottom_toBottomOf="@id/btnPause"
+            />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btnClimbingDone"
             android:layout_width="0dp"
@@ -141,6 +152,17 @@
             app:layout_constraintStart_toEndOf="@id/btnPause"
             app:layout_constraintTop_toTopOf="@id/btnPause" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivOutline2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_outline_climbing_done"
+            android:scaleType="fitXY"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintBottom_toBottomOf="@id/btnClimbingDone"
+            app:layout_constraintEnd_toEndOf="@id/btnClimbingDone"
+            app:layout_constraintStart_toStartOf="@id/btnClimbingDone"
+            app:layout_constraintTop_toTopOf="@id/btnClimbingDone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

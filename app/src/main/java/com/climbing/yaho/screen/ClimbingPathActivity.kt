@@ -4,9 +4,10 @@ import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
 import android.util.DisplayMetrics
+import androidx.core.view.isVisible
 import com.climbing.yaho.R
-import com.climbing.yaho.databinding.ActivityClimbingPathBinding
 import com.climbing.yaho.base.BindingActivity
+import com.climbing.yaho.databinding.ActivityClimbingPathBinding
 import com.climbing.yaho.local.YahoPreference
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -18,18 +19,19 @@ import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import androidx.core.view.isVisible
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(ActivityClimbingPathBinding::inflate),
-    OnMapReadyCallback, KoinComponent {
+    OnMapReadyCallback {
 
     companion object {
         const val KEY_PATH_LIST = "KEY_PATH_LIST"
         const val KEY_SECTION_MARK_LIST = "KEY_SECTION_MARK_LIST"
     }
-
+    @Inject
+    lateinit var yahoPreference: YahoPreference
     private var naverMap: NaverMap? = null
     private val pathOverlay: PathOverlay by lazy { PathOverlay() }
 
@@ -51,7 +53,7 @@ class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(Activi
     }
 
     private fun initView() {
-        loadAdmob(get<YahoPreference>().isSubscribing)
+        loadAdmob(yahoPreference.isSubscribing)
         binding.btnClose.setOnClickListener {
             finish()
         }
@@ -141,7 +143,7 @@ class ClimbingPathActivity : BindingActivity<ActivityClimbingPathBinding>(Activi
         val adWidth = (adWidthPixels / density).toInt()
 
         adView.adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
-        adView.adUnitId = getString(if(BuildConfig.DEBUG) R.string.admob_banner_unit_id_test else R.string.admob_banner_unit_id)
+        adView.adUnitId = getString(R.string.admob_banner_unit_id)
 
 
         // Create an ad request.

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/adRemovePopup"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="24dp"
+    android:background="@drawable/bg_ad_remove_popup_round"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:behavior_peekHeight="0dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_close"
+        app:tint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPopupTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remove_ads_popup_title"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:layout_marginTop="40dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPopupSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:text="@string/remove_ads_popup_sub_title"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/tvPopupTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/btnRemoveAds"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/bg_remove_ad_popup_btn"
+        android:gravity="center"
+        android:text="@string/remove_ads_popup_button"
+        android:textColor="@color/gray_900"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPopupSubtitle" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivOutline1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_outline_climbing_done"
+        app:tint="@color/gray_900"
+        android:scaleType="fitXY"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="@id/btnRemoveAds"
+        app:layout_constraintEnd_toEndOf="@id/btnRemoveAds"
+        app:layout_constraintStart_toStartOf="@id/btnRemoveAds"
+        app:layout_constraintTop_toTopOf="@id/btnRemoveAds" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/btnNoMoreToday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/remove_ads_popup_no_more_today"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/btnRemoveAds"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

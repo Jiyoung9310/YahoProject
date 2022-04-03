@@ -7,7 +7,8 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
-import com.climbing.yaho.BuildConfig
+import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.climbing.yaho.R
 import com.climbing.yaho.base.BindingActivity
 import com.climbing.yaho.databinding.ActivityClimbingDoneBinding
@@ -18,17 +19,18 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import androidx.core.view.isVisible
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
     ActivityClimbingDoneBinding::inflate
-), KoinComponent {
+) {
     private val TAG = this::class.java.simpleName
 
-    private val viewModel by viewModel<ClimbingDoneViewModel>()
+    @Inject
+    lateinit var yahoPreference: YahoPreference
+    private val viewModel by viewModels<ClimbingDoneViewModel>()
     private lateinit var connectivityManager : ConnectivityManager
     private var dialog : ClimbingSaveDialog? = null
 
@@ -43,7 +45,7 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
         initObserve()
     }
     private fun initView() {
-        loadAdmob(get<YahoPreference>().isSubscribing)
+        loadAdmob(yahoPreference.isSubscribing)
         connectivityManager.registerDefaultNetworkCallback(object :
             ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
@@ -96,7 +98,7 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
         val adWidth = (adWidthPixels / density).toInt()
 
         adView.adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
-        adView.adUnitId = getString(if(BuildConfig.DEBUG) R.string.admob_banner_unit_id_test else R.string.admob_banner_unit_id)
+        adView.adUnitId = getString(R.string.admob_banner_unit_id)
 
 
         // Create an ad request.
@@ -108,7 +110,7 @@ class ClimbingDoneActivity : BindingActivity<ActivityClimbingDoneBinding>(
 
     private fun initObserve() {
         viewModel.saveResult.observe(this) {
-            Toast.makeText(this, getString(R.string.climbing_save_done), Toast.LENGTH_LONG).show()
+//            Toast.makeText(this, getString(R.string.climbing_save_done), Toast.LENGTH_LONG).show()
         }
 
         viewModel.goToDetail.observe(this) {

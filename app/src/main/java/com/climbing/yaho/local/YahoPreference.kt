@@ -2,6 +2,7 @@ package com.climbing.yaho.local
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import javax.inject.Inject
 
 interface YahoPreference {
     var userId: String?
@@ -12,10 +13,11 @@ interface YahoPreference {
     var isActive: Boolean
     var isSubscribing: Boolean
     var isConfirm: Boolean
+    var noMoreAdsPopupToday: Long
     fun clearSelectedMountain()
 }
 
-class YahoPreferenceImpl(
+class YahoPreferenceImpl @Inject constructor(
     private val preferences: SharedPreferences
 ) : YahoPreference {
     companion object {
@@ -27,6 +29,7 @@ class YahoPreferenceImpl(
         private const val KEY_IS_ACTIVE = "is_active"
         private const val KEY_IS_SUBSCRIBING = "is_subscribing"
         private const val KEY_IS_CONFIRM = "is_confirm"
+        private const val KEY_NO_MORE_ADS_POPUP_TODAY = "no_more_ads_popup_today"
     }
 
     override var userId: String?
@@ -54,6 +57,10 @@ class YahoPreferenceImpl(
     override var isConfirm: Boolean
         get() = preferences.getBoolean(KEY_IS_CONFIRM, false)
         set(value) { preferences.edit { putBoolean(KEY_IS_CONFIRM, value) }}
+
+    override var noMoreAdsPopupToday: Long
+        get() = preferences.getLong(KEY_NO_MORE_ADS_POPUP_TODAY, 0)
+        set(value) { preferences.edit { putLong(KEY_NO_MORE_ADS_POPUP_TODAY, value) }}
 
     override fun clearSelectedMountain() {
         selectedMountainId = 0

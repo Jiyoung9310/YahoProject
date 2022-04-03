@@ -1,42 +1,36 @@
 package com.climbing.yaho.screen
 
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
-import com.climbing.yaho.BuildConfig
 import com.climbing.yaho.R
 import com.climbing.yaho.base.BindingActivity
 import com.climbing.yaho.billing.BillingModule
 import com.climbing.yaho.billing.Sku
 import com.climbing.yaho.databinding.ActivityHomeBinding
-import com.climbing.yaho.dp
-import com.climbing.yaho.local.YahoPreference
 import com.climbing.yaho.meter
-import com.climbing.yaho.ui.HomeMenuAdapter
+import com.climbing.yaho.ui.AdRemovePopup
 import com.climbing.yaho.viewmodel.HomeViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import dagger.hilt.android.AndroidEntryPoint
 
-class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate), KoinComponent {
+@AndroidEntryPoint
+class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate) {
 
-    private val viewModel by viewModel<HomeViewModel>()
-    private lateinit var menuAdapter: HomeMenuAdapter
+    private val viewModel by viewModels<HomeViewModel>()
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private lateinit var bm: BillingModule
     private var skuDetails = listOf<SkuDetails>()
         set(value) {
@@ -56,7 +50,6 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
         initBilling()
         initView()
         initObserve()
-        viewModel.getUserData()
     }
 
     override fun onResume() {
@@ -107,94 +100,33 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     }
 
     private fun updateSubscriptionState() {
-        currentSubscription?.let {
-//            binding.tvSubscription.text = "구독중: ${it.sku} | 자동갱신: ${it.isAutoRenewing}"
-            menuAdapter.menuList = mutableListOf(
-                HomeMenuAdapter.VIEW_TYPE_START_CLIMBING,
-                HomeMenuAdapter.VIEW_TYPE_MY_CLIMBS,
-                HomeMenuAdapter.VIEW_TYPE_REMOVE_ADS_DONE
-            )
-            get<YahoPreference>().isSubscribing = true
-        } ?: also {
-//            binding.tvSubscription.text = "구독안함"
-            menuAdapter.menuList = mutableListOf(
-                HomeMenuAdapter.VIEW_TYPE_START_CLIMBING,
-                HomeMenuAdapter.VIEW_TYPE_MY_CLIMBS,
-                HomeMenuAdapter.VIEW_TYPE_REMOVE_ADS
-            )
-            get<YahoPreference>().isSubscribing = false
-        }
-
-        binding.adContainer.isVisible = !(get<YahoPreference>().isSubscribing)
+        viewModel.updateSubscriptionState(currentSubscription != null)
     }
 
     private fun initView() {
-        loadAdmob(get<YahoPreference>().isSubscribing)
-        menuAdapter = HomeMenuAdapter(
-            startClimbingClickAction = {
-                // 등산 기록하기 화면으로 이동
-                startActivity(Intent(this@HomeActivity, ReadyActivity::class.java))
-            },
-            myClimbsClickAction = {
-                // 등산 기록 확인하기 화면으로 이동
-//                    startClimbingDetailActivity(this@HomeActivity, "1621395171715")
-                startActivity(Intent(this@HomeActivity, RecordListActivity::class.java))
-            },
-            removeAdsClickAction = {
-                // 광고 제거 결제 화면으로 이동
-                skuDetails.find { it.sku == Sku.REMOVE_ADS }?.let { skuDetail ->
-                    bm.purchase(skuDetail, currentSubscription)
-                } ?: also {
-                    Toast.makeText(applicationContext, "상품을 찾을 수 없습니다.", Toast.LENGTH_LONG).show()
-                }
-            }
-        )
-
-        binding.rvMenu.apply {
-            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            adapter = menuAdapter
-            addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    super.getItemOffsets(outRect, view, parent, state)
-                    outRect.left = 12.dp
-                    outRect.right = 12.dp
-
-                    view.layoutParams.width = (parent.width * 0.8).toInt()
-                }
-            })
-            addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    super.getItemOffsets(outRect, view, parent, state)
-
-                    val offset = 20.dp
-                    val itemCount = state.itemCount
-                    val childPosition = parent.getChildAdapterPosition(view)
-                    if(childPosition == 0) {
-                        outRect.left = offset
-                    } else if (childPosition == itemCount - 1) {
-                        outRect.right = offset
-                    }
-                }
-            })
-
-            if (onFlingListener == null) PagerSnapHelper().attachToRecyclerView(this)
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            AdRemovePopup {
+                viewModel.onClickRemoveAds()
+            }.show(supportFragmentManager, null)
         }
 
+        binding.apply {
+            btnRecords.setOnClickListener {
+                resultLauncher.launch(Intent(this@HomeActivity, RecordListActivity::class.java))
+            }
+            btnStart.setOnClickListener {
+                resultLauncher.launch(Intent(this@HomeActivity, ReadyActivity::class.java))
+            }
+            btnRemoveAds.setOnClickListener {
+                viewModel.onClickRemoveAds()
+            }
+        }
 
     }
 
     private fun loadAdmob(isSubscribing: Boolean) {
         binding.adContainer.isVisible = !isSubscribing
+        binding.btnRemoveAds.isVisible = !isSubscribing
         if(isSubscribing) return
 
         MobileAds.initialize(this) { }
@@ -216,7 +148,7 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
         val adWidth = (adWidthPixels / density).toInt()
 
         adView.adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
-        adView.adUnitId = getString(if(BuildConfig.DEBUG) R.string.admob_banner_unit_id_test else R.string.admob_banner_unit_id)
+        adView.adUnitId = getString(R.string.admob_banner_unit_id)
 
 
         // Create an ad request.
@@ -228,8 +160,23 @@ class HomeActivity : BindingActivity<ActivityHomeBinding>(ActivityHomeBinding::i
 
     private fun initObserve() {
         viewModel.userData.observe(this) {
-            binding.tvAllHeight.text = it.allHeight.meter(this)
-            binding.tvClimbNumber.text = getString(R.string.count_unit, it.totalCount)
+            binding.apply {
+                tvAllHeight.text = it.allHeight.meter(this@HomeActivity)
+                tvClimbNumber.text = getString(R.string.count_unit, it.totalCount)
+                loadAdmob(it.noAds)
+            }
+        }
+
+        viewModel.updateSubscriptionInfo.observe(this) { noAds ->
+            loadAdmob(noAds)
+        }
+
+        viewModel.billingRemoveAds.observe(this) {
+            skuDetails.find { it.sku == Sku.REMOVE_ADS }?.let { skuDetail ->
+                bm.purchase(skuDetail, currentSubscription)
+            } ?: also {
+                Toast.makeText(applicationContext, "상품을 찾을 수 없습니다.", Toast.LENGTH_LONG).show()
+            }
         }
     }
 }
